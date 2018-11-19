@@ -413,3 +413,7 @@ void Frame::_IMOVE() {
 	Command *command = &function->commands[programCounter];
 
 }
+
+void Frame::_FMOVE() {
+	Command *command = &function->commands[programCounter];
+}

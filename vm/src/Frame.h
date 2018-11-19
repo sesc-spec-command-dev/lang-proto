@@ -27,6 +27,9 @@ class Frame{
 	void _FSUB(); 
 	void _FMUL(); 
 	void _FDIV(); 
+
+	void _IMOVE();
+	void _FMOVE();
 	
 	void _ICMPEQ(); 
 	void _ICMPNE(); 
