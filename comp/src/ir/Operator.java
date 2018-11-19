@@ -17,7 +17,7 @@ public abstract class Operator {
     public static class While extends Operator {
         public final Expression condition;
         public final Operator[] body;
-
+        
         public While(Expression condition, Operator[] body) {
             this.condition = condition;
             this.body = body;
