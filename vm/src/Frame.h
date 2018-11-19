@@ -9,6 +9,7 @@ class Frame{
 		int programCounter;
 		Function *function;
 	public:
+		void doFunc();
 		int *iargs;
 		float *fargs;
 		Frame(Function &function);
@@ -61,6 +62,6 @@ class Frame{
 	void _FCALL(); 
 	
 	void execution(Command &command);
-	void doFunc();
+	
 	
 };
