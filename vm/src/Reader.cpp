@@ -174,6 +174,8 @@ Bytecode* readBytecode(const char* name) {
 
 			}
 		
+		
+		
 		bytecode.functions[i]=func;
 	}
 	return &bytecode;
