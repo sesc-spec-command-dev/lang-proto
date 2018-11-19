@@ -408,3 +408,8 @@ void Frame::_FLOAD(){
 	Command *command = &function->commands[programCounter]; 
 	fargs[command->result] = command->floatConst; 
 }
+
+void Frame::_IMOVE() {
+	Command *command = &function->commands[programCounter];
+
+}
