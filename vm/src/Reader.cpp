@@ -1,4 +1,3 @@
-					if (S[b] == ' ') {
 #include <fstream>
 #include "Bytecode.h"
 #include <string>
