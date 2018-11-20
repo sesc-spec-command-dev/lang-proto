@@ -1,8 +1,53 @@
-enum Operation {
-    IADD,
-    ...
-    CALL
+//
+// Created by coolb on 22.10.2018.
+//
+#pragma once
+
+enum Operation{
+    IADD, 
+	ISUB, 
+	IMUL, 
+	IDIV, 
+	IMOD, 
+	FADD, 
+	FSUB, 
+	FMUL, 
+	FDIV, 
+	LAND, 
+	LOR, 
+	LNOT, 
+	
+	FMOV, 
+	IMOV, 
+	ILOAD, 
+	FLOAD, 
+	
+	ICMPEQ,// 
+	ICMPNE,// 
+	ICMPBG,// 
+	ICMPLS,// 
+	ICMPBE,// 
+	ICMPGE,// 
+	
+	FCMPEQ,// 
+	FCMPNE,// 
+	FCMPBG,// 
+	FCMPLS,// 
+	FCMPBE,// 
+	FCMPGE,// 
+	
+	GOTO, // 
+	IF, 
+	FRET, 
+	IRET, 
+	WRITE_INT, 
+	WRITE_FLOAT, 
+	READ_INT, 
+	READ_FLOAT, 
+	ICALL, 
+	FCALL 
 };
+
 
 struct Command {
     Operation operation;
@@ -12,11 +57,10 @@ struct Command {
 
     int result;
 
-    // special fields for some commands
-    int intConst;      // ILOAD
-    float floatConst;  // FLOAD
-    const char* strConst;    // WRITE_STR
-    const char* funcName;    // CALL
+    int intConst;
+    float floatConst;
+    const char* strConst;
+    const char* funcName;
 };
 
 struct Function {
@@ -31,3 +75,5 @@ struct Bytecode {
     int functionsNumber;
     Function* functions;
 };
+
+
