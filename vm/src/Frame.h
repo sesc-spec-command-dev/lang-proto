@@ -48,7 +48,7 @@ class Frame{
 	void _ILOAD(); 
 	void _FLOAD(); 
 	
-	void __LAND(); 
+	void _LAND(); 
 	void _LOR(); 
 	void _LNOT(); 
 	

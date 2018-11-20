@@ -75,19 +75,23 @@ void Frame::doFunc()
 			break; 
 			
 			case LAND: 
-			
+				_LAND();
 			break; 
 			
 			case LOR: 
+				_LOR();
+				break; 
+			
+			case LNOT:
+				_LNOT();
 			break; 
 			
-			case LNOT: 
-			break; 
-			
-			case IMOV: 
+			case IMOV:
+				_IMOVE();
 			break; 
 			
 			case FMOV: 
+				_FMOVE();
 			break; 
 			
 			case ILOAD: 
@@ -411,9 +415,28 @@ void Frame::_FLOAD(){
 
 void Frame::_IMOVE() {
 	Command *command = &function->commands[programCounter];
-
+	iargs[command->result] = iargs[command->args[0]];
 }
 
 void Frame::_FMOVE() {
 	Command *command = &function->commands[programCounter];
+	fargs[command->result] = fargs[command->args[0]];
+}
+
+void Frame::_LNOT() {
+	Command *command = &function->commands[programCounter];
+	if (!iargs[command->args[0]]) iargs[command->result] = 1;
+	else iargs[command->result] = 0;
+}
+
+void Frame::_LAND() {
+	Command *command = &function->commands[programCounter];
+	if (iargs[command->args[0]] && iargs[command->args[1]]) iargs[command->result] = 1;
+	else iargs[command->result] = 0;
+}
+
+void Frame::_LOR() {
+	Command *command = &function->commands[programCounter];
+	if (iargs[command->args[0]] || iargs[command->args[1]]) iargs[command->result] = 1;
+	else iargs[command->result] = 0;
 }
