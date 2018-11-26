@@ -27,7 +27,7 @@ Bytecode* readBytecode(const char* name) {
 		while (getline(in, line)){
 			list.push_back(line);
 		}
-	Bytecode *bytecode = new Bytecode; //? in dynamic memory
+	Bytecode *bytecode = new Bytecode; 
 	int curr = 1;
 	int count = atoi(list[0].c_str());
 	bytecode.functionsNumber = count;
@@ -168,5 +168,5 @@ Bytecode* readBytecode(const char* name) {
 		
 		bytecode.functions[i]=func;
 	}
-	return &bytecode;
+	return bytecode;
 }
