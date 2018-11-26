@@ -4,6 +4,22 @@
 #include <stdlib.h>
 #include <iostream>
 #include <vector>
+std::vector<std::string> split(std::string str){
+	std::vector<std::string> vec;
+	int i,n;
+	n = 0;
+	for (i = 0; i <= str.length(); i++){
+		if (( i == str.length()) || (str[i] == ' ')){
+			vec.push_back(str.substr(n, i-n));
+			n = i + 1;
+		}
+	}
+	return vec;
+}	
+
+
+
+
 Bytecode* readBytecode(const char* name) {
 	std::string line;
 	std::vector<std::string> list;
@@ -24,34 +40,9 @@ Bytecode* readBytecode(const char* name) {
 		for (int j = 0; j < func.commandsNumber; j++) {
 			
 			std::string S;
-			std::vector<int> a;
-			std::vector<std::string>> c;
-			int m, k, b;
-			list[j] += " ";
-			int len = list[j].length();
-			for (m = 0; m < len; m++) {
-				if (list[j][m] == ' ')
-					break;
-			}
-			S = list[j].substr(0, m);
-			k = m + 1;
-			if (S == 'CALL' && S == 'FLOAD' && S == 'WRITE_STR'){
-				for (b = m + 1; b < len; b++) {
-					if (S[b] == ' ') {
-						c.push_back(list[j].substr(k, b - 1));
-						k = b + 1;
-					}
-				}
-			}
-			//? special cases: CALL, FLOAD, WRITE_STR
-			else{
-				for (b = m + 1; b < len; b++) {
-						a.push_back(stoi(list[j].substr(k, b - 1)));
-						k = b + 1;
-					}
-				}
-			}
 
+			list[j]
+			
 			if (S.compare("IADD")) {
 			
 			}
