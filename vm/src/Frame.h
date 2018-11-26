@@ -2,7 +2,7 @@
 
 #include "main.h"
 
-static Bytecode *BYTECODE;	
+Bytecode *BYTECODE;	
 
 class Frame{
 	private:

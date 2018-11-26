@@ -36,7 +36,7 @@ Frame::~Frame(){
 
 void Frame::doFunc() 
 { 
-	while (true) { 
+	while (function -> commands[programCounter].operation != IRET) { 
 		switch (function->commands[programCounter].operation) { 
 			case IADD: 
 			_IADD(); 
@@ -84,23 +84,23 @@ void Frame::doFunc()
 			
 			case LNOT:
 				_LNOT();
-			break; 
+				break; 
 			
 			case IMOV:
 				_IMOVE();
-			break; 
+				break; 
 			
 			case FMOV: 
 				_FMOVE();
-			break; 
+				break; 
 			
 			case ILOAD: 
-			_ILOAD(); 
-			break; 
+				_ILOAD(); 
+				break; 
 			
 			case FLOAD: 
-			_FLOAD(); 
-			break; 
+				_FLOAD(); 
+				break; 
 			
 			case ICMPEQ: 
 			_ICMPEQ(); 
@@ -187,9 +187,9 @@ void Frame::doFunc()
 			} 
 		
 		programCounter++; 
-		if (programCounter == this->function->commandsNumber) { 
-		break; 
-	}
+
+		if (programCounter == this->function->commandsNumber) break; 
+	
 }
 }
 
@@ -197,12 +197,19 @@ void Frame::_ICALL(){
 	Command *command = &function->commands[programCounter]; 
 
 	for(int i = 0 ; i < BYTECODE -> functionsNumber; ++i){
-		if(BYTECODE -> functions[i].name == command -> funcName){
+
+		if(!strcmp(BYTECODE -> functions[i].name,command -> funcName)){
+
 			Frame nextFrame(BYTECODE -> functions[i]);
+
 			for(int j = 0; j < command -> argsCount; ++j){
+
 				nextFrame.iargs[j] = iargs[command -> args[j]];
+
 			}
+
 			nextFrame.doFunc();
+
 		}
 	}
 }
