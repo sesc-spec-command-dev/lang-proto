@@ -17,9 +17,6 @@ std::vector<std::string> split(std::string str){
 	return vec;
 }	
 
-
-
-
 Bytecode* readBytecode(const char* name) {
     std::string line;
     std::vector<std::string> list;
@@ -48,128 +45,190 @@ Bytecode* readBytecode(const char* name) {
 
             
 
-            if (S.compare("IADD")) {
+            if (s[0].compare("IADD")) {
                 com[j].argsCount = 3;
-                com[j].args[0] = stoi(s[0]);
-                com[j].args[1] = stoi(s[1]);
-                com[j].args[2] = stoi(s[2]);
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("ISUB")) {
+            if (s[0].compare("ISUB")) {
                 com[j].argsCount = 3;
-                com[j].args[0] = stoi(s[0]);
-                com[j].args[1] = stoi(s[1]);
-                com[j].args[2] = stoi(s[2]);
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("IMUL")) {
-                com.argsCount = 3;
-                com.args[0] = a[0];
-                com.args[1] = a[1];
-                com.args[2] = a[2];
+            if (s[0].compare("IMUL")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("IDIV")) {
-                com.argsCount = 3;
-                com.args[0] = a[0];
-                com.args[1] = a[1];
-                com.args[2] = a[2];
+            if (s[0].compare("IDIV")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("IMOD")) {
-                com.argsCount = 3;
-                com.args[0] = a[0];
-                com.args[1] = a[1];
-                com.args[2] = a[2];
+            if (s[0].compare("IMOD")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("FADD")) {
-
+            if (s[0].compare("FADD")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
+                com[j].args[2] = std::ftoi(s[3]);
             }
-            if (S.compare("FSUB")) {
-
+            if (s[0].compare("FSUB")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
+                com[j].args[2] = std::ftoi(s[3]);
             }
-            if (S.compare("FMUL")) {
-
+            if (s[0].compare("FMUL")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
+                com[j].args[2] = std::ftoi(s[3]);
             }
-            if (S.compare("FDIV")) {
-
+            if (s[0].compare("FDIV")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
+                com[j].args[2] = std::ftoi(s[3]);
             }
-            if (S.compare("ILAND")) {
-                com.argsCount = 3;
-                com.args[0] = a[0];
-                com.args[1] = a[1];
-                com.args[2] = a[2];
+            if (s[0].compare("ILAND")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("ILOR")) {
-                com.argsCount = 3;
-                com.args[0] = a[0];
-                com.args[1] = a[1];
-                com.args[2] = a[2];
+            if (s[0].compare("ILOR")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("ILNOT")) {
-                com.argsCount = 3;
-                com.args[0] = a[0];
-                com.args[1] = a[1];
-                com.args[2] = a[2];
+            if (s[0].compare("ILNOT")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("IMOV")) {
-                com.argsCount = 2;
-                com.args[0] = a[0];
-                com.args[1] = a[1];
+            if (s[0].compare("IMOV")) {
+                com[j].argsCount = 2;
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
             }
-            if (S.compare("FLAND")) {
-
+            if (s[0].compare("FLAND")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
+                com[j].args[2] = std::ftoi(s[3]);
             }
-            if (S.compare("FLOR")) {
-
+            if (s[0].compare("FLOR")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
+                com[j].args[2] = std::ftoi(s[3]);
             }
-            if (S.compare("FLNOT")) {
-
+            if (s[0].compare("FLNOT")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
+                com[j].args[2] = std::ftoi(s[3]);
             }
-            if (S.compare("FMOV")) {
-
+            if (s[0].compare("FMOV")) {
+                com[j].argsCount = 2;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
             }
-            if (S.compare("ILOAD")) {
-                com.argsCount = 1;
-                com.args[0] = a[0];
+            if (s[0].compare("ILOAD")) {
+                com[j].argsCount = 1;
+                com[j].args[0] = std::stoi(s[1]);
             }
-            if (S.compare("FLOAD")) {
-
+            if (s[0].compare("FLOAD")) {
+                com[j].argsCount = 1;
+                com[j].args[0] = std::ftoi(s[1]);
             }
-            if (S.compare("ICMPEQ")) {
-
+            if (s[0].compare("ICMPEQ")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("ICMPNE")) {
-
+            if (s[0].compare("ICMPNE")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("ICMPBG")) {
-
+            if (s[0].compare("ICMPBG")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("ICMPLS")) {
-
+            if (s[0].compare("ICMPLS")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("ICMPBE")) {
-
+            if (s[0].compare("ICMPBE")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("ICMPGE")) {
-
+            if (s[0].compare("ICMPGE")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::stoi(s[1]);
+                com[j].args[1] = std::stoi(s[2]);
+                com[j].args[2] = std::stoi(s[3]);
             }
-            if (S.compare("FCMPEQ")) {
-
+            if (s[0].compare("FCMPEQ")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
+                com[j].args[2] = std::ftoi(s[3]);
             }
-            if (S.compare("FCMPNE")) {
-
+            if (s[0].compare("FCMPNE")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
+                com[j].args[2] = std::ftoi(s[3]);
             }
-            if (S.compare("FCMPBG")) {
-
+            if (s[0].compare("FCMPBG")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
+                com[j].args[2] = std::ftoi(s[3]);
             }
-            if (S.compare("FCMPLS")) {
-
+            if (s[0].compare("FCMPLS")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
+                com[j].args[2] = std::ftoi(s[3]);
             }
-            if (S.compare("FCMPBE")) {
-
+            if (s[0].compare("FCMPBE")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
+                com[j].args[2] = std::ftoi(s[3]);
             }
-            if (S.compare("FCMPGE")) {
-
+            if (s[0].compare("FCMPGE")) {
+                com[j].argsCount = 3;
+                com[j].args[0] = std::ftoi(s[1]);
+                com[j].args[1] = std::ftoi(s[2]);
+                com[j].args[2] = std::ftoi(s[3]);
             }
         }
-    }
+        func_list[i].commands = com;
 
+    }
+    bytecode.functions = func_list;
 	return bytecode;
 }
