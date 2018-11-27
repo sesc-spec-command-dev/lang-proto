@@ -54,6 +54,7 @@ public class Generator{
         IR ir = new IR(functions);
 
         generateCode(ir, "a.txt");
+        
     }
 
     private static void println(String line) { System.out.println(line);}
