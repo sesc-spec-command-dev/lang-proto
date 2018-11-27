@@ -1,53 +1,49 @@
-//
-// Created by coolb on 22.10.2018.
-//
-#pragma once
 
+#pragma once
+#include "main.h"
 enum Operation{
     IADD, 
-	ISUB, 
-	IMUL, 
-	IDIV, 
-	IMOD, 
-	FADD, 
-	FSUB, 
-	FMUL, 
-	FDIV, 
-	LAND, 
-	LOR, 
-	LNOT, 
-	
-	FMOV, 
-	IMOV, 
-	ILOAD, 
-	FLOAD, 
-	
-	ICMPEQ,// 
-	ICMPNE,// 
-	ICMPBG,// 
-	ICMPLS,// 
-	ICMPBE,// 
-	ICMPGE,// 
-	
-	FCMPEQ,// 
-	FCMPNE,// 
-	FCMPBG,// 
-	FCMPLS,// 
-	FCMPBE,// 
-	FCMPGE,// 
-	
-	GOTO, // 
-	IF, 
-	FRET, 
-	IRET, 
-	WRITE_INT, 
-	WRITE_FLOAT, 
-	READ_INT, 
-	READ_FLOAT, 
-	ICALL, 
-	FCALL 
+    ISUB, 
+    IMUL, 
+    IDIV, 
+    IMOD, 
+    FADD, 
+    FSUB, 
+    FMUL, 
+    FDIV, 
+    LAND, 
+    LOR, 
+    LNOT, 
+    
+    FMOV, 
+    IMOV, 
+    ILOAD, 
+    FLOAD, 
+    
+    ICMPEQ, 
+    ICMPNE, 
+    ICMPBG, 
+    ICMPLS, 
+    ICMPBE, 
+    ICMPGE, 
+    
+    FCMPEQ, 
+    FCMPNE, 
+    FCMPBG, 
+    FCMPLS, 
+    FCMPBE, 
+    FCMPGE, 
+    
+    GOTO,  
+    IF, 
+    RET, 
+    WRITE_INT, 
+    WRITE_FLOAT, 
+    READ_INT, 
+    READ_FLOAT, 
+    ICALL, 
+    FCALL 
 };
-
 
 struct Command {
     Operation operation;
@@ -74,6 +70,7 @@ struct Function {
 struct Bytecode {
     int functionsNumber;
     Function* functions;
+    public: 
+        void findFunction(Command *command);
 };
-
 
