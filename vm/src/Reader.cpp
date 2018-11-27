@@ -42,23 +42,23 @@ Bytecode* readBytecode(const char* name) {
         Command *com = new Command[func_list[i].commandsNumber];
         for (int j = 0; j < func_list[i].commandsNumber; j++) {
             std::vector<string> s;
-            s = func_list[i]
-
+            s = split(list[curr]);
+            curr++;
 
 
             
 
             if (S.compare("IADD")) {
-                com.argsCount = 3;
-                com.args[0] = a[0];
-                com.args[1] = a[1];
-                com.args[2] = a[2];
+                com[j].argsCount = 3;
+                com[j].args[0] = stoi(s[0]);
+                com[j].args[1] = stoi(s[1]);
+                com[j].args[2] = stoi(s[2]);
             }
             if (S.compare("ISUB")) {
-                com.argsCount = 3;
-                com.args[0] = a[0];
-                com.args[1] = a[1];
-                com.args[2] = a[2];
+                com[j].argsCount = 3;
+                com[j].args[0] = stoi(s[0]);
+                com[j].args[1] = stoi(s[1]);
+                com[j].args[2] = stoi(s[2]);
             }
             if (S.compare("IMUL")) {
                 com.argsCount = 3;
