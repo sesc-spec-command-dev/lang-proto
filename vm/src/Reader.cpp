@@ -11,18 +11,18 @@ Bytecode* readBytecode(const char* name) {
     while (getline(in, line)) {
         list.push_back(line);
     }
-    Bytecode *bytecode = new Bytecode; //? in dynamic memory
-    int curr = 1;
     int count = atoi(list[0].c_str());
+    Bytecode *bytecode = new Bytecode;
+    Function *func_list = new Function[count];
+    int curr = 1;
+    
     bytecode.functionsNumber = count;
     for (int i = 0; i < count; i++) {
-        Function func; //? создайте массив функций до цикла, здесь заполн€йте элемент массива
-        func.name = list[curr++].c_str();
-        func.intRegsNumber = atoi(list[curr++].c_str());
-        func.floatRegsNumber = atoi(list[curr++].c_str());
-        func.commandsNumber = atoi(list[curr++].c_str());
-        for (int j = 0; j < func.commandsNumber; j++) {
-
+        func_list[i].name = list[curr++].c_str();
+        func_list[i].intRegsNumber = atoi(list[curr++].c_str());
+        func_list[i].floatRegsNumber = atoi(list[curr++].c_str());
+        func_list[i].commandsNumber = atoi(list[curr++].c_str());
+        for (int j = 0; j < func_list[i].commandsNumber; j++) {
             std::string S;
             std::vector<int> a;
             std::vector < std::string >> c;
