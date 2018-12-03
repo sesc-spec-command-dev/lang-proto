@@ -29,7 +29,7 @@ Bytecode* readBytecode(const char* name) {
     Function *func_list = new Function[count];
     int curr = 1;
     
-    bytecode.functionsNumber = count;
+    bytecode->functionsNumber = count;
     for (int i = 0; i < count; i++) {
         func_list[i].name = list[curr++].c_str();
         func_list[i].intRegsNumber = atoi(list[curr++].c_str());
@@ -38,7 +38,7 @@ Bytecode* readBytecode(const char* name) {
         curr += 4;
         Command *com = new Command[func_list[i].commandsNumber];
         for (int j = 0; j < func_list[i].commandsNumber; j++) {
-            std::vector<string> s;
+            std::vector<std::string> s;
             s = split(list[curr]);
             curr++;
 
@@ -143,6 +143,6 @@ Bytecode* readBytecode(const char* name) {
         func_list[i].commands = com;
 
     }
-    bytecode.functions = func_list;
+    bytecode->functions = func_list;
 	return bytecode;
 }
