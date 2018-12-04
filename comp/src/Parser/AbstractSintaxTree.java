@@ -45,55 +45,34 @@ public class AbstractSintaxTree {
 		}
 	}
 	
-	
-	public static Operand buildAST(Token[] inputTokenArr) {				//return head of AST
+	static Expression buildAST(Token[] inputTokenArr) {	
+		
 		InToPost converter = new InToPost(inputTokenArr);
-		ArrayList<Token> postfixTokenList = converter.doTrans(inputTokenArr);
-		Stack theStack = listToStack(postfixTokenList);
-		int ind = theStack.topInd;
-		Expression expr;
-		
-		while(theStack .size() > 1 && ind > 0) {
-			expr = theStack.peek(ind);
-			
-			if (expr.getClass().getName() == "Operation") {			
-				Operation theOper = (Operation) expr;
-				
-				if (theOper.left == null && theOper.right == null) {
-					Expression lArg = theStack.pop();
-					Expression rArg = theStack.pop();
-					
-					Operation newOper = new Operation(theOper.operation, lArg, rArg);
-					theStack.push(newOper);
-				}	
-			}
-			ind--;
-		}
-		
-		if(theStack.size() > 1) {
-			throw new ParserException("Invalid expression", inputTokenArr[theStack.topInd].position);
-		}
-		
-		return (Operand) theStack.pop();
-	}
-	
-	private static Stack listToStack(ArrayList<Token> tokenList) {	
-		Stack retStack = new Stack(tokenList.size());
+		ArrayList<Token> tokenList = converter.doTrans(inputTokenArr);
+
+		Stack theStack = new Stack(tokenList.size());
 		Token theToken;
 		
-		for (int i = tokenList.size() - 1; i >= 0; i++) {
+		for (int i = 0; i < tokenList.size(); i++) {
 			theToken = tokenList.get(i);
 			
 			if (theToken.getKind() == Kind.OPERATOR) {						//the element is operation
 				Operator theOp = (Operator) theToken;
-				Operation theOper = new Operation(theOp,null,null);
-				retStack.push(theOper);										//push element in stack
+				Expression rightExpr = theStack.pop();
+				Expression leftExpr = theStack.pop();
+				
+				Operation theOper = new Operation(theOp,leftExpr,rightExpr);
+				theStack.push(theOper);
 			}
 			else {
 				Operand operand = new Operand(theToken);					//the element is variable/number
-				retStack.push(operand);										//push element in stack
+				theStack.push(operand);										//push element in stack
 			}
 		}
-		return retStack;
+		
+		if(theStack.size() > 1 || !(theStack.peek(theStack.topInd) instanceof Operation)) {
+			throw new ParserException("Invalid expression", inputTokenArr[theStack.topInd].position);			//the tree do not build correctly
+		}
+		return theStack.pop();
 	}
 }

@@ -60,13 +60,26 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 				Operator theOp = (Operator) theToken;
 				
 				switch(theOp.operator) {
+					case AND:
+					case OR:
+					case NOT:
+						getOper(theOp, 0);
+						break;
+					case EQ:
+					case NE:
+					case BG:
+					case LS:
+					case BGEQ:
+					case LSEQ:
+						getOper(theOp, 1);
+						break;
 					case ADD:
 					case SUB:
-						getOper(theOp, 1);				//getting of operators, priority - 1 ('+', '-')
+						getOper(theOp, 2);				//getting of operators, priority - 1 ('+', '-')
 						break;
 					case MUL:
 					case DIV:
-						getOper(theOp, 2);				//getting of operators, priority - 2 ('*', '/')
+						getOper(theOp, 3);				//getting of operators, priority - 2 ('*', '/')
 						break;
 					case OPEN_PARENTHESIS:
 						theStack.push(theOp);			//push in to the stack immediately ( '(' )
@@ -79,7 +92,7 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 				}
 			}
 			else {
-				if(theToken.getKind() == Kind.IDENT) {
+				if(theToken.getKind() == Kind.IDENT || theToken.getKind() == Kind.INT_LITERAL || theToken.getKind() == Kind.FLOAT_LITERAL || theToken.getKind() == Kind.STR_LITERAL) {
 					output.add(theToken);
 				}
 				else {
@@ -138,13 +151,26 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 		int priority = 0;
 		
 		switch(op.operator) {
+			case AND:
+			case OR:
+			case NOT:
+				priority = 0;
+				break;
+			case EQ:
+			case NE:
+			case BG:
+			case LS:
+			case BGEQ:
+			case LSEQ:
+				priority = 1;
+				break;
 			case ADD:
 			case SUB:
-				priority = 1;
+				priority = 2;
 				break;
 			case MUL:
 			case DIV:
-				priority = 2;
+				priority = 3;
 				break;
 			default:
 				////add more operators cases later

@@ -1,23 +1,20 @@
 package Parser;
 
-import java.io.IOException;
-
-
 import java.util.ArrayList; 
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import front.Token;
 import front.Token.Ident;
 import front.Token.KeyWord;
 import front.Token.Kind;
 import front.Token.Operator;
 import front.Token.Operators;
+import ir.Expression;
 import ir.Function;
 import ir.Function.Parameter;
+import ir.Operator.If;
+import ir.Operator.Return;
+import ir.Operator.SimpleExpression;
+import ir.Operator.While;
 import ir.Type;
-
-import LexerPackage.Reader;
 
 public class Parser {
 	static Token[] tokenArr;							//Token Array
@@ -31,54 +28,135 @@ public class Parser {
 		haveExeption = false;
 	}
 	
-	private static void parserfunc() {				//parser function, read functions
+	public static void parserfunc() {				//parser function, read functions
 		String name;								
 	    Parameter[] parameters;
 	    ir.Operator[] body;
+	    ArrayList<ir.Operator> bodyList = new ArrayList<>();
 	    Type returnType;
-	    int paramNumber;
-	    int opNumber;
-		
+	    
 		while(iteration < tokenArr.length) {			
 			returnType = readFunctionType();
 			name = readFunctionName();											
 			readOperator(Operators.OPEN_PARENTHESIS);											//if !"(" throw exception
 			parameters = readParemeters();
 			readOperator(Operators.OPEN_CURLY_BRACE);											//if !"{" throw exception
-			body = parserOp(iteration);
+			bodyList = parserOp(bodyList);
+			body = bodyList.toArray(new ir.Operator[bodyList.size()]);
+			FunctionOtputList.add(new Function(returnType, name, parameters, body));			//add new function in the function list
 		}
 	}
 		
-	private static ir.Operator[] parserOp(int iter) {					//not ready yet
-		if(iteration >= tokenArr.length) {														//out of array bounds exception
-			throw new ParserException("Index out of Token array bounds", tokenArr[tokenArr.length - 1].position);
-		}
-		
-		Token theToken = tokenArr[iteration];
-		if(theToken.getKind() == Kind.KEYWORD) {
+	private static ArrayList<ir.Operator> parserOp(ArrayList<ir.Operator> operatorList) {		//recursive function of reading parameters, returns parameter list					
+		Token theToken = getIterToken();
+			
+		if(theToken.getKind() == Kind.KEYWORD) {			//if next token is an operator
 			KeyWord theKeyWord = (KeyWord) theToken;
+			Expression condition;							//operator condition
+			ir.Operator[] body;								//operator body
+			ArrayList<ir.Operator> bodyList = new ArrayList<>();			//operator body list
 			
 			switch(theKeyWord.word) {
 				case IF:
+					readOperator(Operators.OPEN_PARENTHESIS);		//read '('
+					condition = getExpression(true, null); 
+					readOperator(Operators.OPEN_CURLY_BRACE);		//read '{'
+  
+					bodyList = parserOp(bodyList);
+					body = bodyList.toArray(new ir.Operator[bodyList.size()]);	
+					If theIf = new If(condition,body, null);
+					operatorList.add(theIf);						//add new parameter in the function parameter list
+					break;
+					
 				case ELSE:
+					readOperator(Operators.OPEN_CURLY_BRACE);
+					ir.Operator theOp = operatorList.get(operatorList.size() - 1);
+					
+					if(!(theOp instanceof If)) {						//condition on "if" part in the list end
+						throw new ParserException("must not be an operator between if & else", theToken.position);
+					}
+					If lastIf = (If) theOp;
+					bodyList = parserOp(bodyList);
+					body = bodyList.toArray(new ir.Operator[bodyList.size()]);	
+					
+					If newIf = new If(lastIf.condition, lastIf.thenPart, body);					//add "then" part to operator
+					operatorList.remove(operatorList.size() - 1);								//cut top "If"
+					operatorList.add(newIf);								//add new parameter in the function parameter list
+					break;
+					
 				case WHILE:
+					readOperator(Operators.OPEN_PARENTHESIS);		//read '('
+					condition = getExpression(true, null); 
+					readOperator(Operators.OPEN_CURLY_BRACE);		//read '{'
+					
+					bodyList = parserOp(bodyList);
+					body = bodyList.toArray(new ir.Operator[bodyList.size()]);	
+					
+					While theWhile = new While(condition, body);
+					operatorList.add(theWhile);							//add new parameter in the function parameter list
+					break;
+					
 				case RETURN:
+					condition = getExpression(false, null); 
+					Return ret = new Return(condition);
+					operatorList.add(ret);								//add new parameter in the function parameter list
+					break;
+					
 				default:
 					throw new ParserException("Incorrect KeyWord", theToken.position);
 			}
 		}
 		else {
-			throw new ParserException("Error token, has to be an KEYWORD", theToken.position);
+			if (theToken.getKind() == Kind.IDENT) {			//if the next Token is expression
+				Expression expr = getExpression(false, theToken);
+				SimpleExpression theExpr = new SimpleExpression(expr);
+				operatorList.add(theExpr);								//add new parameter in the function parameter list
+			}
+			else {
+				if(theToken.getKind() == Kind.OPERATOR) {
+					iteration--;
+					readOperator(Operators.CLOSE_CURLY_BRACE);			//if during token is '}'
+					return operatorList;								//return operator list
+				}
+
+				throw new ParserException("Invalide function body", theToken.position);
+			}
 		}
-		
-		//readOperator(Operators.CLOSE_CURLY_BRACE);///
+		return parserOp(operatorList);		
 	}
 	
-	private static Parameter[] readParemeters() {
-		if(iteration >= tokenArr.length) {
-			throw new ParserException("Index out of Token array bounds", tokenArr[tokenArr.length - 1].position);
+	private static Expression getExpression(boolean inCondition, Token firstToken) {
+		ArrayList<Token> tokenList = new ArrayList<>();
+		if(firstToken != null) {
+			tokenList.add(firstToken);		
 		}
 		
+		while (true) {
+			Token theToken = getIterToken();
+			
+			if (theToken.getKind() == Kind.OPERATOR) {
+				Operator theOp = (Operator) theToken;
+				
+				if(inCondition) {//if expression situate in condition
+					if (theOp.operator == Operators.CLOSE_PARENTHESIS) {break;}
+				}
+				else {//if expression situate in operator body
+					if (theOp.operator == Operators.SEMICOLON) {break;}
+				}
+			}
+			else {
+				if(theToken.getKind() != Kind.IDENT && theToken.getKind() != Kind.INT_LITERAL && theToken.getKind() != Kind.FLOAT_LITERAL && theToken.getKind() != Kind.STR_LITERAL) {
+					throw new ParserException("Error argument in expression", theToken.position);
+				}
+			}
+			tokenList.add(theToken);
+		}
+		Token[] exprArr = tokenList.toArray(new Token[tokenList.size()]);
+		Expression retExpr = AbstractSintaxTree.buildAST(exprArr);
+		return retExpr;
+	}
+
+	private static Parameter[] readParemeters() {
 		ArrayList<Parameter> parameterList = new ArrayList<>();
 		Parameter theParam;
 		Bool haveOperators = new Bool(true);			//link
@@ -86,20 +164,16 @@ public class Parser {
 		while(haveOperators.booleanVal) {
 			theParam = readParameter(haveOperators);
 			parameterList.add(theParam);
-			iteration++;
 		}
 		Parameter[] returnArr = parameterList.toArray(new Parameter[parameterList.size()]);
 		return returnArr;
 	}
 
 	private static Parameter readParameter(Bool haveOp) {					//read parameter function, parameter - link on boolean object
-		if (iteration > tokenArr.length - 3) {									//exception of index out of Token array bounds during reading the parameter
-			throw new ParserException("Index out of Token array bounds", tokenArr[tokenArr.length - 1].position);		//throw exception
-		}
 		String parameterName;						//parameter name variable
 		Type parameterType;							//parameter type variable
 		
-		Token theToken = tokenArr[iteration];			//during token
+		Token theToken = getIterToken();			//during token
 		
 		if (theToken.getKind() == Kind.KEYWORD) {			//condition on parameter type
 			KeyWord keyWord = (KeyWord) theToken;
@@ -114,8 +188,7 @@ public class Parser {
 				default:
 					throw new ParserException("Error parameter type", theToken.position);
 			}
-			iteration++;							//move token Array index
-			theToken = tokenArr[iteration];
+			theToken = getIterToken();
 			
 			if (theToken.getKind() == Kind.IDENT) {			//condition on parameter name
 				Ident ident = (Ident) theToken;
@@ -124,8 +197,7 @@ public class Parser {
 			else {
 				throw new ParserException("Error token, has to be a parameter name", theToken.position);		//throw condition exception
 			}
-			iteration++;									//move token Array index
-			theToken = tokenArr[iteration];
+			theToken = getIterToken();
 			
 			if (theToken.getKind() == Kind.OPERATOR) {		//condition on operator after parameter name
 				Operator theOp = (Operator) theToken;
@@ -150,10 +222,7 @@ public class Parser {
 	}
 	
 	private static void readOperator(Operators op) {			//throw an exception if incorrect operator/(input token)
-		if(iteration >= tokenArr.length) {
-			throw new ParserException("Index out of Token array bounds", tokenArr[tokenArr.length - 1].position);
-		}
-		Token theToken = tokenArr[iteration];
+		Token theToken = getIterToken();
 		
 		if(theToken.getKind() == Kind.OPERATOR) {
 			Operator theOp = (Operator) theToken;
@@ -164,19 +233,14 @@ public class Parser {
 		else {
 			throw new ParserException("Error token, has to be an operator", theToken.position);
 		}
-		iteration++;
 	}
 	
 	private static String readFunctionName() {
-		if(iteration >= tokenArr.length) {
-			throw new ParserException("Index out of Token array bounds", tokenArr[tokenArr.length - 1].position);
-		}
-		Token theToken = tokenArr[iteration];			//during token
+		Token theToken = getIterToken();			//during token
 		
 		if (theToken.getKind() == Kind.IDENT) {
 			Ident ident = (Ident) theToken;
 			String funcName = ident.word;
-			iteration++;
 			return funcName;
 		}
 		else {
@@ -184,24 +248,27 @@ public class Parser {
 		}
 	}
 	
-	private static Type readFunctionType() {
-		if(iteration >= tokenArr.length) {
-			throw new ParserException("Index out of Token array bounds", tokenArr[tokenArr.length - 1].position);
+	private static Token getIterToken() {		//returns the iteration token
+		if(iteration >= tokenArr.length) {		//throw an exception if now token is out of array bounds
+			throw new ParserException("Index out of Token array bounds", tokenArr[tokenArr.length - 1].position);	
 		}
 		Token theToken = tokenArr[iteration];
+		iteration++;							//move token Array index
+		return theToken;
+	}
+	
+	private static Type readFunctionType() {
+		Token theToken = getIterToken();
 
 		if (theToken.getKind() == Kind.KEYWORD) {
 			KeyWord keyWord = (KeyWord) theToken;
 			
 			switch(keyWord.word) {
 				case FLOAT:
-					iteration++;
 					return Type.FLOAT;
 				case INT:
-					iteration++;
 					return Type.INT;
 				case VOID:
-					iteration++;
 					return Type.VOID;
 				default:
 					throw new ParserException("Null/incorrect function return type", theToken.position);
@@ -209,23 +276,4 @@ public class Parser {
 		}
 		throw new ParserException("Error token, has to be a type", theToken.position);						//throw an exception
 	}
-		
-	public static Object[] castToArray(ArrayList<Object> list) {
-		Object[] returnArray = new Object[list.size()];
-		
-		for (int i = 0; i < list.size(); i++) {
-			returnArray[i] = list.get(i);
-		}	
-		return returnArray;
-	}
-	
-	public static void main(String[] args) throws IOException{
-		Parser theParser = new Parser(Reader.getTokens());
-		theParser.parserfunc();
-	}
-	private static Function getFunction(Type returnType, String name,Parameter[] parameters, ir.Operator[] body) {											//create function
-		Function retFunction = new Function(returnType, name, parameters, body);
-		return retFunction;
-	}
-
 }
