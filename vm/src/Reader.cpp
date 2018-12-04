@@ -5,101 +5,11 @@
 #include <iostream>
 #include <vector>
 
-void add_args(std::vector<std::string> s, int j, Command com[]) {
-    com[j].args = new int[3];
-    if (s[0].compare("IADD")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
-    }
-    if (s[0].compare("ISUB")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
-    }
-    if (s[0].compare("IMUL")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
-    }
-    if (s[0].compare("IDIV")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
-    }
-    if (s[0].compare("IMOD")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
-    }
-    if (s[0].compare("ILAND")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
-    }
-    if (s[0].compare("ILOR")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
-    }
-    if (s[0].compare("ILNOT")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
-    }
-    if (s[0].compare("IMOV")) {
-        com[j].argsCount = 2;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-    }
-    if (s[0].compare("ILOAD")) {
-        com[j].argsCount = 2;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-    }
-    if (s[0].compare("ICMPEQ")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
-    }
-    if (s[0].compare("ICMPNE")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
-    }
-    if (s[0].compare("ICMPBG")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
-    }
-    if (s[0].compare("ICMPLS")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
-    }
-    if (s[0].compare("ICMPBE")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
-    }
-    if (s[0].compare("ICMPGE")) {
-        com[j].argsCount = 3;
-        com[j].args[0] = std::stoi(s[1]);
-        com[j].args[1] = std::stoi(s[2]);
-        com[j].args[2] = std::stoi(s[3]);
+void add_args(std::vector<std::string> s, Command &com) {
+    com.argsCount = s.size();
+    com.args = new int[com.argsCount];
+    for (int i = 0; i <  com.argsCount; i++) {
+        com.args[i] = std::stoi(s[i + 1]);
     }
 }
 
@@ -140,7 +50,7 @@ Bytecode* readBytecode(const char* name) {
             std::vector<std::string> s;
             s = split(list[curr]);
             curr++;
-            add_args(s, j, com);
+            add_args(s, com[j]);
         }
         func_list[i].commands = com;
     }
