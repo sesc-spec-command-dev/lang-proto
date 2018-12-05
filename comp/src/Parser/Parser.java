@@ -107,7 +107,7 @@ public class Parser {
 			}
 		}
 		else {
-			if (theToken.getKind() == Kind.IDENT) {			//if the next Token is expression
+			if (theToken.getKind() == Kind.IDENT || theToken.getKind() == Kind.INT_LITERAL || theToken.getKind() == Kind.FLOAT_LITERAL || theToken.getKind() == Kind.STR_LITERAL) {			//if the next Token is expression
 				Expression expr = getExpression(false, theToken);
 				SimpleExpression theExpr = new SimpleExpression(expr);
 				operatorList.add(theExpr);								//add new parameter in the function parameter list
