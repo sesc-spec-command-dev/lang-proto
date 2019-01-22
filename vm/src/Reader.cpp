@@ -5,7 +5,101 @@
 #include <iostream>
 #include <vector>
 
+Operation operationByName(std::string str) {
+    if (str == "IADD") {
+        return IADD ;
+    }
+    if (str == "ISUB" ) {
+        return ISUB;
+    }
+    if (str == "IMUL" ) {
+        return IMUL;
+    }
+    if (str == "IDIV") {
+        return IDIV;
+    }
+    if (str == "IMOD") {
+        return IMOD;
+    }
+    if (str == "FADD") {
+        return FADD;
+    }
+    if (str == "FSUB") {
+        return FSUB;
+    }
+    if (str == "FMUL") {
+        return FMUL;
+    }
+    if (str == "FDIV") {
+        return FDIV;
+    }
+    if (str == "LAND") {
+        return LAND;
+    }
+    if (str == "LOR") {
+        return LOR;
+    }                                   
+    if (str == "LNOT") {                
+        return LNOT;                    
+    }                                   
+    if (str == "IMOV") {
+        return IMOV;                                         
+    }                                                        
+    if (str == "ILOAD") {                                    
+        return ILOAD;                                        
+    }                                                        
+    if (str == "FMOV") {
+        return FMOV;
+    }
+    if (str == "FLOAD") {
+        return FLOAD;
+    }
+    if (str == "ICMPEQ") {
+        return ICMPEQ;
+    }
+    if(str == "ICMPNE"){
+        return ICMPNE;
+    }
+    if(str == "ICMPBG"){
+        return ICMPBG;
+    }
+    if(str == "ICMPLS"){
+        return ICMPLS;
+    }
+    if(str == "ICMPBE"){
+        return ICMPBE;
+    }
+    if(str == "ICMPGE"){
+        return ICMPGE;
+    }
+    if(str == "FCMPEQ"){
+        return FCMPEQ;
+    }
+    if(str == "FCMPNE"){
+        return FCMPNE;
+    }
+    if(str == "FCMPBG"){
+        return FCMPBG;
+    }
+    if(str == "FCMPLS"){
+        return FCMPLS;
+    }
+    if(str == "FCMPBE"){
+        return FCMPBE;
+    }
+    if(str == "FCMPGE"){
+        return FCMPGE;
+    }
+}
+
 void add_args(std::vector<std::string> s, Command &com) {
+    // s -> "ISUB", "47", "92", "13"
+    // "ISUB" -> Operation.ISUB
+    //      Operation.ISUB -> количество специальных аргументов = SN, количество обычных аргументов = N, количество результатов = R
+    //      SN + N + R = s.size - 1
+    // Например, для ISUB
+    //      SN = 0, N = 2, R = 1
+    // SN != 0 - assert
     com.argsCount = s.size();
     com.args = new int[com.argsCount];
     for (int i = 0; i <  com.argsCount; i++) {
@@ -44,12 +138,10 @@ Bytecode* readBytecode(const char* name) {
         func_list[i].intRegsNumber = std::stoi(list[curr++].c_str());
         func_list[i].floatRegsNumber = std::stoi(list[curr++].c_str());
         func_list[i].commandsNumber = std::stoi(list[curr++].c_str());
-        curr += 4;
         Command *com = new Command[func_list[i].commandsNumber];
         for (int j = 0; j < func_list[i].commandsNumber; j++) {
             std::vector<std::string> s;
-            s = split(list[curr]);
-            curr++;
+            s = split(list[curr++]);
             add_args(s, com[j]);
         }
         func_list[i].commands = com;
