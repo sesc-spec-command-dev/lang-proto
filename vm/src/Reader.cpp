@@ -14,17 +14,17 @@ void add_args(std::vector<std::string> s, Command &com) {
 }
 
 std::vector<std::string> split(std::string str){
-	std::vector<std::string> vec;
-	int i,n;
-	n = 0;
-	for (i = 0; i <= str.length(); i++){
-		if (( i == str.length()) || (str[i] == ' ')){
-			vec.push_back(str.substr(n, i-n));
-			n = i + 1;
-		}
-	}
-	return vec;
-}	
+    std::vector<std::string> vec;
+    int i,n;
+    n = 0;
+    for (i = 0; i <= str.length(); i++){
+        if (( i == str.length()) || (str[i] == ' ')){
+            vec.push_back(str.substr(n, i-n));
+            n = i + 1;
+        }
+    }
+    return vec;
+}    
 
 Bytecode* readBytecode(const char* name) {
     std::string line;
@@ -55,5 +55,5 @@ Bytecode* readBytecode(const char* name) {
         func_list[i].commands = com;
     }
     bytecode->functions = func_list;
-	return bytecode;
+    return bytecode;
 }
