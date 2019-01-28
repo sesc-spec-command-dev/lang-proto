@@ -22,8 +22,8 @@ public class Lexer {
                 i += sToken.length()-1;
 
                 MyPair<Token.Kind, Object> pair = identify(sToken);
-                Token.Kind kind = pair.getElement0();
-                Object value = pair.getElement1();
+                Token.Kind kind = pair.K;
+                Object value = pair.V;
 
                 if (kind == null) {
                     throw new LexerException("Can't identify token", new Position(row, column));

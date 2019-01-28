@@ -30,6 +30,10 @@ public class Reader {
         return fileContent;
     }
 
+    public static void main(String[] args) {
+        for (Token x : getTokens()) System.out.println(x);
+    }
+
     public static Token[] getTokens() throws IOException {
         Token[] tokens = Lexer.makeTokens(readFile("input.txt"));
 
