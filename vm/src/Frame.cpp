@@ -18,125 +18,73 @@ void Frame::execute()
 { 
     while (function -> commands[programCounter].operation != RET) { 
         switch (function->commands[programCounter].operation) { 
-            case IADD: _IADD(); 
-            break; 
-            
-            case ISUB: _ISUB(); 
-            break; 
-            
-            case IMUL: _IMUL(); 
-            break; 
-            
-            case IDIV: _IDIV(); 
-            break; 
-            
-            case IMOD: _IMOD(); 
-            break; 
-            
-            case FADD: _FADD(); 
-            break; 
-            
-            case FSUB: _FSUB(); 
-            break; 
-            
-            case FMUL: _FMUL(); 
-            break; 
-            
-            case FDIV: _FDIV(); 
-            break; 
-            
-            case LAND: _LAND();
-            break; 
-            
-            case LOR: _LOR();
-            break; 
-            
-            case LNOT:_LNOT();
-            break; 
-            
-            case IMOV:_IMOVE();
-            break; 
-            
-            case FMOV: _FMOVE();
-            break; 
-            
-            case ILOAD: _ILOAD(); 
-            break; 
-            
-            case FLOAD: _FLOAD(); 
-            break; 
-            
-            case ICMPEQ: _ICMPEQ(); 
-            break; 
-            
-            case ICMPNE: _ICMPNE(); 
-            break; 
-            
-            case ICMPBG: _ICMPBG(); 
-            break; 
-            
-            case ICMPLS: _ICMPLS(); 
-            break; 
-            
-            case ICMPBE: _ICMPBE(); 
-            break; 
-            
-            case ICMPGE: _ICMPGE(); 
-            break; 
-            
-            case FCMPEQ: _FCMPEQ(); 
-            break; 
-            
-            case FCMPNE: _FCMPNE(); 
-            break; 
-            
-            case FCMPBG: _FCMPBG(); 
-            break; 
-            
-            case FCMPLS: _FCMPLS(); 
-            break; 
-            
-            case FCMPBE: _FCMPBE(); 
-            break; 
-            
-            case FCMPGE: _FCMPGE(); 
-            break; 
-            
-            case GOTO: _GOTO(); 
-            break; 
-            
-            case IF: _IF(); 
-            break; 
-            
-            case RET: break;
-            break;
-            
-            case WRITE_INT: _WRITE_INT(); 
-            break; 
-            
-            case WRITE_FLOAT: _WRITE_FLOAT(); 
-            break; 
-            
-            case READ_INT: _READ_INT(); 
-            break; 
-            
-            case READ_FLOAT: _READ_FLOAT(); 
-            break; 
-            
-            case ICALL: _ICALL(); 
-            break; 
+            case IADD:	_IADD();  break; 
+            case ISUB:	_ISUB();  break; 
+            case IMUL:	_IMUL();  break; 
+            case IDIV:	_IDIV();  break; 
+            case IMOD:	_IMOD();  break; 
+            case FADD:	_FADD();  break; 
+            case FSUB:	_FSUB();  break;
+            case FMUL:	_FMUL();  break; 
+            case FDIV:	_FDIV();  break;
+            case LAND:	_LAND();  break; 
+            case LOR:	_LOR();   break; 
+            case LNOT:	_LNOT();  break; 
+            case IMOV:	_IMOVE(); break; 
+            case FMOV:	_FMOVE(); break; 
+            case ILOAD: _ILOAD(); break; 
+            case FLOAD: _FLOAD(); break; 
+            case ICMPEQ: _ICMPEQ(); break; 
+            case ICMPNE: _ICMPNE(); break; 
+            case ICMPBG: _ICMPBG(); break; 
+            case ICMPLS: _ICMPLS(); break; 
+            case ICMPBE: _ICMPBE(); break; 
+            case ICMPGE: _ICMPGE(); break; 
+            case FCMPEQ: _FCMPEQ(); break;
+            case FCMPNE: _FCMPNE(); break; 
+            case FCMPBG: _FCMPBG(); break; 
+            case FCMPLS: _FCMPLS(); break; 
+            case FCMPBE: _FCMPBE(); break; 
+            case FCMPGE: _FCMPGE(); break; 
+            case GOTO: _GOTO();   break; 
+            case IF: _IF();       break; 
+            case RET: break;      break;
+            case ICALL: _ICALL(); break;
+            case WRITE_INT: _WRITE_INT();     break;
+            case WRITE_FLOAT: _WRITE_FLOAT(); break; 
+            case READ_INT: _READ_INT();		  break;
+            case READ_FLOAT: _READ_FLOAT();	  break;
+             
             } 
-        
         programCounter++; 
 
-        if (programCounter == this->function->commandsNumber) throw exception("No ret func"); 
+        if (programCounter == this->function->commandsNumber) {
+            throw exception("No ret func");
+            break;
+        }
     
 }
 }
-
-void Frame::_ICALL(){
-    Command *command = &function->commands[programCounter]; 
-    BYTECODE -> findFunction(command);
+Function findFunction(Command *command) {
+	Function f;
+	f.name = NULL;
+	for (int i = 0; i < _BYTECODE->functionsNumber; ++i) {
+		if (_BYTECODE->functions[i].name == command->funcName) {
+			return _BYTECODE->functions[i];
+		}
+	}
+	return f;
+}
+void Frame::_ICALL() {
+	Command *command = &function->commands[programCounter];
+	Function func = (findFunction(command));
+	if (func.name == NULL)	
+	{
+		throw exception("Can't find that func"); 
+		return;
+	}
+    Frame nextFrame(func);
+    nextFrame.execute();
 }
 
 

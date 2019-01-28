@@ -60,21 +60,21 @@ int main(int argc, char** argv) {
     bytecode->functionsNumber = 2;
     
     
-    BYTECODE = bytecode;
+    _BYTECODE = bytecode;
     ips();
     system("pause");
     return 0;
 }
 
 void ips(){
-    for(int i = 0 ; i < BYTECODE -> functionsNumber; ++i){
+    for(int i = 0 ; i < _BYTECODE -> functionsNumber; ++i){
 
         cout << i << endl;
 
-        if(!strcmp("main",BYTECODE -> functions[i].name)) {
+        if(!strcmp("main",_BYTECODE -> functions[i].name)) {
 
             cout << "main" << endl;
-            Frame firstFrame(BYTECODE -> functions[i]);
+            Frame firstFrame(_BYTECODE -> functions[i]);
             firstFrame.execute();
             break;
 

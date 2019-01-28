@@ -2,8 +2,8 @@
 
 #include "main.h"
 
-Bytecode *BYTECODE;	
-
+static Bytecode *_BYTECODE;	
+Function findFunction(Command *command);
 class Frame{
     private:
         int programCounter;

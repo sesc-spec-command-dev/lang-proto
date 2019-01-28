@@ -1,6 +1,8 @@
 
 #pragma once
 #include "main.h"
+
+
 enum Operation{
     IADD, 
     ISUB, 
@@ -70,7 +72,6 @@ struct Function {
 struct Bytecode {
     int functionsNumber;
     Function* functions;
-    public: 
-        void findFunction(Command *command);
+    
 };
 
