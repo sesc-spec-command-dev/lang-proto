@@ -60,6 +60,9 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 				Operator theOp = (Operator) theToken;
 				
 				switch(theOp.operator) {
+				    case ASSIGN:
+						getOper(theOp, -1);
+						break;
 					case AND:
 					case OR:
 					case NOT:

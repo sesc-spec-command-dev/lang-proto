@@ -7,12 +7,14 @@ import front.Token.KeyWord;
 import front.Token.Kind;
 import front.Token.Operator;
 import front.Token.Operators;
+import front.Token.StrLiteral;
 import ir.Expression;
 import ir.Function;
 import ir.Function.Parameter;
 import ir.Operator.If;
 import ir.Operator.Return;
 import ir.Operator.SimpleExpression;
+import ir.Operator.Variable;
 import ir.Operator.While;
 import ir.Type;
 
@@ -44,6 +46,7 @@ public class Parser {
 			bodyList = parserOp(bodyList);
 			body = bodyList.toArray(new ir.Operator[bodyList.size()]);
 			FunctionOtputList.add(new Function(returnType, name, parameters, body));			//add new function in the function list
+			bodyList.clear();																	//clear body list
 		}
 	}
 		
@@ -97,9 +100,18 @@ public class Parser {
 					break;
 					
 				case RETURN:
-					condition = getExpression(false, null); 
+					KeyWord returnMarker = new KeyWord(null, null);		//in RETURN we may have expression consists of one word/number
+					condition = getExpression(false, returnMarker); 
 					Return ret = new Return(condition);
 					operatorList.add(ret);								//add new parameter in the function parameter list
+					break;
+					
+				case INT:												//variable declaration
+					operatorList.add(getVariable(Type.INT));
+					break;
+					
+				case FLOAT:												//variable declaration
+					operatorList.add(getVariable(Type.FLOAT));          
 					break;
 					
 				default:
@@ -125,11 +137,47 @@ public class Parser {
 		return parserOp(operatorList);		
 	}
 	
+	private static Variable getVariable(Type theType) {
+		Token theToken = getIterToken();
+		String name;
+		
+		if(theToken.getKind() == Kind.IDENT) {
+			Ident strIdent = (Ident) theToken;
+			
+			name = strIdent.word;
+			theToken = getIterToken();
+			
+			if(theToken.getKind() == Kind.OPERATOR) {
+				Operator theOp = (Operator) theToken;
+				
+				if(theOp.operator != Operators.SEMICOLON) {
+					throw new ParserException("Incorrect operator, should be ';'", theToken.position);
+				}
+			}
+			else {
+				throw new ParserException("Complete ';' after variable declaration", theToken.position);
+			}
+		}
+		else {
+			throw new ParserException("Incorrect variable name", theToken.position);
+		}	
+		return new Variable(theType, name);
+	}
+	
 	private static Expression getExpression(boolean inCondition, Token firstToken) {
 		ArrayList<Token> tokenList = new ArrayList<>();
-		if(firstToken != null) {
-			tokenList.add(firstToken);		
+		boolean isReturnExpr = false;
+		
+		if (firstToken != null) {
+			if (firstToken.getKind() == Kind.KEYWORD) {					//it is return marker
+				isReturnExpr = true;
+			}
+			else {
+				tokenList.add(firstToken);
+			}
 		}
+		
+		int parenthesisNumber = 0;
 		
 		while (true) {
 			Token theToken = getIterToken();
@@ -137,8 +185,17 @@ public class Parser {
 			if (theToken.getKind() == Kind.OPERATOR) {
 				Operator theOp = (Operator) theToken;
 				
+				if (theOp.operator == Operators.OPEN_PARENTHESIS) {
+					parenthesisNumber++;									//we have new OPEN_PARENTHESIS in expression
+				}
 				if(inCondition) {//if expression situate in condition
-					if (theOp.operator == Operators.CLOSE_PARENTHESIS) {break;}
+					if (theOp.operator == Operators.CLOSE_PARENTHESIS) {
+						
+						if(parenthesisNumber > 0) {
+							parenthesisNumber--;							//if it is close CLOSE_PARENTHESIS in expression
+						}
+						else {break;}										////if it is close CLOSE_PARENTHESIS, completes condition 
+					}
 				}
 				else {//if expression situate in operator body
 					if (theOp.operator == Operators.SEMICOLON) {break;}
@@ -152,7 +209,7 @@ public class Parser {
 			tokenList.add(theToken);
 		}
 		Token[] exprArr = tokenList.toArray(new Token[tokenList.size()]);
-		Expression retExpr = AbstractSintaxTree.buildAST(exprArr);
+		Expression retExpr = AbstractSintaxTree.buildAST(exprArr, isReturnExpr);
 		return retExpr;
 	}
 
@@ -160,13 +217,26 @@ public class Parser {
 		ArrayList<Parameter> parameterList = new ArrayList<>();
 		Parameter theParam;
 		Bool haveOperators = new Bool(true);			//link
-
-		while(haveOperators.booleanVal) {
-			theParam = readParameter(haveOperators);
-			parameterList.add(theParam);
+		
+		Token theToken = getIterToken();				//get Token only to show
+		
+		if (theToken.getKind() == Kind.OPERATOR) {
+			Operator theOp = (Operator) theToken;
+			
+			if (theOp.operator == Operators.CLOSE_PARENTHESIS) {// condition on empty parameter list
+				return null;									//empty parameter list
+			}
+			throw new ParserException("incorrect operator in parameter list body",theToken.position);
 		}
-		Parameter[] returnArr = parameterList.toArray(new Parameter[parameterList.size()]);
-		return returnArr;
+		else {
+			iteration--;
+			while (haveOperators.booleanVal) {
+				theParam = readParameter(haveOperators);
+				parameterList.add(theParam);
+			}
+			Parameter[] returnArr = parameterList.toArray(new Parameter[parameterList.size()]);
+			return returnArr;
+		}
 	}
 
 	private static Parameter readParameter(Bool haveOp) {					//read parameter function, parameter - link on boolean object

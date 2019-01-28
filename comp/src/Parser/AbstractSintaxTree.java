@@ -45,7 +45,7 @@ public class AbstractSintaxTree {
 		}
 	}
 	
-	static Expression buildAST(Token[] inputTokenArr) {	
+	static Expression buildAST(Token[] inputTokenArr, boolean isReturnExpr) {	
 		
 		InToPost converter = new InToPost(inputTokenArr);
 		ArrayList<Token> tokenList = converter.doTrans(inputTokenArr);
@@ -70,7 +70,7 @@ public class AbstractSintaxTree {
 			}
 		}
 		
-		if(theStack.size() > 1 || !(theStack.peek(theStack.topInd) instanceof Operation)) {
+		if(theStack.size() > 1 || (!(theStack.peek(theStack.topInd) instanceof Operation) && isReturnExpr != true)) {
 			throw new ParserException("Invalid expression", inputTokenArr[theStack.topInd].position);			//the tree do not build correctly
 		}
 		return theStack.pop();
