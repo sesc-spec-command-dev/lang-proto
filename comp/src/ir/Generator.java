@@ -6,57 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Generator{
-
-    public static void main(String [] args) {
-        Position position = new Position(0, 0);
-
-
-        Token literal42 = Token.make(Token.Kind.INT_LITERAL, position, 42);
-        Expression returnValue_1 = new Expression.Operand(literal42);
-
-        Token literal37 = Token.make(Token.Kind.INT_LITERAL, position, 37);
-        Expression returnValue_2 = new Expression.Operand(literal37);
-
-        Token literal3 = Token.make(Token.Kind.INT_LITERAL, position, 3);
-        Expression returnValue_3 = new Expression.Operand(literal3);
-
-        Token literal5 = Token.make(Token.Kind.INT_LITERAL, position, 5);
-        Expression returnValue_4 = new Expression.Operand(literal5);
-
-        Token literal7 = Token.make(Token.Kind.INT_LITERAL, position, 7);
-        Expression returnValue_5 = new Expression.Operand(literal7);
-
-
-
-        Token modOp = Token.make(Token.Kind.OPERATOR, position, Token.Operators.MOD);
-        Expression mod = new Expression.Operation((Token.Operator)modOp, returnValue_5, returnValue_1 ); // 7 mod Expression div
-
-        Token addOp = Token.make(Token.Kind.OPERATOR, position, Token.Operators.ADD);
-        Expression add = new Expression.Operation((Token.Operator)addOp, returnValue_1, returnValue_2); //
-
-        Token mulOp = Token.make(Token.Kind.OPERATOR, position, Token.Operators.MUL);
-        Expression mul = new Expression.Operation((Token.Operator)mulOp, returnValue_1, returnValue_2); // 42 - 37
-
-        Token divOp = Token.make(Token.Kind.OPERATOR, position, Token.Operators.DIV);
-        Expression div = new Expression.Operation((Token.Operator)divOp, returnValue_4, returnValue_3); // 5/3
-
-
-
-        Operator[] body = new Operator[2];
-        body[0] = new Operator.Return(mul); // return 42 - 37
-        body[1] = new Operator.Return(div); // return 5/3
-
-        Function.Parameter[] parameters = new Function.Parameter[0];
-
-
-        Function[] functions = new Function[1];
-        functions[0] = new Function(Type.INT, "main", parameters, body);
-        IR ir = new IR(functions);
-
-        generateCode(ir, "a.txt");
-        
-    }
-
     private static void println(String line) { System.out.println(line);}
 
     private static void println(int x) {println(String.valueOf(x)); }
