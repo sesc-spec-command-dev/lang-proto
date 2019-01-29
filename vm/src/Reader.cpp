@@ -90,6 +90,37 @@ Operation operationByName(std::string str) {
     if(str == "FCMPGE"){
         return FCMPGE;
     }
+	if (str == "GOTO"){
+		return GOTO;
+	}
+	if(str == "IF") {
+		return IF;
+	}
+	if(str == "FRET") {
+		return FRET;
+	}
+	if(str == "IRET") {
+		return IRET;
+	}
+	if(str == "WRITE_INT") {
+		return WRITE_INT;
+	}
+	if(str == "WRITE_FLOAT") {
+		return WRITE_FLOAT;
+	}
+	if(str == "READ_INT") {
+		return READ_INT;
+	}
+	if(str == "READ_FLOAT") {
+		return READ_FLOAT;
+	}
+	if(str == "ICALL") {
+		return ICALL;
+	}
+	if(str == "FCALL") {
+		return FCALL;
+	}
+
 }
 
 void add_args(std::vector<std::string> s, Command &com) {
@@ -100,11 +131,26 @@ void add_args(std::vector<std::string> s, Command &com) {
     // Например, для ISUB
     //      SN = 0, N = 2, R = 1
     // SN != 0 - assert
-    com.argsCount = s.size();
+	com.operation = operationByName(s[0]);
+	int sn = 0;
+	int n = 0;
+	int r = 0;
+	if ((com.operation >= 14 && com.operation < 16) || (com.operation >= 28 && com.operation < 30) || (com.operation >= 32 && com.operation < 38)) {
+		SN = 1;
+	}
+
+	if ((com.operation < 12) ||(com.operation >= 16 && com.operation < 28)) {
+		n = 2;
+		r = 1;
+	}
+	com.argsCount = n;
     com.args = new int[com.argsCount];
-    for (int i = 0; i <  com.argsCount; i++) {
+    for (int i = 0; i < n; i++) {
         com.args[i] = std::stoi(s[i + 1]);
     }
+	if (r == 1) {
+		com.result = std::stoi(s[s.size() - 1]);
+	}
 }
 
 std::vector<std::string> split(std::string str){
