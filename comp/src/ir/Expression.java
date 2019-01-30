@@ -1,8 +1,10 @@
 package ir;
 
+import front.Position;
 import front.Token;
 
 public abstract class Expression {
+	public abstract Position position();
 
     public static class Operand extends Expression {
         public final Token value;
@@ -10,6 +12,11 @@ public abstract class Expression {
         public Operand(Token value) {
             this.value = value;
         }
+        
+		@Override
+		public Position position() {
+			return value.position;
+		}
     }
 
     public static class Operation extends Expression {			
@@ -22,6 +29,12 @@ public abstract class Expression {
             this.left = left;
             this.right = right;
         }
+        
+		@Override
+		public Position position() {
+			return operation.position;
+		}
+
     }
 
 }

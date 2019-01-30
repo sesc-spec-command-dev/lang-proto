@@ -1,5 +1,7 @@
 package front;
 
+import Parser.ParserException;
+
 public abstract class Token {
 
     public static Token make(Kind kind, Position position, Object value) {
@@ -160,8 +162,35 @@ public abstract class Token {
         SEMICOLON(";"), // ;
         COMMA(","); // ,
 
-        public final String value; //? public final
-
+        public final String value;
+      
+        //? int priority(), with check of correct operator
+        public int priority(Operator op) {
+        	switch(op.operator.value) {
+        		case "=":
+        			return -1;
+        		case "&&":
+        		case "||":
+        		case "!":
+        			return 0;
+        		case "==":
+        		case "!=":
+        		case ">=":
+        		case "<=":
+        		case ">":
+        		case "<":
+        			return 1;
+        		case "+":
+        		case "-":
+        			return 2;
+        		case "*":
+        		case "/":
+        			return 3;
+        		default:
+        			throw new ParserException("Incorrect operation in expression", op.position);
+        	}
+        }
+        
         Operators(String value) {
             this.value = value;
         }

@@ -1,5 +1,5 @@
 package Parser;
-import java.util.ArrayList; 
+import java.util.ArrayList;  
 
 import front.Token;
 import front.Token.Kind;
@@ -7,100 +7,44 @@ import front.Token.Operator;
 import front.Token.Operators;
 
 public class InToPost {				//make postfix entry(include throwing an exception if we have incorrect token/operator)
-	private static Stack theStack;
-	private static ArrayList<Token> output;
-	private static Token[] inputTokenArr;
+	ArrayList<Token> output;
+	Token[] inputTokenArr;
+	java.util.Stack<Token> theStack;
 	
 	public InToPost(Token[] input) {
 		inputTokenArr = input;
-		theStack = new Stack(inputTokenArr.length);
+		theStack = new java.util.Stack<>();
 		output = new ArrayList<>();
 	}
 	
-	public static class Stack {
-		Token[] stackArray;
-		int topInd;
-		int maxSize;
+	ArrayList<Token> doTrans(Token[] inputTokenArr) { 
 		
-		public Stack(int maxS) {
-			maxSize = maxS;
-			stackArray = new Token[maxS];
-			topInd = -1;
-		}
-		public void push(Token pushE) {
-			topInd++;
-			stackArray[topInd] = pushE;
-		}
-		public Token pop() {
-			Token returnVal = stackArray[topInd];
-			topInd--;
-			return returnVal;
-		}
-		public Token peek(int ind) {
-			return stackArray[ind]; 
-		}
-		public int size() {
-			return topInd + 1;
-		}
-		public boolean isEmpty() {
-			boolean b = false;
-			if(topInd == -1) {
-				b = true;
-			}
-			return b;
-		}
-	}
-	
-	static ArrayList<Token> doTrans(Token[] inputTokenArr) {
-			 
 		for (int i = 0; i < inputTokenArr.length; i++) {
 			Token theToken = inputTokenArr[i];
 			
-			if(theToken.getKind() == Kind.OPERATOR) {
-				Operator theOp = (Operator) theToken;
+			switch(theToken.getKind()) { // replace to switch
+				case OPERATOR:
+					Operator theOp = (Operator) theToken;
 				
-				switch(theOp.operator) {
-				    case ASSIGN:
-						getOper(theOp, -1);
-						break;
-					case AND:
-					case OR:
-					case NOT:
-						getOper(theOp, 0);
-						break;
-					case EQ:
-					case NE:
-					case BG:
-					case LS:
-					case BGEQ:
-					case LSEQ:
-						getOper(theOp, 1);
-						break;
-					case ADD:
-					case SUB:
-						getOper(theOp, 2);				//getting of operators, priority - 1 ('+', '-')
-						break;
-					case MUL:
-					case DIV:
-						getOper(theOp, 3);				//getting of operators, priority - 2 ('*', '/')
-						break;
-					case OPEN_PARENTHESIS:
-						theStack.push(theOp);			//push in to the stack immediately ( '(' )
-						break;
-					case CLOSE_PARENTHESIS:
-						getParen();				//get all operators to ')' from stack
-						break;
-					default:
-						throw new ParserException("Incorrect operator", theOp.position);
-				}
-			}
-			else {
-				if(theToken.getKind() == Kind.IDENT || theToken.getKind() == Kind.INT_LITERAL || theToken.getKind() == Kind.FLOAT_LITERAL || theToken.getKind() == Kind.STR_LITERAL) {
+					switch(theOp.operator) {
+						case OPEN_PARENTHESIS:
+							theStack.push(theOp);			//push in to the stack immediately ( '(' )
+							break;
+						case CLOSE_PARENTHESIS:
+							getParen();				//get all operators to ')' from stack
+							break;
+						default:
+							getOper(theOp, theOp.operator.priority(theOp));	//other operations case
+					}
+					break;
+				case IDENT:
+				case INT_LITERAL:
+				case FLOAT_LITERAL:
+				case STR_LITERAL:
 					output.add(theToken);
-				}
-				else {
+					break;
+				default:
 					throw new ParserException("Incorrect token, has to be an ident/operator", theToken.position);	//we have incorrect token
-				}
 			}
 		}
 			
@@ -111,7 +55,7 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 		return output;
 	}
 		
-	private static void getParen() {			//was read ')'
+	private void getParen() {			//was read ')'
 		while(!theStack.isEmpty()) {				//while stack is not empty extract operators
 			Token theToken = theStack.pop();
 			Operator theOp = (Operator) theToken;
@@ -125,9 +69,9 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 		}
 	}
 		
-	private static void getOper(Operator pasteOp, int priority) {
+	private void getOper(Operator pasteOp, int priority) {
 			
-		while(!theStack.isEmpty()) {
+		while (!theStack.isEmpty()) {
 			Token theToken = theStack.pop();			//cut top operator
 			Operator opTop = (Operator) theToken;
 			
@@ -136,9 +80,9 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 				break;
 			}
 			else {
-				int opTopPriority = getPriority(opTop);
+				int opTopPriority = opTop.operator.priority(opTop);
 					
-				if(opTopPriority < priority) {		//new operator is more priority then top stack operator
+				if (opTopPriority < priority) {		//new operator is more priority then top stack operator
 					theStack.push(opTop);			//save old operator
 					break;
 				}
@@ -149,36 +93,4 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 		}
 		theStack.push(pasteOp);						//push new operator in the stack
 	}
-	
-	static int getPriority(Operator op) {
-		int priority = 0;
-		
-		switch(op.operator) {
-			case AND:
-			case OR:
-			case NOT:
-				priority = 0;
-				break;
-			case EQ:
-			case NE:
-			case BG:
-			case LS:
-			case BGEQ:
-			case LSEQ:
-				priority = 1;
-				break;
-			case ADD:
-			case SUB:
-				priority = 2;
-				break;
-			case MUL:
-			case DIV:
-				priority = 3;
-				break;
-			default:
-				////add more operators cases later
-			break;
-		}
-		return priority;
-	}	
 }

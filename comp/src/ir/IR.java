@@ -3,6 +3,7 @@ package ir;
 import ir.Operator.If;
 import ir.Operator.Return;
 import ir.Operator.SimpleExpression;
+import ir.Operator.Variable;
 import ir.Operator.While;
 
 public class IR {
@@ -12,7 +13,7 @@ public class IR {
         this.functions = functions;
     }
     
-    public void printFunctions() {
+    public void printFunctions() { //? PrintStream param - System.out
     	System.out.println("Function list:");
     	System.out.println("------------------------------------------");
     	for(int i = 0; i < functions.length; i++) {
@@ -99,6 +100,16 @@ public class IR {
     				printExpressionTree(expr.expression);
     				
     				System.out.println();
+    			}
+    			
+    			if (theOp instanceof Variable) {				//"Variable" case
+    				Variable variable = (Variable) theOp;
+    				
+    				System.out.println("Variable");
+    				printSpaces(spaceNumber + 7);
+    				System.out.println("Type - " + variable.type);
+    				printSpaces(spaceNumber + 7);
+    				System.out.println("Value - " + variable.name);
     			}
     		}	
     	}
