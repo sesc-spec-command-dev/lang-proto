@@ -70,6 +70,8 @@ struct Function {
 };
 
 struct Bytecode {
+
+
     int functionsNumber;
     Function* functions;
     

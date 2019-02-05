@@ -60,21 +60,22 @@ void Frame::execute()
 
         if (programCounter == this->function->commandsNumber) {
             throw exception("No ret func");
-            break;
         }
     
 }
 }
+
 Function findFunction(Command *command) {
 	Function f;
 	f.name = NULL;
 	for (int i = 0; i < _BYTECODE->functionsNumber; ++i) {
-		if (_BYTECODE->functions[i].name == command->funcName) {
+		if (!strcmp(_BYTECODE->functions[i].name,command->funcName)) {
 			return _BYTECODE->functions[i];
 		}
 	}
 	return f;
 }
+
 void Frame::_ICALL() {
 	Command *command = &function->commands[programCounter];
 	Function func = (findFunction(command));
@@ -84,6 +85,9 @@ void Frame::_ICALL() {
 		return;
 	}
     Frame nextFrame(func);
+	for (int i = 0; i < func.intRegsNumber; ++i) {
+		nextFrame.iRegs[i] = this->iRegs[i];
+	}
     nextFrame.execute();
 }
 

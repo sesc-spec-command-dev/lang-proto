@@ -2,7 +2,8 @@
 
 #include "main.h"
 
-static Bytecode *_BYTECODE;	
+extern Bytecode *_BYTECODE;
+
 Function findFunction(Command *command);
 class Frame{
     private:
