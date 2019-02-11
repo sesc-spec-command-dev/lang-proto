@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <vector>
+//#include <assert>
 
 Operation operationByName(std::string str) {
     if (str == "IADD") {
@@ -120,7 +121,89 @@ Operation operationByName(std::string str) {
 	if(str == "FCALL") {
 		return FCALL;
 	}
+	return FCALL;
+}
 
+int specialArgsCount(Operation op) {
+	switch (op) {
+	case ILOAD:
+	case FLOAD:
+	case WRITE_INT: 
+	case WRITE_FLOAT:
+	case READ_INT:
+	case READ_FLOAT:
+	case ICALL:
+	case FCALL:
+	case GOTO:
+	case IF:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
+int defaultArgsCount(Operation op) {
+	switch (op) {
+	case IADD:
+	case ISUB:
+	case IMUL:
+	case IDIV:
+	case IMOD:
+	case FADD:
+	case FSUB:
+	case FMUL:
+	case FDIV:
+	case LAND:
+	case LOR:
+	case LNOT:
+	case ICMPEQ:
+	case ICMPNE: 
+	case ICMPBG: 
+	case ICMPLS: 
+	case ICMPBE: 
+	case ICMPGE: 
+	case FCMPEQ: 
+	case FCMPNE: 
+	case FCMPBG: 
+	case FCMPLS: 
+	case FCMPBE: 
+	case FCMPGE:
+		return 2;
+	default:
+		return 0;
+	}
+}
+
+int resultCount(Operation op) {
+	switch (op) {
+	case IADD:
+	case ISUB:
+	case IMUL:
+	case IDIV:
+	case IMOD:
+	case FADD:
+	case FSUB:
+	case FMUL:
+	case FDIV:
+	case LAND:
+	case LOR:
+	case LNOT:
+	case ICMPEQ:
+	case ICMPNE:
+	case ICMPBG:
+	case ICMPLS:
+	case ICMPBE:
+	case ICMPGE:
+	case FCMPEQ:
+	case FCMPNE:
+	case FCMPBG:
+	case FCMPLS:
+	case FCMPBE:
+	case FCMPGE:
+		return 1;
+	default:
+		return 0;
+	}
 }
 
 void add_args(std::vector<std::string> s, Command &com) {
@@ -135,14 +218,11 @@ void add_args(std::vector<std::string> s, Command &com) {
 	int sn = 0;
 	int n = 0;
 	int r = 0;
-	if ((com.operation >= 14 && com.operation < 16) || (com.operation >= 28 && com.operation < 30) || (com.operation >= 32 && com.operation < 38)) {
-		SN = 1;
-	}
+	sn = specialArgsCount(com.operation);
+	//assert(SN == 1);
+	n = defaultArgsCount(com.operation);
+	r = resultCount(com.operation);
 
-	if ((com.operation < 12) ||(com.operation >= 16 && com.operation < 28)) {
-		n = 2;
-		r = 1;
-	}
 	com.argsCount = n;
     com.args = new int[com.argsCount];
     for (int i = 0; i < n; i++) {
@@ -157,7 +237,7 @@ std::vector<std::string> split(std::string str){
     std::vector<std::string> vec;
     int i,n;
     n = 0;
-    for (i = 0; i <= str.length(); i++){
+    for (i = 0; i <= (int)str.length(); i++){
         if (( i == str.length()) || (str[i] == ' ')){
             vec.push_back(str.substr(n, i-n));
             n = i + 1;
@@ -166,7 +246,7 @@ std::vector<std::string> split(std::string str){
     return vec;
 }    
 
-Bytecode* readBytecode(const char* name) {
+Bytecode* readBytecode(std::string name) {
     std::string line;
     std::vector<std::string> list;
     std::ifstream in(name);
@@ -194,4 +274,9 @@ Bytecode* readBytecode(const char* name) {
     }
     bytecode->functions = func_list;
     return bytecode;
+}
+int main() {
+	Bytecode B = *readBytecode("C:\\Users\\kadoc\\Desktop\\project\\Project1\\byte.txt");
+
+	return 0;
 }
