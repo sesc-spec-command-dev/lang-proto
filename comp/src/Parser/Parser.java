@@ -7,7 +7,6 @@ import front.Token.KeyWord;
 import front.Token.Kind;
 import front.Token.Operator;
 import front.Token.Operators;
-import front.Token.StrLiteral;
 import ir.Expression;
 import ir.Function;
 import ir.Function.Parameter;
@@ -17,6 +16,7 @@ import ir.Operator.SimpleExpression;
 import ir.Operator.Variable;
 import ir.Operator.While;
 import ir.Type;
+import front.Position;
 
 public class Parser {
 	static Token[] tokenArr;							//Token Array
@@ -178,9 +178,11 @@ public class Parser {
 		}
 		
 		int parenthesisNumber = 0;
-		
+		Position exceptionPos = null;
+
 		while (true) {
 			Token theToken = getIterToken();
+			exceptionPos = theToken.position;
 			
 			if (theToken.getKind() == Kind.OPERATOR) {
 				Operator theOp = (Operator) theToken;
@@ -188,13 +190,10 @@ public class Parser {
 				if (theOp.operator == Operators.OPEN_PARENTHESIS) {
 					parenthesisNumber++;									//we have new OPEN_PARENTHESIS in expression
 				}
-				if(inCondition) {//if expression situate in condition
-					if (theOp.operator == Operators.CLOSE_PARENTHESIS) {
-						
-						if(parenthesisNumber > 0) {
-							parenthesisNumber--;							//if it is close CLOSE_PARENTHESIS in expression
-						}
-						else {break;}										////if it is close CLOSE_PARENTHESIS, completes condition 
+				if (theOp.operator == Operators.CLOSE_PARENTHESIS) {
+					parenthesisNumber--;
+					if (inCondition) {//if expression situate in condition, number of ')' bigger then number of '(' on 1
+						if (parenthesisNumber < 0) {break;}
 					}
 				}
 				else {//if expression situate in operator body
@@ -208,6 +207,11 @@ public class Parser {
 			}
 			tokenList.add(theToken);
 		}
+
+		if (parenthesisNumber != 0 && !inCondition) {
+			throw new ParserException("invalide expression", exceptionPos);
+		}
+
 		Token[] exprArr = tokenList.toArray(new Token[tokenList.size()]);
 		Expression retExpr = AbstractSintaxTree.buildAST(exprArr, isReturnExpr);
 		return retExpr;
