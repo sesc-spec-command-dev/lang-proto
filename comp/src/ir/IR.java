@@ -13,39 +13,73 @@ import front.Token.Ident;
 import front.Token.IntLiteral;
 import front.Token.FloatLiteral;
 import front.Token.StrLiteral;
+
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Arrays;
 
 public class IR {
     public final Function[] functions;
-
+    static int irPrintCount = 21;
+	static PrintWriter pw;
     public IR(Function[] functions) {
         this.functions = functions;
     }
     
-    public void printFunctions() { //? PrintStream param - System.out
-    	System.out.println("Function list:");
-    	System.out.println("------------------------------------------");
+    private void printFunctions() { //? PrintStream param - System.out
+    	pw.println("Function list:");
+    	pw.println("------------------------------------------");
     	for(int i = 0; i < functions.length; i++) {
-    		System.out.println("Function" + i + ":");
+    		pw.println("Function" + i + ":");
     		printFunction(functions[i]);
     	}
     }
+
+    public void printIR(String message) throws FileNotFoundException {
+		String str = Integer.toString(irPrintCount);
+		/*
+		String[] outputStr = {"0", "0", "0"};
+		char[] arr = str.toCharArray();
+
+		for(int i = 0; i < arr.length; i++) {
+			outputStr[2 - i] = "";
+			outputStr[2 - i] += arr[arr.length - 1 - i];
+		}
+		String out = Arrays.toString(outputStr);*/
+
+		String str2;
+		if (irPrintCount < 10) {
+			str2 = "00" + str;
+		} else if (irPrintCount < 100) {
+			str2 = "0" + str;
+		} else {
+			str2 = str;
+		}
+
+		File irOutput = new File(str2 + "_" + message);
+
+		pw = new PrintWriter(irOutput);
+		printFunctions();
+		pw.close();
+	}
     
     private static void printFunction(Function func) {
-    	System.out.println(" -name" +" - " + func.name);
-    	System.out.println(" -return type" + " - " + func.returnType);
-    	System.out.println(" -parameter list:");
+    	pw.println(" -name" +" - " + func.name);
+    	pw.println(" -return type" + " - " + func.returnType);
+    	pw.println(" -parameter list:");
     	
     	if(func.parameters != null) {
     		for (int i = 0; i < func.parameters.length; i++) {
-    			System.out.println("  [" + i + "] - (" + "type - " + func.parameters[i].type + ";"+"name - "+func.parameters[i].name+")");
+    			pw.println("  [" + i + "] - (" + "type - " + func.parameters[i].type + ";"+"name - "+func.parameters[i].name+")");
     		}
     	}
     	else {
-    		System.out.println("	|empty|");
+    		pw.println("	|empty|");
     	}
     	
-    	System.out.println("-function body:");
+    	pw.println("-function body:");
     	printOperators(func.body, 1);
     }
     
@@ -58,87 +92,87 @@ public class IR {
 				for (int i = 0; i < opArr.length; i++) {
 					ir.Operator theOp = opArr[i];
 					printSpaces(spaceNumber);
-					System.out.print("[" + i + "] - ");             // printing index of the operator
+					pw.print("[" + i + "] - ");             // printing index of the operator
 
-					if (theOp instanceof If) {                         //"If case"
+					if (theOp instanceof If) {                         //"If" case
 						If theIf = (If) theOp;
 
-						System.out.println("If");
+						pw.println("If");
 						printSpaces(spaceNumber + 7);
-						System.out.print("condition - ");
+						pw.print("condition - ");
 						result = outputExpressionTree(theIf.condition);
 						printExpressionTree(result);
 
-						System.out.println();
+						pw.println();
 						printSpaces(spaceNumber + 7);
 
-						System.out.println("then part:");
+						pw.println("then part:");
 						printOperators(theIf.thenPart, spaceNumber + 8);
 
 						printSpaces(spaceNumber + 7);
-						System.out.println("else part:");
+						pw.println("else part:");
 						printOperators(theIf.elsePart, spaceNumber + 8);
 					}
 					if (theOp instanceof While) {                    //"while" case
 						While theWhile = (While) theOp;
 
-						System.out.println("While");
+						pw.println("While");
 						printSpaces(spaceNumber + 7);
-						System.out.print("condition - ");
+						pw.print("condition - ");
 						result = outputExpressionTree(theWhile.condition);
 						printExpressionTree(result);
 
-						System.out.println();
+						pw.println();
 						printSpaces(spaceNumber + 7);
 
-						System.out.println("body:");
+						pw.println("body:");
 						printOperators(theWhile.body, spaceNumber + 8);
 					}
 
 					if (theOp instanceof Return) {                    //"return" case
 						Return ret = (Return) theOp;
-						System.out.println("Return");
+						pw.println("Return");
 						printSpaces(spaceNumber + 7);
-						System.out.print("value - ");
+						pw.print("value - ");
 						result = outputExpressionTree(ret.value);
 						printExpressionTree(result);
 
-						System.out.println();
+						pw.println();
 					}
 
 					if (theOp instanceof SimpleExpression) {        //"SimpleExpression" case
 						SimpleExpression expr = (SimpleExpression) theOp;
 
-						System.out.println("SimpleExpression");
+						pw.println("SimpleExpression");
 						printSpaces(spaceNumber + 7);
-						System.out.print("expression - ");
+						pw.print("expression - ");
 						result = outputExpressionTree(expr.expression);
 						printExpressionTree(result);
 
-						System.out.println();
+						pw.println();
 					}
 
 					if (theOp instanceof Variable) {                //"Variable" case
 						Variable variable = (Variable) theOp;
 
-						System.out.println("Variable");
+						pw.println("Variable");
 						printSpaces(spaceNumber + 7);
-						System.out.println("Type - " + variable.type);
+						pw.println("Type - " + variable.type);
 						printSpaces(spaceNumber + 7);
-						System.out.println("Value - " + variable.name);
+						pw.println("Value - " + variable.name);
 					}
 				}
 			}
 			else {
 				printSpaces(spaceNumber);
-				System.out.println("	|empty|");
+				pw.println("	|empty|");
 			}
     	}
     }
 
     private static void printExpressionTree(Object[] result) {
 		for(int i = 0; i < result.length; i++) {
-			System.out.print(result[i]);
+			pw.print(result[i]);
 		}
 	}
 
@@ -151,20 +185,21 @@ public class IR {
 
 			if(theOper.left != null) {
 				Object[] temp = outputExpressionTree(theOper.left);
-
+				result.add("(");
 				for(int i = 0;  i < temp.length; i++) {
-					result.add(" " + temp[i]);
+					result.add(temp[i].toString());
 				}
 			}
 			str = getExprValue(expr);
-			result.add(str);
+			result.add(" " + str + " ");
 
 			if(theOper.right != null) {
 				Object[] temp = outputExpressionTree(theOper.right);
 
 				for(int i = 0; i < temp.length; i++) {
-					result.add(" " + temp[i]);
+					result.add(temp[i].toString());
 				}
+				result.add(")");
 			}
 		}
 		else {
@@ -207,7 +242,7 @@ public class IR {
     
     private static void printSpaces(int spaceNumber) {
     	for(int i = 0; i < spaceNumber; i++) {
-    		System.out.print(" ");
+    		pw.print(" ");
     	}
     }
 }

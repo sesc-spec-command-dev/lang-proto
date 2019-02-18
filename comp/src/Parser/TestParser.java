@@ -13,7 +13,7 @@ public class TestParser {
 		theParser.parserfunc();
 		Function[] funcArr = theParser.FunctionOtputList.toArray(new Function[theParser.FunctionOtputList.size()]);
 		IR ir = new IR(funcArr);
-		ir.printFunctions();
+		ir.printIR("first parsing");
 	}
 
 }
