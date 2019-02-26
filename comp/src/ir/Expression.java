@@ -21,8 +21,8 @@ public abstract class Expression {
 
     public static class Operation extends Expression {			
         public final Token.Operator operation;
-        public final Expression left;							
-        public final Expression right;							
+        public Expression left;
+        public Expression right;
 
         public Operation(Token.Operator operation, Expression left, Expression right) {
             this.operation = operation;
