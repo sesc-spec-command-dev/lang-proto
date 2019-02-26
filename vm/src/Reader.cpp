@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <iostream>
 #include <vector>
-//#include <assert>
 
 Operation operationByName(std::string str) {
     if (str == "IADD") {
@@ -127,16 +126,17 @@ Operation operationByName(std::string str) {
 int specialArgsCount(Operation op) {
 	switch (op) {
 	case ILOAD:
-	case FLOAD:
 	case WRITE_INT: 
-	case WRITE_FLOAT:
-	case READ_INT:
-	case READ_FLOAT:
-	case ICALL:
+    case READ_INT:
+    case ICALL:
+    case GOTO:
+    case IF:
+        return 1;
+    case FLOAD:
+    case WRITE_FLOAT:
+    case READ_FLOAT:
 	case FCALL:
-	case GOTO:
-	case IF:
-		return 1;
+        return 2;
 	default:
 		return 0;
 	}
@@ -169,6 +169,9 @@ int defaultArgsCount(Operation op) {
 	case FCMPBE: 
 	case FCMPGE:
 		return 2;
+    case FMOV:
+    case IMOV:
+        return 1;
 	default:
 		return 0;
 	}
@@ -207,13 +210,6 @@ int resultCount(Operation op) {
 }
 
 void add_args(std::vector<std::string> s, Command &com) {
-    // s -> "ISUB", "47", "92", "13"
-    // "ISUB" -> Operation.ISUB
-    //      Operation.ISUB -> количество специальных аргументов = SN, количество обычных аргументов = N, количество результатов = R
-    //      SN + N + R = s.size - 1
-    // Например, для ISUB
-    //      SN = 0, N = 2, R = 1
-    // SN != 0 - assert
 	com.operation = operationByName(s[0]);
 	int sn = 0;
 	int n = 0;
@@ -231,6 +227,12 @@ void add_args(std::vector<std::string> s, Command &com) {
 	if (r == 1) {
 		com.result = std::stoi(s[s.size() - 1]);
 	}
+    if (sn == 1) {
+        com.intConst = std::stoi(s[s.size() - 1]);
+    }
+    if (sn == 2) {
+        com.floatConst = std::stof(s[s.size() - 1]);
+    }
 }
 
 std::vector<std::string> split(std::string str){
@@ -276,7 +278,7 @@ Bytecode* readBytecode(std::string name) {
     return bytecode;
 }
 int main() {
-	Bytecode B = *readBytecode("C:\\Users\\kadoc\\Desktop\\project\\Project1\\byte.txt");
+	Bytecode B = *readBytecode("C:\\Users\\SSYP\\Desktop\\10-2-\\byte.txt");
 
 	return 0;
 }

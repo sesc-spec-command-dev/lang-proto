@@ -1,0 +1,11 @@
+1
+fibonacci
+5
+0
+6
+ILOAD 1 1
+ICMPEQ 0 1 2
+ILOAD 2 3
+ICMPEQ 0 3 4
+LOR 2 4 2
+ILOAD 1 0
