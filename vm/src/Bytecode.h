@@ -44,7 +44,9 @@ enum Operation{
     READ_INT, 
     READ_FLOAT, 
     ICALL, 
-    FCALL 
+    FCALL,
+
+	NEW 
 };
 
 struct Command {
@@ -70,10 +72,23 @@ struct Function {
 };
 
 struct Bytecode {
-
-
     int functionsNumber;
     Function* functions;
-    
 };
 
+
+
+struct Field {
+	const char *name;
+	const char *className;
+	const char *type;
+	int offset;
+};
+
+struct Class {
+	const char *name;
+	int fieldsCounter;
+	Field *fields;
+};
+// У объекта есть начало свое
+// 

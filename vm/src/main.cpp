@@ -4,60 +4,60 @@ using namespace std;
 void ips();
 
 Bytecode *_BYTECODE;
+Bytecode *test() {
+	Bytecode *bytecode = new Bytecode;
+	Function *functions = new Function[2];
+	Command *c1 = new Command[3];
+	Command *c2 = new Command[4];
 
-int main(int argc, char** argv) {
-    
-    Bytecode *bytecode = new Bytecode;
-    Function *functions = new Function[2];
-    Command *c1 = new Command[3];
-    Command *c2 = new Command[4];
-    
-    c1[0].operation = IADD;
+	c1[0].operation = IADD;
 	c1[0].argsCount = 2;
-    c1[0].args = new int[2];
-    c1[0].args[0] = 0;		
-    c1[0].args[1] = 1;
-    c1[0].result = 0;
-    
-    c1[1].operation = WRITE_INT;
-    c1[1].args = new int[1];
-    c1[1].args[0] = 0;
+	c1[0].args = new int[2];
+	c1[0].args[0] = 0;
+	c1[0].args[1] = 1;
+	c1[0].result = 0;
 
-    c1[2].operation = RET;
-    
-    functions[1].name = "lol";
-    functions[1].commands = c1;
-    functions[1].commandsNumber = 3;
-    functions[1].intRegsNumber = 2;
-    functions[1].floatRegsNumber = 0;
-    
-    c2[0].operation = READ_INT;
-    c2[0].result = 0;
+	c1[1].operation = WRITE_INT;
+	c1[1].args = new int[1];
+	c1[1].args[0] = 0;
 
-    c2[1].operation = READ_INT;
-    c2[1].result = 1;
+	c1[2].operation = RET;
 
-    c2[2].operation = ICALL;
-    c2[2].argsCount = 2;
-    c2[2].args = new int[2];
-    c2[2].args[0] = 0;
-    c2[2].args[1] = 1;
-    c2[2].funcName = "lol";
+	functions[1].name = "lol";
+	functions[1].commands = c1;
+	functions[1].commandsNumber = 3;
+	functions[1].intRegsNumber = 2;
+	functions[1].floatRegsNumber = 0;
 
-    c2[3].operation = RET;
+	c2[0].operation = READ_INT;
+	c2[0].result = 0;
 
-    functions[0].name = "main";
-    functions[0].commands = c2;
-    functions[0].intRegsNumber = 2;
-    functions[0].floatRegsNumber = 0;
-    functions[0].commandsNumber = 4; 
-    
+	c2[1].operation = READ_INT;
+	c2[1].result = 1;
 
-    bytecode->functions = functions;
-    bytecode->functionsNumber = 2;
-    
-    
-    _BYTECODE = bytecode;
+	c2[2].operation = ICALL;
+	c2[2].argsCount = 2;
+	c2[2].args = new int[2];
+	c2[2].args[0] = 0;
+	c2[2].args[1] = 1;
+	c2[2].funcName = "lol";
+
+	c2[3].operation = RET;
+
+	functions[0].name = "main";
+	functions[0].commands = c2;
+	functions[0].intRegsNumber = 2;
+	functions[0].floatRegsNumber = 0;
+	functions[0].commandsNumber = 4;
+
+
+	bytecode->functions = functions;
+	bytecode->functionsNumber = 2;
+	return bytecode;
+}
+
+int main(int argc, char** argv) {    
+    _BYTECODE = test();
     ips();
     system("pause");
     return 0;
