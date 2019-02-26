@@ -10,6 +10,7 @@ class Frame{
         int programCounter;
         Function *function;
     public:
+		int *pRegs;
         int *iRegs;
         float *fRegs;
         Frame(Function &function);
@@ -63,4 +64,10 @@ class Frame{
     void _READ_FLOAT(); 
     
     void _ICALL();
+
+	void _NEW();
+	void _DOT();
+	void _SETFIELD();
+	void _GETFIELD();
+
 };

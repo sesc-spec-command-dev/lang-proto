@@ -7,7 +7,7 @@ Frame::Frame(Function &function){
     this->function = &function;
     this->iRegs = new int[function.intRegsNumber];
     this->fRegs = new float[function.floatRegsNumber];
-    
+	this->pRegs = new int[function.pointersNumber];
 }
 
 Frame::~Frame(){
@@ -89,6 +89,24 @@ void Frame::_ICALL() {
 		nextFrame.iRegs[i] = this->iRegs[i];
 	}
     nextFrame.execute();
+}
+
+void Frame::_NEW()
+{
+
+}
+
+void Frame::_DOT()
+{
+
+}
+
+void Frame::_SETFIELD()
+{
+}
+
+void Frame::_GETFIELD()
+{
 }
 
 

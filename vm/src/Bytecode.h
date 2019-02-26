@@ -46,7 +46,10 @@ enum Operation{
     ICALL, 
     FCALL,
 
-	NEW 
+	NEW,
+	DOT,
+	GETFIELD,
+	SETFIELD
 };
 
 struct Command {
@@ -65,18 +68,12 @@ struct Command {
 
 struct Function {
     const char* name;
+	int pointersNumber;
     int intRegsNumber;
     int floatRegsNumber;
     int commandsNumber;
     Command* commands;
 };
-
-struct Bytecode {
-    int functionsNumber;
-    Function* functions;
-};
-
-
 
 struct Field {
 	const char *name;
@@ -90,5 +87,10 @@ struct Class {
 	int fieldsCounter;
 	Field *fields;
 };
-// У объекта есть начало свое
-// 
+
+struct Bytecode {
+	int functionsNumber;
+	Function* functions;
+	int classNumber;
+	Class *classes;
+};
