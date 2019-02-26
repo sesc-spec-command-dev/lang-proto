@@ -54,6 +54,10 @@ void Frame::execute()
             case WRITE_FLOAT: _WRITE_FLOAT(); break; 
             case READ_INT: _READ_INT();		  break;
             case READ_FLOAT: _READ_FLOAT();	  break;
+			case NEW: _NEW(); break;
+			case SETFIELD: _SETFIELD(); break;
+			case DOT: _DOT(); break;
+			case GETFIELD: _GETFIELD(); break;
              
             } 
         programCounter++; 
@@ -93,7 +97,15 @@ void Frame::_ICALL() {
 
 void Frame::_NEW()
 {
-
+	Command *command = &function->commands[programCounter];
+	Bytecode *bytecode = _BYTECODE;
+	int p;
+	for (int i = 0; i < bytecode->classNumber; i++) {
+		if (!strcmp(bytecode->classes[i].name, command->strConst)) {
+			p = (int)malloc(sizeof(int) * bytecode->classes[i].fieldsCounter);
+		}
+	}
+	pRegs[command->result] = p;
 }
 
 void Frame::_DOT()
@@ -103,10 +115,12 @@ void Frame::_DOT()
 
 void Frame::_SETFIELD()
 {
+
 }
 
 void Frame::_GETFIELD()
 {
+
 }
 
 
