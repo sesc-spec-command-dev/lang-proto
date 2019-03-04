@@ -295,8 +295,50 @@ Bytecode* readBytecode(std::string name) {
     bytecode->functions = func_list;
     return bytecode;
 }
-int main() {
-	Bytecode B = *readBytecode("C:\\Users\\kadoc\\Desktop\\project\\Project1\\byte.txt");
 
+void bytecode_writer(Bytecode* B) {
+	std::ofstream out("12byetcode.txt");
+	out << "BYTECODE:" << std::endl << "function count = " << B->functionsNumber << std::endl;
+	out << "FUNCTIONS:" << std::endl;
+
+	for (int i = 0; i < B->functionsNumber; i++) {
+		out << "########################"<<std::endl;
+		out << " " << B->functions[i].intRegsNumber << std::endl;
+		out << " " << B->functions[i].floatRegsNumber << std::endl;
+		out << " " << B->functions[i].commandsNumber << std::endl;
+		
+		for (int j = 0; j < B->functions[i].commandsNumber; j++) {
+			out << "$$$$$$$$$$$$$$$$$$$$$$" << std::endl;
+			out << " " << B->functions[i].commands[j].argsCount << "" << std::endl;
+
+			for (int k = 0; k < B->functions[i].commands[j].argsCount; k++) {
+				out << "???????????????????" << std::endl;
+				out << B->functions[i].commands[j].args[k] << std::endl;
+				out << "???????????????????" << std::endl;
+			}
+
+			out << "" << B->functions[i].commands[j].result << std::endl;
+			out << " " << B->functions[i].commands[j].intConst << std::endl;
+			out << " " << B->functions[i].commands[j].floatConst << std::endl;
+			out << " " << B->functions[i].commands[j].strConst << std::endl;
+			out << "$$$$$$$$$$$$$$$$$$$$$$" << std::endl;
+		}
+		out << "########################"<<std::endl;
+	}
+
+	out.close();
+}
+
+
+
+
+
+
+
+
+
+int main() {
+	Bytecode *B = readBytecode("C:\\Users\\kadoc\\Desktop\\project\\Project1\\byte.txt");
+	bytecode_writer(B);
 	return 0;
 }
