@@ -128,15 +128,18 @@ int specialArgsCount(Operation op) {
 	case ILOAD:
 	case WRITE_INT: 
     case READ_INT:
-    case ICALL:
     case GOTO:
     case IF:
         return 1;
     case FLOAD:
     case WRITE_FLOAT:
     case READ_FLOAT:
-	case FCALL:
         return 2;
+	case ICALL:
+	case FCALL:
+		return 3;
+	case WRITE_STR:
+		return 4;
 	default:
 		return 0;
 	}
@@ -191,6 +194,8 @@ int resultCount(Operation op) {
 	case LAND:
 	case LOR:
 	case LNOT:
+	case ICALL:
+	case FCALL:
 	case ICMPEQ:
 	case ICMPNE:
 	case ICMPBG:
@@ -233,6 +238,19 @@ void add_args(std::vector<std::string> s, Command &com) {
     if (sn == 2) {
         com.floatConst = std::stof(s[s.size() - 1]);
     }
+	if (sn == 4) {
+		com.strConst = s[s.size() - 1];
+	}
+	if (sn == 3) {
+		com.strConst = s[1];
+		com.argsCount = s.size() - 3;
+		delete[] com.args;
+		com.args = new int[com.argsCount];
+		for (int i = 0; i < com.argsCount; i++) {
+			com.args[i] = std::stoi(s[i + 2]);
+		}
+		com.result = std::stoi(s[s.size() - 1]);
+	}
 }
 
 std::vector<std::string> split(std::string str){
@@ -278,7 +296,7 @@ Bytecode* readBytecode(std::string name) {
     return bytecode;
 }
 int main() {
-	Bytecode B = *readBytecode("C:\\Users\\SSYP\\Desktop\\10-2-\\byte.txt");
+	Bytecode B = *readBytecode("C:\\Users\\kadoc\\Desktop\\project\\Project1\\byte.txt");
 
 	return 0;
 }

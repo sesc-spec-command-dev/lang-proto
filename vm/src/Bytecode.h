@@ -45,7 +45,8 @@ enum Operation{
 	READ_INT, 
 	READ_FLOAT, 
 	ICALL, 
-	FCALL 
+	FCALL,
+	WRITE_STR
 };
 
 
@@ -59,7 +60,7 @@ struct Command {
 
     int intConst;
     float floatConst;
-    const char* strConst;
+	std::string strConst;
     const char* funcName;
 };
 
