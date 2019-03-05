@@ -120,6 +120,9 @@ Operation operationByName(std::string str) {
 	if(str == "FCALL") {
 		return FCALL;
 	}
+    if (str == "WRITE_STR") {
+        return WRITE_STR;
+    }
 	return FCALL;
 }
 
@@ -296,32 +299,33 @@ Bytecode* readBytecode(std::string name) {
     return bytecode;
 }
 
-void bytecode_writer(Bytecode* B) {
-	std::ofstream out("12byetcode.txt");
-	out << "BYTECODE:" << std::endl << "function count = " << B->functionsNumber << std::endl;
+void bytecode_writer(Bytecode B) {
+	std::ofstream out("debug_byte.txt");
+	out << "BYTECODE:" << std::endl << "function count = " << B.functionsNumber << std::endl;
 	out << "FUNCTIONS:" << std::endl;
 
-	for (int i = 0; i < B->functionsNumber; i++) {
+	for (int i = 0; i < B.functionsNumber; i++) {
+        out << "Имя функции " << B.functions[i].name << std::endl;
 		out << "########################"<<std::endl;
-		out << " " << B->functions[i].intRegsNumber << std::endl;
-		out << " " << B->functions[i].floatRegsNumber << std::endl;
-		out << " " << B->functions[i].commandsNumber << std::endl;
+		out << "Целочисленные: " << B.functions[i].intRegsNumber << std::endl;
+		out << "Float " << B.functions[i].floatRegsNumber << std::endl;
+		out << "Commands_count " << B.functions[i].commandsNumber << std::endl;
 		
-		for (int j = 0; j < B->functions[i].commandsNumber; j++) {
-			out << "$$$$$$$$$$$$$$$$$$$$$$" << std::endl;
-			out << " " << B->functions[i].commands[j].argsCount << "" << std::endl;
+		for (int j = 0; j < B.functions[i].commandsNumber; j++) {
+			out  << std::endl;
+            out << "Command " << B.functions[i].commands[j].operation << std::endl;
+			out << "Кол-во обычных аргументов " << B.functions[i].commands[j].argsCount << "" << std::endl;
 
-			for (int k = 0; k < B->functions[i].commands[j].argsCount; k++) {
-				out << "???????????????????" << std::endl;
-				out << B->functions[i].commands[j].args[k] << std::endl;
-				out << "???????????????????" << std::endl;
+			for (int k = 0; k < B.functions[i].commands[j].argsCount; k++) {
+	
+				out<<k<<": " << B.functions[i].commands[j].args[k] << std::endl;
+
 			}
 
-			out << "" << B->functions[i].commands[j].result << std::endl;
-			out << " " << B->functions[i].commands[j].intConst << std::endl;
-			out << " " << B->functions[i].commands[j].floatConst << std::endl;
-			out << " " << B->functions[i].commands[j].strConst << std::endl;
-			out << "$$$$$$$$$$$$$$$$$$$$$$" << std::endl;
+			out << "Результат " << B.functions[i].commands[j].result << std::endl;
+			out << "Целая константа " << B.functions[i].commands[j].intConst << std::endl;
+			out << "Вещ-ая константа " << B.functions[i].commands[j].floatConst << std::endl;
+			out << "Строковая константа " << B.functions[i].commands[j].strConst << std::endl;
 		}
 		out << "########################"<<std::endl;
 	}
@@ -338,7 +342,7 @@ void bytecode_writer(Bytecode* B) {
 
 
 int main() {
-	Bytecode *B = readBytecode("C:\\Users\\kadoc\\Desktop\\project\\Project1\\byte.txt");
+	Bytecode B = *readBytecode("byte.txt");
 	bytecode_writer(B);
 	return 0;
 }

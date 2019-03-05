@@ -1,11 +1,20 @@
-1
+2
 fibonacci
 5
 0
 6
-ILOAD 1 1
+ILOAD 1
 ICMPEQ 0 1 2
-ILOAD 2 3
+ILOAD 2
 ICMPEQ 0 3 4
 LOR 2 4 2
-ILOAD 1 0
+ILOAD 1
+fibonacci228
+2
+0
+5
+ILOAD 2
+LOR 2 5 2
+WRITE_STR qwerty
+READ_INT 40
+CALL fibonacci 1 1 28 758 14 88

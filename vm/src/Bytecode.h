@@ -65,7 +65,7 @@ struct Command {
 };
 
 struct Function {
-    const char* name;
+    std::string name;
     int intRegsNumber;
     int floatRegsNumber;
     int commandsNumber;
