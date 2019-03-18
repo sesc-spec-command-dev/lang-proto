@@ -1,6 +1,6 @@
 package Parser;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import front.Token;
 import front.Token.Ident;
 import front.Token.KeyWord;
@@ -17,6 +17,7 @@ import ir.Operator.Variable;
 import ir.Operator.While;
 import ir.Type;
 import front.Position;
+import ir.Expression.FunctionCall;
 
 public class Parser {
 	static Token[] tokenArr;							//Token Array
@@ -120,12 +121,31 @@ public class Parser {
 		}
 		else {
 			if (theToken.getKind() == Kind.IDENT || theToken.getKind() == Kind.INT_LITERAL || theToken.getKind() == Kind.FLOAT_LITERAL || theToken.getKind() == Kind.STR_LITERAL) {			//if the next Token is expression
+
+				if (theToken.getKind() == Kind.IDENT) {					//checking for function call
+					Ident name = (Ident) theToken;
+					Token next = getIterToken();
+
+					if (next.getKind() == Kind.OPERATOR) {
+						Operator op = (Operator) next;
+
+						if(op.operator == Operators.OPEN_PARENTHESIS) {		//this is function call
+							Expression[] parameterList = readFunctionCallParameters();
+							FunctionCall fCall = new FunctionCall(name, parameterList);
+							operatorList.add(fCall);
+						}
+						else {
+							iteration--;									//this is not  function call, get back to previous Token
+						}
+					}
+				}
+
 				Expression expr = getExpression(false, theToken);
 				SimpleExpression theExpr = new SimpleExpression(expr);
 				operatorList.add(theExpr);								//add new parameter in the function parameter list
 			}
 			else {
-				if(theToken.getKind() == Kind.OPERATOR) {
+				if (theToken.getKind() == Kind.OPERATOR) {
 					iteration--;
 					readOperator(Operators.CLOSE_CURLY_BRACE);			//if during token is '}'
 					return operatorList;								//return operator list
@@ -136,7 +156,11 @@ public class Parser {
 		}
 		return parserOp(operatorList);		
 	}
-	
+
+	private static Expression[] readFunctionCallParameters() {
+		return null;
+	}
+
 	private static Variable getVariable(Type theType) {
 		Token theToken = getIterToken();
 		String name;
