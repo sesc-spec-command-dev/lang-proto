@@ -21,6 +21,8 @@ public class Generator{
 
     private static Map<String, Integer> varRegs = new HashMap<>();
 
+    private static List<String> funcNames = new ArrayList<>();
+
     private static int genExpression(Expression expr) {
         if (expr instanceof Expression.Operand) {
             Expression.Operand operand = (Expression.Operand) expr;
@@ -29,6 +31,7 @@ public class Generator{
                 case IDENT:
                     Token.Ident ident = (Token.Ident) value;
                     if (varRegs.containsKey(ident.word)) return varRegs.get(ident.word);
+                    else if (funcNames.contains(ident.word)) return funcNames.indexOf(ident.word);
                     // add exception?
                     break;
                 case INT_LITERAL:
@@ -39,7 +42,7 @@ public class Generator{
                 case FLOAT_LITERAL:
                     Token.IntLiteral floatLiteral = (Token.IntLiteral) value;
                     int fReg = getIReg();
-                    commands.add("ILOAD " + floatLiteral.value + " " + fReg);
+                    commands.add("FLOAD " + floatLiteral.value + " " + fReg);
                     return fReg;
                 case STR_LITERAL:
                     assert false;
@@ -48,7 +51,7 @@ public class Generator{
                     assert false;
                     break;
             }
-        } else {
+        } else if (expr instanceof Expression.Operation){
             Expression.Operation operation = (Expression.Operation) expr;
             int res_1 = genExpression(operation.left);
             int res_2 = genExpression(operation.right);
@@ -115,12 +118,32 @@ public class Generator{
                     commands.add("LNOT " + res_1 + " " + res_2 + " " + notRegs);
                     return notRegs;
             }
+        } else if (expr instanceof Expression.FunctionCall) {
+            int callRegs = getIReg();
 
+            Expression.FunctionCall functionCall = (Expression.FunctionCall) expr;
+            List<Integer> res = new ArrayList<>();
+
+            for (Expression expression : functionCall.parameterList) {
+                res.add(genExpression(expression));
+            }
+
+            StringBuilder callString = new StringBuilder("CALL ");
+            callString.append(functionCall.link.word).append(" ");
+
+            for (int r : res) {
+                callString.append(r).append(" ");
+            }
+
+            callString.append(callRegs);
+            commands.add(callString.toString());
+
+            return callRegs;
         }
         return -1;
     }
 
-    public static void generateBody(Operator[] body) {
+    private static void generateBody(Operator[] body) {
         for (Operator operator: body) {
             if (operator instanceof Operator.Return) {
                 Operator.Return ret = (Operator.Return) operator;
@@ -177,6 +200,10 @@ public class Generator{
 
     public static void generateCode(IR ir, String name) {
         println(ir.functions.length);
+
+        for (Function function : ir.functions) {
+            funcNames.add(function.name);
+        }
 
         for (Function function : ir.functions) {
             for (Function.Parameter parameter : function.parameters) {

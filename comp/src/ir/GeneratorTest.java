@@ -68,6 +68,21 @@ public class GeneratorTest {
 
                 return x;
             }
+        9)
+            int foo_10(int x) {
+                return x - 3;
+            }
+
+            int foo() {
+                int x;
+                x = 10;
+
+                while (x > 10) {
+                    x = foo_1(x) - 3;
+                }
+
+                return x;
+            }
     */
 
     public static void main(String[] args) {
@@ -150,7 +165,14 @@ public class GeneratorTest {
         Expression sub = new Expression.Operation((Token.Operator)subOp, div, returnValue_6); // 5 / (3 * 24) - 8
 
         Expression subXand3 = new Expression.Operation((Token.Operator) subOp, identXOperand, returnValue_3);
-        Expression assignXtoIncr = new Expression.Operation((Token.Operator) assignXOp, identXOperand, subXand3);
+        Expression assignXtoIncr = new Expression.Operation((Token.Operator) assignXOp, identXOperand, subXand3); // x = x - 3
+
+        Token fooIdent = Token.make(Token.Kind.IDENT, position, "foo_10");
+        Expression[] parameterList = new Expression[1];
+        parameterList[0] = new Expression.Operand(identX);
+        Expression callFoo = new Expression.FunctionCall((Token.Ident)fooIdent, parameterList);
+        Expression subFooAndX = new Expression.Operation((Token.Operator) subOp, callFoo, returnValue_3);
+        Expression assignXtoFoo = new Expression.Operation((Token.Operator) assignXOp, identXOperand, subFooAndX);
 
         Operator[] body_1 = new Operator[1];
         body_1[0] = new Operator.Return(returnValue_1);
@@ -197,7 +219,7 @@ public class GeneratorTest {
         body_7[2] = while_1;
         body_7[3] = new Operator.Return(identXOperand);
 
-        Operator[] body_8 = new Operator[10];
+        Operator[] body_8 = new Operator[4];
         body_8[0] = variableX;
         body_8[1] = new Operator.SimpleExpression(assignXto12);
 
@@ -209,9 +231,26 @@ public class GeneratorTest {
         body_8[2] = if_2;
         body_8[3] = new Operator.Return(identXOperand);
 
-        Function.Parameter[] parameters = new Function.Parameter[0];
+        Operator[] body_9 = new Operator[4];
+        body_9[0] = variableX;
+        body_9[1] = new Operator.SimpleExpression(assignXto10);
 
-        Function[] functions = new Function[8];
+        Operator[] while_body_2 = new Operator[1];
+        while_body_2[0] = new Operator.SimpleExpression(assignXtoFoo);
+
+        Operator.While while_2 = new Operator.While(new Operator.SimpleExpression(isXbg10).expression, while_body_2);
+
+        body_9[2] = while_2;
+        body_9[3] = new Operator.Return(identXOperand);
+
+        Operator[] body_10 = new Operator[1];
+        body_10[0] = new Operator.Return(subXand3);
+
+        Function.Parameter[] parameters = new Function.Parameter[0];
+        Function.Parameter[] parameters1 = new Function.Parameter[1];
+        parameters1[0] = new Function.Parameter("x", Type.INT);
+
+        Function[] functions = new Function[10];
         functions[0] = new Function(Type.INT, "foo_1", parameters, body_1);
         functions[1] = new Function(Type.INT, "foo_2", parameters, body_2);
         functions[2] = new Function(Type.INT, "foo_3", parameters, body_3);
@@ -220,6 +259,8 @@ public class GeneratorTest {
         functions[5] = new Function(Type.INT, "foo_6", parameters, body_6);
         functions[6] = new Function(Type.INT, "foo_7", parameters, body_7);
         functions[7] = new Function(Type.INT, "foo_8", parameters, body_8);
+        functions[8] = new Function(Type.INT, "foo_9", parameters, body_9);
+        functions[9] = new Function(Type.INT, "foo_10", parameters1, body_10);
 
         IR ir = new IR(functions);
 
