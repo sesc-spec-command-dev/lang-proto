@@ -2,7 +2,7 @@
 // Created by coolb on 22.10.2018.
 //
 #pragma once
-
+//#include "main.h"
 enum Operation{
     IADD, 
 	ISUB, 
@@ -46,7 +46,11 @@ enum Operation{
 	READ_FLOAT, 
 	ICALL, 
 	FCALL,
-	WRITE_STR
+	WRITE_STR,
+
+    NEW,
+    GETFIELD,
+    SETFIELD
 };
 
 
@@ -60,21 +64,35 @@ struct Command {
 
     int intConst;
     float floatConst;
-	std::string strConst;
-    const char* funcName;
+    char* strConst;
+    char* funcName;
 };
 
 struct Function {
-    std::string name;
+    char* name;
+    int pointersNumber;
     int intRegsNumber;
     int floatRegsNumber;
     int commandsNumber;
     Command* commands;
 };
 
+struct Field {
+    char *name;
+    char *className;
+    char *type;
+    int offset;
+};
+
+struct Class {
+    char *name;
+    int fieldsCounter;
+    Field *fields;
+};
+
 struct Bytecode {
     int functionsNumber;
     Function* functions;
+    int classNumber;
+    Class *classes;
 };
-
-

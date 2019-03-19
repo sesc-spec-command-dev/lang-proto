@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <fstream>
 #include "Bytecode.h"
 #include <string>
@@ -163,7 +165,8 @@ void add_args(std::vector<std::string> s, Command &com) {
         com.floatConst = std::stof(s[s.size() - 1]);
         break;
     case 3:
-        com.strConst = s[1];
+        com.strConst = new char[s[1].size()];
+        std::strcpy(com.strConst, s[1].c_str());
         com.argsCount = s.size() - 3;
         delete[] com.args;
         com.args = new int[com.argsCount];
@@ -173,7 +176,9 @@ void add_args(std::vector<std::string> s, Command &com) {
         com.result = std::stoi(s[s.size() - 1]);
         break;
     case 4:
-        com.strConst = s[s.size() - 1];
+        com.strConst = new char[s[s.size() - 1].size()];
+        std::strcpy(com.strConst, s[s.size() - 1].c_str());
+
         break;
     }
 
@@ -207,7 +212,8 @@ Bytecode* readBytecode(std::string name) {
     
     bytecode->functionsNumber = count;
     for (int i = 0; i < count; i++) {
-        func_list[i].name = list[curr++].c_str();
+        func_list[i].name = new char[list[curr].size()];
+        std::strcpy(func_list[i].name, list[curr++].c_str());
         func_list[i].intRegsNumber = std::stoi(list[curr++].c_str());
         func_list[i].floatRegsNumber = std::stoi(list[curr++].c_str());
         func_list[i].commandsNumber = std::stoi(list[curr++].c_str());
@@ -251,7 +257,7 @@ void bytecode_writer(Bytecode & B) {
 			out << "Результат " << B.functions[i].commands[j].result << std::endl;
 			out << "Целая константа " << B.functions[i].commands[j].intConst << std::endl;
 			out << "Вещ-ая константа " << B.functions[i].commands[j].floatConst << std::endl;
-			out << "Строковая константа " << B.functions[i].commands[j].strConst << std::endl;
+			//out << "Строковая константа " << B.functions[i].commands[j].strConst << std::endl;
 		}
 		out << "########################"<<std::endl;
 	}
