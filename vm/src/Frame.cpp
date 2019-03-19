@@ -56,7 +56,6 @@ void Frame::execute()
             case READ_FLOAT: _READ_FLOAT();	  break;
 			case NEW: _NEW(); break;
 			case SETFIELD: _SETFIELD(); break;
-			case DOT: _DOT(); break;
 			case GETFIELD: _GETFIELD(); break;
              
             } 
@@ -106,11 +105,6 @@ void Frame::_NEW()
 		}
 	}
 	pRegs[command->result] = p;
-}
-
-void Frame::_DOT()
-{
-
 }
 
 void Frame::_SETFIELD()

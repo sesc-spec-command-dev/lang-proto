@@ -1,7 +1,5 @@
-
 #pragma once
 #include "main.h"
-
 
 enum Operation{
     IADD, 
@@ -47,7 +45,6 @@ enum Operation{
     FCALL,
 
 	NEW,
-	DOT,
 	GETFIELD,
 	SETFIELD
 };

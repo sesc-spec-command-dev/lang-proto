@@ -66,7 +66,6 @@ class Frame{
     void _ICALL();
 
 	void _NEW();
-	void _DOT();
 	void _SETFIELD();
 	void _GETFIELD();
 
