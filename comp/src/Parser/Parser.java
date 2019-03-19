@@ -121,25 +121,6 @@ public class Parser {
 		}
 		else {
 			if (theToken.getKind() == Kind.IDENT || theToken.getKind() == Kind.INT_LITERAL || theToken.getKind() == Kind.FLOAT_LITERAL || theToken.getKind() == Kind.STR_LITERAL) {			//if the next Token is expression
-
-				if (theToken.getKind() == Kind.IDENT) {					//checking for function call
-					Ident name = (Ident) theToken;
-					Token next = getIterToken();
-
-					if (next.getKind() == Kind.OPERATOR) {
-						Operator op = (Operator) next;
-
-						if(op.operator == Operators.OPEN_PARENTHESIS) {		//this is function call
-							Expression[] parameterList = readFunctionCallParameters();
-							FunctionCall fCall = new FunctionCall(name, parameterList);
-							operatorList.add(fCall);
-						}
-						else {
-							iteration--;									//this is not  function call, get back to previous Token
-						}
-					}
-				}
-
 				Expression expr = getExpression(false, theToken);
 				SimpleExpression theExpr = new SimpleExpression(expr);
 				operatorList.add(theExpr);								//add new parameter in the function parameter list
@@ -155,10 +136,6 @@ public class Parser {
 			}
 		}
 		return parserOp(operatorList);		
-	}
-
-	private static Expression[] readFunctionCallParameters() {
-		return null;
 	}
 
 	private static Variable getVariable(Type theType) {
@@ -225,6 +202,41 @@ public class Parser {
 				}
 			}
 			else {
+				if (theToken.getKind() == Kind.IDENT) {
+					Ident name = (Ident) theToken;
+					Token next = getIterToken();
+
+					if (next.getKind() == Kind.OPERATOR) {
+						Operator op = (Operator) next;
+
+						if (op.operator == Operators.OPEN_PARENTHESIS) {
+							Token fCallToken;
+							ArrayList<Expression> exprList = new ArrayList<>();
+
+							while (true) {
+								 fCallToken = getIterToken();
+								 if (fCallToken.getKind() == Kind.OPERATOR) {
+								 	op = (Operator) fCallToken;
+
+								 	if(op.operator == Operators.CLOSE_PARENTHESIS) {
+								 		break;
+									}
+								 }
+							}
+
+							Expression[] parameterArr = tokenList.toArray(new Expression[tokenList.size()]);
+							FunctionCall fCall = new FunctionCall(name, parameterArr);
+							return fCall;
+						}
+						else {
+							iteration--;
+						}
+					}
+					else {
+						iteration--;
+					}
+				}
+
 				if(theToken.getKind() != Kind.IDENT && theToken.getKind() != Kind.INT_LITERAL && theToken.getKind() != Kind.FLOAT_LITERAL && theToken.getKind() != Kind.STR_LITERAL) {
 					throw new ParserException("Error argument in expression", theToken.position);
 				}
