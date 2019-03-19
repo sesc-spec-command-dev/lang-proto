@@ -46,7 +46,6 @@ Operation operationByName(std::string str) {
     if (str == "ICALL")      return ICALL;
     if (str == "FCALL")      return FCALL;
     if (str == "WRITE_STR")  return WRITE_STR;
-    
     assert(false);
     
 }
@@ -158,15 +157,12 @@ void add_args(std::vector<std::string> s, Command &com) {
    int  sn = specialArgsType(com.operation);
     switch (specialArgsType(com.operation)){
     case 1:
-        std::cout << "1";
         com.intConst = std::stoi(s[s.size() - 1]);
         break;
     case 2:
-        std::cout << "2";
         com.floatConst = std::stof(s[s.size() - 1]);
         break;
     case 3:
-        std::cout << "3";
         com.strConst = s[1];
         com.argsCount = s.size() - 3;
         delete[] com.args;
@@ -177,7 +173,6 @@ void add_args(std::vector<std::string> s, Command &com) {
         com.result = std::stoi(s[s.size() - 1]);
         break;
     case 4:
-        std::cout << "4";
         com.strConst = s[s.size() - 1];
         break;
     }
@@ -266,14 +261,13 @@ void bytecode_writer(Bytecode & B) {
 
 int main(int argc, char** argv) {
 
-    std::cout << argc << std::endl;
-
-    for (int i = 0; i < argc; i++) {
-        std::cout << argv[i] << std::endl;
+    if (argc != 2) {
+        std::cout << "bad arguments" << std::endl;
+        return 0;
     }
-
-	Bytecode* B = readBytecode("byte.txt");
-    
-   // bytecode_writer(*B);
+    else {
+        Bytecode* B = readBytecode(argv[1]);
+        bytecode_writer(*B);
+    }
 	return 0;
 }
