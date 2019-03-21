@@ -48,6 +48,9 @@ Operation operationByName(std::string str) {
     if (str == "ICALL")      return ICALL;
     if (str == "FCALL")      return FCALL;
     if (str == "WRITE_STR")  return WRITE_STR;
+    if (str == "SETFIELD")   return SETFIELD;
+    if (str == "GETFIELD")   return GETFIELD;
+    if (str == "NEW")  		 return NEW;
     assert(false);
     
 }
@@ -184,7 +187,7 @@ void add_args(std::vector<std::string> s, Command &com) {
 
 }
 
-std::vector<std::string> split(std::string str){
+std::vector<std::string> split(unctionstd::string str){
     std::vector<std::string> vec;
     int i,n;
     n = 0;
@@ -216,6 +219,7 @@ Bytecode* readBytecode(std::string name) {
         std::strcpy(func_list[i].name, list[curr++].c_str());
         func_list[i].intRegsNumber = std::stoi(list[curr++].c_str());
         func_list[i].floatRegsNumber = std::stoi(list[curr++].c_str());
+        func_list[i].pointersNumber = std::stoi(list[curr++].c_str());
         func_list[i].commandsNumber = std::stoi(list[curr++].c_str());
         Command *com = new Command[func_list[i].commandsNumber];
         for (int j = 0; j < func_list[i].commandsNumber; j++) {
@@ -228,6 +232,28 @@ Bytecode* readBytecode(std::string name) {
         func_list[i].commands = com;
     }
     bytecode->functions = func_list;
+    
+    int class_count = std::stoi(list[curr++].c_str());
+    bytecode->classNumber = class_count;
+    Class *class_list = new Class[class_count];
+    for(int i = 0; i < class_count; i++){
+		class_list[i].name = new char[list[curr].size()];
+		std::strcpy(class_list[i].name, list[curr++].c_str());
+		int fields_count = std::stoi(list[curr++].c_str());
+		class_list[i].fields = new Field[fields_count];
+		for(int j = 0; j < fields_count; j++){
+			class_list[i].fields[j].name = new char[list[curr].size()];
+			std::strcpy(class_list[i].fields[j].name, list[curr++].c_str());
+		
+			class_list[i].fields[j].type = new char[list[curr].size()];
+			std::strcpy(class_list[i].fields[j].type, list[curr++].c_str());
+			
+			class_list[i].fields[j].className = new char[class_list[i].name.size()];
+			std::strcpy(class_list[i].fields[j].className, class_list[i].name);
+		}
+		
+	}
+    
     return bytecode;
 }
 
@@ -235,9 +261,7 @@ void bytecode_writer(Bytecode & B) {
 	std::ofstream out("debug_byte.txt");
 	out << "BYTECODE:" << std::endl << "function count = " << B.functionsNumber << std::endl;
 	out << "FUNCTIONS:" << std::endl;
-
-	for (int i = 0; i < B.functionsNumber; i++) {
-        out << "Имя функции " << B.functions[i].name << std::endl;
+.name << std::endl;
 		out << "########################"<<std::endl;
 		out << "Целочисленные: " << B.functions[i].intRegsNumber << std::endl;
 		out << "Float " << B.functions[i].floatRegsNumber << std::endl;
