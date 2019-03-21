@@ -52,8 +52,7 @@ Operation operationByName(std::string str) {
     if (str == "GETFIELD")   return GETFIELD;
     if (str == "NEW")  		 return NEW;
     assert(false);
-    
-}
+}   
 
 int specialArgsType(Operation op) {
 	switch (op) {
@@ -72,6 +71,8 @@ int specialArgsType(Operation op) {
 		return 3;
 	case WRITE_STR:
 		return 4;
+	case NEW:
+		return 5;
 	default:
 		return 0;
 	}
@@ -140,6 +141,9 @@ int resultCount(Operation op) {
 	case FCMPLS:
 	case FCMPBE:
 	case FCMPGE:
+	case NEW:
+	case SETFIELD
+	case GETFIELD
 		return 1;
 	default:
 		return 0;
@@ -163,10 +167,8 @@ void add_args(std::vector<std::string> s, Command &com) {
     switch (specialArgsType(com.operation)){
     case 1:
         com.intConst = std::stoi(s[s.size() - 1]);
-        break;
     case 2:
         com.floatConst = std::stof(s[s.size() - 1]);
-        break;
     case 3:
         com.strConst = new char[s[1].size()];
         std::strcpy(com.strConst, s[1].c_str());
@@ -177,13 +179,13 @@ void add_args(std::vector<std::string> s, Command &com) {
             com.args[i] = std::stoi(s[i + 2]);
         }
         com.result = std::stoi(s[s.size() - 1]);
-        break;
     case 4:
         com.strConst = new char[s[s.size() - 1].size()];
         std::strcpy(com.strConst, s[s.size() - 1].c_str());
-
-        break;
-    }
+    case 5:
+        com.strConst = new char[s[1].size()];
+        std::strcpy(com.strConst, s[1].c_str());
+    }  
 
 }
 
@@ -253,7 +255,7 @@ Bytecode* readBytecode(std::string name) {
 		}
 		
 	}
-    
+    bytecode->classes = class_list;
     return bytecode;
 }
 
@@ -263,14 +265,14 @@ void bytecode_writer(Bytecode & B) {
 	out << "FUNCTIONS:" << std::endl;
 .name << std::endl;
 		out << "########################"<<std::endl;
-		out << "Целочисленные: " << B.functions[i].intRegsNumber << std::endl;
+		out << "Int " << B.functions[i].intRegsNumber << std::endl;
 		out << "Float " << B.functions[i].floatRegsNumber << std::endl;
 		out << "Commands_count " << B.functions[i].commandsNumber << std::endl;
 		
 		for (int j = 0; j < B.functions[i].commandsNumber; j++) {
 			out  << std::endl;
             out << "Command " << B.functions[i].commands[j].operation << std::endl;
-			out << "Кол-во обычных аргументов " << B.functions[i].commands[j].argsCount << "" << std::endl;
+			out << "def_args_count " << B.functions[i].commands[j].argsCount << "" << std::endl;
 
 			for (int k = 0; k < B.functions[i].commands[j].argsCount; k++) {
 	
@@ -278,10 +280,10 @@ void bytecode_writer(Bytecode & B) {
 
 			}
 
-			out << "Результат " << B.functions[i].commands[j].result << std::endl;
-			out << "Целая константа " << B.functions[i].commands[j].intConst << std::endl;
-			out << "Вещ-ая константа " << B.functions[i].commands[j].floatConst << std::endl;
-			//out << "Строковая константа " << B.functions[i].commands[j].strConst << std::endl;
+			out << "Result " << B.functions[i].commands[j].result << std::endl;
+			out << "Int const " << B.functions[i].commands[j].intConst << std::endl;
+			out << "Float const " << B.functions[i].commands[j].floatConst << std::endl;
+			out << "String const " << B.functions[i].commands[j].strConst << std::endl;
 		}
 		out << "########################"<<std::endl;
 	}
@@ -294,8 +296,7 @@ int main(int argc, char** argv) {
     if (argc != 2) {
         std::cout << "bad arguments" << std::endl;
         return 0;
-    }
-    else {
+    }else{
         Bytecode* B = readBytecode(argv[1]);
         bytecode_writer(*B);
     }
