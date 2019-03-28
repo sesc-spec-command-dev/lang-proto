@@ -22,19 +22,19 @@ enum Operation{
 	ILOAD, 
 	FLOAD, 
 	
-	ICMPEQ,// 
-	ICMPNE,// 
-	ICMPBG,// 
-	ICMPLS,// 
-	ICMPBE,// 
-	ICMPGE,// 
+	ICMPEQ, 
+	ICMPNE,
+	ICMPBG,
+	ICMPLS,
+	ICMPBE,
+	ICMPGE,
 	
-	FCMPEQ,// 
-	FCMPNE,// 
-	FCMPBG,// 
-	FCMPLS,// 
-	FCMPBE,// 
-	FCMPGE,// 
+	FCMPEQ,
+	FCMPNE,
+	FCMPBG,
+	FCMPLS,
+	FCMPBE, 
+	FCMPGE, 
 	
 	GOTO, // 
 	IF, 
@@ -64,7 +64,8 @@ struct Command {
 
     int intConst;
     float floatConst;
-    char* strConst;
+    char* strConst1 = NULL;
+    char* strConst2 = NULL;
     char* funcName;
 };
 

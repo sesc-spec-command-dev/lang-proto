@@ -1,20 +1,40 @@
 2
-fibonacci
+fibonacci123321
 5
 0
-6
+0
+9
 ILOAD 1
 ICMPEQ 0 1 2
 ILOAD 2
 ICMPEQ 0 3 4
 LOR 2 4 2
 ILOAD 1
+NEW Foo 12
+SETFIELD Foo a 3 4
+GETFIELD Foo a 1 0
 fibonacci118
 2
+0
 0
 5
 ILOAD 2
 LOR 2 5 2
-WRITE_STR qwerty
+WRITE_STR qwerty1234
 READ_INT 40
-ICALL fibonacci 1 1 28 758 14 76
+ICALL fibonacci 1 1 28 759 14 773f 344f231
+2
+Foo
+2
+a
+int
+b
+int
+Foo22
+3
+a
+string
+b
+int
+c
+float

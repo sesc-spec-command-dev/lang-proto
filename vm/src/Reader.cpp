@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 
 #include <fstream>
 #include "Bytecode.h"
@@ -20,9 +20,9 @@ Operation operationByName(std::string str) {
     if (str == "FDIV")       return FDIV;
     if (str == "LAND")       return LAND;
     if (str == "LOR")        return LOR;
-    if (str == "LNOT")       return LNOT;                    
-    if (str == "IMOV")       return IMOV;                                         
-    if (str == "ILOAD")      return ILOAD;                                        
+    if (str == "LNOT")       return LNOT;
+    if (str == "IMOV")       return IMOV;
+    if (str == "ILOAD")      return ILOAD;
     if (str == "FMOV")       return FMOV;
     if (str == "FLOAD")      return FLOAD;
     if (str == "ICMPEQ")     return ICMPEQ;
@@ -52,12 +52,12 @@ Operation operationByName(std::string str) {
     if (str == "GETFIELD")   return GETFIELD;
     if (str == "NEW")  		 return NEW;
     assert(false);
-}   
+}
 
 int specialArgsType(Operation op) {
-	switch (op) {
-	case ILOAD:
-	case WRITE_INT: 
+    switch (op) {
+    case ILOAD:
+    case WRITE_INT:
     case READ_INT:
     case GOTO:
     case IF:
@@ -66,141 +66,176 @@ int specialArgsType(Operation op) {
     case WRITE_FLOAT:
     case READ_FLOAT:
         return 2;
-	case ICALL:
-	case FCALL:
-		return 3;
-	case WRITE_STR:
-		return 4;
-	case NEW:
-		return 5;
-	default:
-		return 0;
-	}
+    case ICALL:
+    case FCALL:
+        return 3;
+    case WRITE_STR:
+        return 4;
+    case SETFIELD:
+        return 5;
+    case GETFIELD:
+        return 6;
+    case NEW:
+        return 7;
+    default:
+        return 0;
+    }
 }
 
 int defaultArgsCount(Operation op) {
-	switch (op) {
-	case IADD:
-	case ISUB:
-	case IMUL:
-	case IDIV:
-	case IMOD:
-	case FADD:
-	case FSUB:
-	case FMUL:
-	case FDIV:
-	case LAND:
-	case LOR:
-	case LNOT:
-	case ICMPEQ:
-	case ICMPNE: 
-	case ICMPBG: 
-	case ICMPLS: 
-	case ICMPBE: 
-	case ICMPGE: 
-	case FCMPEQ: 
-	case FCMPNE: 
-	case FCMPBG: 
-	case FCMPLS: 
-	case FCMPBE: 
-	case FCMPGE:
-		return 2;
+    switch (op) {
+    case IADD:
+    case ISUB:
+    case IMUL:
+    case IDIV:
+    case IMOD:
+    case FADD:
+    case FSUB:
+    case FMUL:
+    case FDIV:
+    case LAND:
+    case LOR:
+    case LNOT:
+    case ICMPEQ:
+    case ICMPNE:
+    case ICMPBG:
+    case ICMPLS:
+    case ICMPBE:
+    case ICMPGE:
+    case FCMPEQ:
+    case FCMPNE:
+    case FCMPBG:
+    case FCMPLS:
+    case FCMPBE:
+    case FCMPGE:
+        return 2;
     case FMOV:
     case IMOV:
         return 1;
-	default:
-		return 0;
-	}
+    default:
+        return 0;
+    }
 }
 
 int resultCount(Operation op) {
-	switch (op) {
-	case IADD:
-	case ISUB:
-	case IMUL:
-	case IDIV:
-	case IMOD:
-	case FADD:
-	case FSUB:
-	case FMUL:
-	case FDIV:
-	case LAND:
-	case LOR:
-	case LNOT:
-	case ICALL:
-	case FCALL:
-	case ICMPEQ:
-	case ICMPNE:
-	case ICMPBG:
-	case ICMPLS:
-	case ICMPBE:
-	case ICMPGE:
-	case FCMPEQ:
-	case FCMPNE:
-	case FCMPBG:
-	case FCMPLS:
-	case FCMPBE:
-	case FCMPGE:
-	case NEW:
-	case SETFIELD
-	case GETFIELD
-		return 1;
-	default:
-		return 0;
-	}
+    switch (op) {
+    case IADD:
+    case ISUB:
+    case IMUL:
+    case IDIV:
+    case IMOD:
+    case FADD:
+    case FSUB:
+    case FMUL:
+    case FDIV:
+    case LAND:
+    case LOR:
+    case LNOT:
+    case ICALL:
+    case FCALL:
+    case ICMPEQ:
+    case ICMPNE:
+    case ICMPBG:
+    case ICMPLS:
+    case ICMPBE:
+    case ICMPGE:
+    case FCMPEQ:
+    case FCMPNE:
+    case FCMPBG:
+    case FCMPLS:
+    case FCMPBE:
+    case FCMPGE:
+    case NEW:
+    case GETFIELD:
+        return 1;
+    default:
+        return 0;
+    }
 }
 
 void add_args(std::vector<std::string> s, Command &com) {
-	com.operation = operationByName(s[0]);
-
-	com.argsCount = defaultArgsCount(com.operation);
+    com.operation = operationByName(s[0]);
+    com.argsCount = defaultArgsCount(com.operation);
     com.args = new int[com.argsCount];
     for (int i = 0; i < com.argsCount; i++) {
         com.args[i] = std::stoi(s[i + 1]);
     }
+    if (resultCount(com.operation) == 1) {
+        com.result = std::stoi(s[s.size() - 1]);
+    }
+    int  sn = specialArgsType(com.operation);
+    switch (specialArgsType(com.operation)) {
 
-	if (resultCount(com.operation) == 1) {
-		com.result = std::stoi(s[s.size() - 1]);
-	}
-
-   int  sn = specialArgsType(com.operation);
-    switch (specialArgsType(com.operation)){
     case 1:
         com.intConst = std::stoi(s[s.size() - 1]);
+        break;
+
     case 2:
         com.floatConst = std::stof(s[s.size() - 1]);
+        break;
+
     case 3:
-        com.strConst = new char[s[1].size()];
-        std::strcpy(com.strConst, s[1].c_str());
+        com.strConst1 = new char[s[1].size()];
+        std::strcpy(com.strConst1, s[1].c_str());
         com.argsCount = s.size() - 3;
         delete[] com.args;
         com.args = new int[com.argsCount];
         for (int i = 0; i < com.argsCount; i++) {
             com.args[i] = std::stoi(s[i + 2]);
         }
-        com.result = std::stoi(s[s.size() - 1]);
-    case 4:
-        com.strConst = new char[s[s.size() - 1].size()];
-        std::strcpy(com.strConst, s[s.size() - 1].c_str());
-    case 5:
-        com.strConst = new char[s[1].size()];
-        std::strcpy(com.strConst, s[1].c_str());
-    }  
+        break;
 
+    case 4:
+        com.strConst1 = new char[s[s.size() - 1].size()];
+        std::strcpy(com.strConst1, s[s.size() - 1].c_str());
+        break;
+
+    case 5:
+        com.strConst1 = new char[s[1].size()];
+        std::strcpy(com.strConst1, s[1].c_str());
+
+        com.strConst2 = new char[s[2].size()];
+        std::strcpy(com.strConst2, s[2].c_str());
+
+        com.argsCount = 2;
+        delete[] com.args;
+        com.args = new int[com.argsCount];
+        com.args[0] = std::stoi(s[3]);
+        com.args[1] = std::stoi(s[4]);
+        break;
+
+    case 6:
+        com.strConst1 = new char[s[1].size()];
+        std::strcpy(com.strConst1, s[1].c_str());
+
+        com.strConst2 = new char[s[2].size()];
+        std::strcpy(com.strConst2, s[2].c_str());
+
+        com.argsCount = 1;
+        delete[] com.args;
+        com.args = new int[com.argsCount];
+        com.args[0] = std::stoi(s[3]);
+        break;
+
+    case 7:
+        com.strConst1 = new char[s[1].size()];
+        std::strcpy(com.strConst1, s[1].c_str());
+        break;
+    }
 }
 
-std::vector<std::string> split(unctionstd::string str){
+std::vector<std::string> split(std::string str) {
     std::vector<std::string> vec;
-    int i,n;
+    int i, n;
     n = 0;
-    for (i = 0; i <= (int)str.length(); i++){
-        if (( i == str.length()) || (str[i] == ' ')){
-            vec.push_back(str.substr(n, i-n));
+    for (i = 0; i <= (int)str.length(); i++) {
+        if ((i == str.length()) || (str[i] == ' ')) {
+            vec.push_back(str.substr(n, i - n));
             n = i + 1;
         }
     }
     return vec;
-}    
+}
 
 Bytecode* readBytecode(std::string name) {
     std::string line;
@@ -214,7 +249,6 @@ Bytecode* readBytecode(std::string name) {
     Bytecode *bytecode = new Bytecode;
     Function *func_list = new Function[count];
     int curr = 1;
-    
     bytecode->functionsNumber = count;
     for (int i = 0; i < count; i++) {
         func_list[i].name = new char[list[curr].size()];
@@ -226,69 +260,124 @@ Bytecode* readBytecode(std::string name) {
         Command *com = new Command[func_list[i].commandsNumber];
         for (int j = 0; j < func_list[i].commandsNumber; j++) {
             std::vector<std::string> s;
-
             s = split(list[curr++]);
             add_args(s, com[j]);
-
         }
         func_list[i].commands = com;
     }
     bytecode->functions = func_list;
-    
+
     int class_count = std::stoi(list[curr++].c_str());
     bytecode->classNumber = class_count;
     Class *class_list = new Class[class_count];
-    for(int i = 0; i < class_count; i++){
-		class_list[i].name = new char[list[curr].size()];
-		std::strcpy(class_list[i].name, list[curr++].c_str());
-		int fields_count = std::stoi(list[curr++].c_str());
-		class_list[i].fields = new Field[fields_count];
-		for(int j = 0; j < fields_count; j++){
-			class_list[i].fields[j].name = new char[list[curr].size()];
-			std::strcpy(class_list[i].fields[j].name, list[curr++].c_str());
-		
-			class_list[i].fields[j].type = new char[list[curr].size()];
-			std::strcpy(class_list[i].fields[j].type, list[curr++].c_str());
-			
-			class_list[i].fields[j].className = new char[class_list[i].name.size()];
-			std::strcpy(class_list[i].fields[j].className, class_list[i].name);
-		}
-		
-	}
+    for (int i = 0; i < class_count; i++) {
+        class_list[i].name = new char[list[curr].size()];
+        std::strcpy(class_list[i].name, list[curr++].c_str());
+        int fields_count = std::stoi(list[curr++].c_str());
+        class_list[i].fieldsCounter = fields_count;
+        class_list[i].fields = new Field[fields_count];
+        for (int j = 0; j < fields_count; j++) {
+            class_list[i].fields[j].name = new char[list[curr].size()];
+            std::strcpy(class_list[i].fields[j].name, list[curr++].c_str());
+
+            class_list[i].fields[j].type = new char[list[curr].size()];
+            std::strcpy(class_list[i].fields[j].type, list[curr++].c_str());
+
+            class_list[i].fields[j].className = new char[sizeof(class_list[i].name)];
+            std::strcpy(class_list[i].fields[j].className, class_list[i].name);
+        }
+
+    }
     bytecode->classes = class_list;
+
     return bytecode;
 }
 
 void bytecode_writer(Bytecode & B) {
-	std::ofstream out("debug_byte.txt");
-	out << "BYTECODE:" << std::endl << "function count = " << B.functionsNumber << std::endl;
-	out << "FUNCTIONS:" << std::endl;
-.name << std::endl;
-		out << "########################"<<std::endl;
-		out << "Int " << B.functions[i].intRegsNumber << std::endl;
-		out << "Float " << B.functions[i].floatRegsNumber << std::endl;
-		out << "Commands_count " << B.functions[i].commandsNumber << std::endl;
-		
-		for (int j = 0; j < B.functions[i].commandsNumber; j++) {
-			out  << std::endl;
-            out << "Command " << B.functions[i].commands[j].operation << std::endl;
-			out << "def_args_count " << B.functions[i].commands[j].argsCount << "" << std::endl;
+    std::string operations[] = {
+        "IADD",
+        "ISUB",
+        "IMUL",
+        "IDIV",
+        "IMOD",
+        "FADD",
+        "FSUB",
+        "FMUL",
+        "FDIV",
+        "LAND",
+        "LOR",
+        "LNOT",
+        "FMOV",
+        "IMOV",
+        "ILOAD",
+        "FLOAD",
+        "ICMPEQ",
+        "ICMPNE",
+        "ICMPBG",
+        "ICMPLS",
+        "ICMPBE",
+        "ICMPGE",
+        "FCMPEQ",
+        "FCMPNE",
+        "FCMPBG",
+        "FCMPLS",
+        "FCMPBE",
+        "FCMPGE",
+        "GOTO", 
+        "IF",
+        "FRET",
+        "IRET",
+        "WRITE_INT",
+        "WRITE_FLOAT",
+        "READ_INT",
+        "READ_FLOAT",
+        "ICALL",
+        "FCALL",
+        "WRITE_STR",
+        "NEW",
+        "GETFIELD",
+        "SETFIELD"
+    };
 
-			for (int k = 0; k < B.functions[i].commands[j].argsCount; k++) {
-	
-				out<<k<<": " << B.functions[i].commands[j].args[k] << std::endl;
+    std::ofstream out("debug_byte.txt");
+    out << "BYTECODE:" << std::endl << "function count = " << B.functionsNumber << std::endl;
+    out << "FUNCTIONS:" << std::endl;
 
-			}
+    for (int i = 0; i < B.functionsNumber; i++) {
+        out << " function " << B.functions[i].name << std::endl;
+        out << "########################" << std::endl;
+        out << "int count " << B.functions[i].intRegsNumber << std::endl;
+        out << "float count " << B.functions[i].floatRegsNumber << std::endl;
+        out << "commands count " << B.functions[i].commandsNumber << std::endl;
 
-			out << "Result " << B.functions[i].commands[j].result << std::endl;
-			out << "Int const " << B.functions[i].commands[j].intConst << std::endl;
-			out << "Float const " << B.functions[i].commands[j].floatConst << std::endl;
-			out << "String const " << B.functions[i].commands[j].strConst << std::endl;
-		}
-		out << "########################"<<std::endl;
-	}
-
-	out.close();
+        for (int j = 0; j < B.functions[i].commandsNumber; j++) {
+            out << std::endl;
+            out << "command " <<operations[B.functions[i].commands[j].operation] << std::endl;
+            out << "args count " << B.functions[i].commands[j].argsCount << "" << std::endl;
+            for (int k = 0; k < B.functions[i].commands[j].argsCount; k++) {
+                out << k << ": " << B.functions[i].commands[j].args[k] << std::endl;
+            }
+            out << "result " << B.functions[i].commands[j].result << std::endl;
+            out << "int const " << B.functions[i].commands[j].intConst << std::endl;
+            out << "float const " << B.functions[i].commands[j].floatConst << std::endl;
+            if(B.functions[i].commands[j].strConst1 != NULL)
+                out << "string1 " << B.functions[i].commands[j].strConst1 << std::endl;
+            if (B.functions[i].commands[j].strConst2 != NULL)
+                out << "string2 " << B.functions[i].commands[j].strConst2 << std::endl;
+        }
+        out << "########################" << std::endl;
+    }
+    out << "class count " << B.classNumber << std::endl;
+    for (int i = 0; i < B.classNumber; i++) {
+        out << " class " << B.classes[i].name << std::endl;
+        out << "************************" << std::endl;
+        for (int j = 0; j < B.classes[i].fieldsCounter; j++) {
+            out << "name " << B.classes[i].fields[j].name << std::endl;
+            out << "type " << B.classes[i].fields[j].type << std::endl;
+            }
+        out << "************************" << std::endl;
+    }
+    out.close();
 }
 
 int main(int argc, char** argv) {
@@ -296,9 +385,10 @@ int main(int argc, char** argv) {
     if (argc != 2) {
         std::cout << "bad arguments" << std::endl;
         return 0;
-    }else{
+    }
+    else {
         Bytecode* B = readBytecode(argv[1]);
         bytecode_writer(*B);
     }
-	return 0;
+    return 0;
 }

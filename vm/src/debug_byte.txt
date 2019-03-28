@@ -1,94 +1,140 @@
 BYTECODE:
 function count = 2
 FUNCTIONS:
-Имя функции fibonacci
+ function fibonacci123321
 ########################
-Целочисленные: 5
-Float 0
-Commands_count 6
+int count 5
+float count 0
+commands count 9
 
-Command 14
-Кол-во обычных аргументов 0
-Результат -842150451
-Целая константа 1
-Вещ-ая константа -4.31602e+08
+command ILOAD
+args count 0
+result -842150451
+int const 1
+float const -4.31602e+08
 
-Command 16
-Кол-во обычных аргументов 2
+command ICMPEQ
+args count 2
 0: 0
 1: 1
-Результат 2
-Целая константа -842150451
-Вещ-ая константа -4.31602e+08
+result 2
+int const -842150451
+float const -4.31602e+08
 
-Command 14
-Кол-во обычных аргументов 0
-Результат -842150451
-Целая константа 2
-Вещ-ая константа -4.31602e+08
+command ILOAD
+args count 0
+result -842150451
+int const 2
+float const -4.31602e+08
 
-Command 16
-Кол-во обычных аргументов 2
+command ICMPEQ
+args count 2
 0: 0
 1: 3
-Результат 4
-Целая константа -842150451
-Вещ-ая константа -4.31602e+08
+result 4
+int const -842150451
+float const -4.31602e+08
 
-Command 10
-Кол-во обычных аргументов 2
+command LOR
+args count 2
 0: 2
 1: 4
-Результат 2
-Целая константа -842150451
-Вещ-ая константа -4.31602e+08
+result 2
+int const -842150451
+float const -4.31602e+08
 
-Command 14
-Кол-во обычных аргументов 0
-Результат -842150451
-Целая константа 1
-Вещ-ая константа -4.31602e+08
+command ILOAD
+args count 0
+result -842150451
+int const 1
+float const -4.31602e+08
+
+command NEW
+args count 0
+result 12
+int const -842150451
+float const -4.31602e+08
+string1 Foo
+
+command SETFIELD
+args count 2
+0: 3
+1: 4
+result -842150451
+int const -842150451
+float const -4.31602e+08
+string1 Foo
+string2 a
+
+command GETFIELD
+args count 1
+0: 1
+result 0
+int const -842150451
+float const -4.31602e+08
+string1 Foo
+string2 a
 ########################
-Имя функции fibonacci118
+ function fibonacci118
 ########################
-Целочисленные: 2
-Float 0
-Commands_count 5
+int count 2
+float count 0
+commands count 5
 
-Command 14
-Кол-во обычных аргументов 0
-Результат -842150451
-Целая константа 2
-Вещ-ая константа -4.31602e+08
+command ILOAD
+args count 0
+result -842150451
+int const 2
+float const -4.31602e+08
 
-Command 10
-Кол-во обычных аргументов 2
+command LOR
+args count 2
 0: 2
 1: 5
-Результат 2
-Целая константа -842150451
-Вещ-ая константа -4.31602e+08
+result 2
+int const -842150451
+float const -4.31602e+08
 
-Command 38
-Кол-во обычных аргументов 0
-Результат -842150451
-Целая константа -842150451
-Вещ-ая константа -4.31602e+08
+command WRITE_STR
+args count 0
+result -842150451
+int const -842150451
+float const -4.31602e+08
+string1 qwerty1234
 
-Command 34
-Кол-во обычных аргументов 0
-Результат -842150451
-Целая константа 40
-Вещ-ая константа -4.31602e+08
+command READ_INT
+args count 0
+result -842150451
+int const 40
+float const -4.31602e+08
 
-Command 36
-Кол-во обычных аргументов 5
+command ICALL
+args count 6
 0: 1
 1: 1
 2: 28
-3: 758
+3: 759
 4: 14
-Результат 76
-Целая константа -842150451
-Вещ-ая константа -4.31602e+08
+5: 773
+result 344
+int const -842150451
+float const -4.31602e+08
+string1 fibonacci
 ########################
+class count 2
+ class Foo
+************************
+name a
+type int
+name b
+type int
+************************
+ class Foo22
+************************
+name a
+type string
+name b
+type int
+name c
+type float
+************************
