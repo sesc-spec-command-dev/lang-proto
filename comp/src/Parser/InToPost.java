@@ -4,44 +4,52 @@ import java.util.ArrayList;
 import front.Token;
 import front.Token.Operator;
 import front.Token.Operators;
+import ir.Expression;
+import ir.Expression.Operation;
+import ir.Expression.Operand;
 
 public class InToPost {				//make postfix entry(include throwing an exception if we have incorrect token/operator)
-	ArrayList<Token> output;
-	Token[] inputTokenArr;
-	java.util.Stack<Token> operationStack; //? rename: operationsStack
+	ArrayList<Expression> output;
+	Expression[] inputExprArr;
+	java.util.Stack<Operation> operationStack; //? rename: operationsStack
 	
-	public InToPost(Token[] input) {
-		inputTokenArr = input;
+	public InToPost(Expression[] input) {
+		inputExprArr = input;
 		operationStack = new java.util.Stack<>();
 		output = new ArrayList<>();
 	}
 	
-	ArrayList<Token> doTrans(Token[] inputTokenArr) {
+	ArrayList<Expression> doTrans(Expression[] inputExprArr) {
 
-		for (Token theToken : inputTokenArr) {
-			switch (theToken.getKind()) { // replace to switch
-				case OPERATOR:
-					Operator theOp = (Operator) theToken;
+		for (Expression expr : inputExprArr) {
 
-					switch (theOp.operator) {
-						case OPEN_PARENTHESIS:
-							operationStack.push(theOp);            //push in to the stack immediately ( '(' )
-							break;
-						case CLOSE_PARENTHESIS:
-							getParen();                //get all operators to ')' from stack
-							break;
-						default:
-							getOper(theOp, theOp.operator.priority(theOp));    //other operations case
-					}
-					break;
-				case IDENT:
-				case INT_LITERAL:
-				case FLOAT_LITERAL:
-				case STR_LITERAL:
-					output.add(theToken);
-					break;
-				default:
-					throw new ParserException("Incorrect token, has to be an ident/operator", theToken.position);    //we have incorrect token
+			if(expr instanceof Operation) {
+				Operation operation = (Operation) expr;
+
+				switch(operation.operation.operator) {
+					case OPEN_PARENTHESIS:
+						operationStack.push(operation);            //push in to the stack immediately ( '(' )
+						break;
+					case CLOSE_PARENTHESIS:
+						getParen();                //get all operators to ')' from stack
+						break;
+					default:
+						getOper(theOp, theOp.operator.priority(theOp));    //other operations case
+				}
+			}
+			else if(expr instanceof Operand){
+				Operand operand = (Operand) expr;
+
+				switch(operand.value.getKind()) {
+					case IDENT:
+					case INT_LITERAL:
+					case FLOAT_LITERAL:
+					case STR_LITERAL:
+						output.add(operand);
+						break;
+					default:
+						throw new ParserException("Incorrect token, has to be an ident/operator", operand.value.position);    //we have incorrect token
+				}
 			}
 		}
 			
@@ -71,21 +79,20 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 		while (!operationStack.isEmpty()) {
 
 			//? use stack.peek()
-			Token theToken = operationStack.peek();			//get top operator
-			Operator opTop = (Operator) theToken;
+			Operation operation = operationStack.peek();			//get top operator
 			
-			if(opTop.operator == Operators.OPEN_PARENTHESIS) {
+			if(operation.operation.operator == Operators.OPEN_PARENTHESIS) {
 				break;
 			}
 			else {
-				int opTopPriority = opTop.operator.priority(opTop);
+				int opTopPriority = operation.operation.operator.priority(operation.operation);
 					
 				if (opTopPriority < priority) {		//new operator is more priority then top stack operator
 					break;
 				}
 				else {
 					operationStack.pop();	//cut top operator
-					output.add(opTop);		//priority of new operator is more/same priority then old operator
+					output.add(operation);		//priority of new operator is more/same priority then old operator
 				}
 			}
 		}

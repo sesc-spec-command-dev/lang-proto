@@ -24,7 +24,8 @@ import ir.Expression.Operand;
 public class Parser {
 	static Token[] tokenArr;							//Token Array
 	static ArrayList<Function> FunctionOtputList;		//output list of functions
-	static boolean haveExeption;						//boolean variable of exception exist 
+	static boolean haveExeption;						//boolean variable of exception exist
+	static boolean readingFunctionCall = false;
 	static int iteration;								//now iteration in Token array
 	
 	public Parser(Token[] inputTokenArr) {			//Parser constructor
@@ -169,8 +170,8 @@ public class Parser {
 	
 	private static Expression getExpression(boolean inCondition, boolean isCall, Token firstToken) {
 		ArrayList<Expression> expressionList = new ArrayList<>();
-		boolean wasSEMICOLON = false;
-		Expression oper = null;
+		boolean breakFactor;
+		Expression oper;
 		boolean oneArgPossib = false;									//one argument possibility
 		
 		if (firstToken != null) {
@@ -186,6 +187,7 @@ public class Parser {
 		Position exceptionPos = null;
 
 		while (true) {
+			breakFactor = false;
 			Token theToken = getIterToken();
 			exceptionPos = theToken.position;
 			
@@ -197,40 +199,43 @@ public class Parser {
 					case COMMA:
 						if (isCall) {
 							oneArgPossib = true;                                //possibility of one argument in expression - true
-							break;
 						} else {
-							throw new ParserException("Error argument - (',') in expression", theToken.position);
+							throw new ParserException("Error argument - (',') in expression", exceptionPos);
 						}
 						break;
 
 					case OPEN_PARENTHESIS:
 						oper = new Operation(theOp, null, null);
+						expressionList.add(oper);
 						parenthesisNumber++;                                    //we have new OPEN_PARENTHESIS in expression
 						break;
 
 					case CLOSE_PARENTHESIS:
 						parenthesisNumber--;
-						if (inCondition) {//if expression situate in condition, number of ')' bigger then number of '(' on 1
+						if (inCondition || isCall) {//if expression situate in condition, number of ')' bigger then number of '(' on 1
 							if (parenthesisNumber < 0) {
-								break;
+								breakFactor = true;
+								if(isCall) {
+									readingFunctionCall = true;
+								}
 							}
-							oper = new Operation(theOp, null, null);
+							else {
+								oper = new Operation(theOp, null, null);
+								expressionList.add(oper);
+							}
 						}
 						break;
 
 					case SEMICOLON:	//if expression situate in operator body
-						wasSEMICOLON =  true;
+						breakFactor =  true;
 						break;
 
 					default:
-						if(oper != null) {
-							oper = new Operation(theOp, null, null);
-							expressionList.add(oper);
-						}
+						oper = new Operation(theOp, null, null);
+						expressionList.add(oper);
 				}
-				oper = null;
 
-				if (wasSEMICOLON) {
+				if (breakFactor) {
 					break;
 				}
 			}
@@ -243,24 +248,11 @@ public class Parser {
 						Operator op = (Operator) next;
 
 						if (op.operator == Operators.OPEN_PARENTHESIS) {
-							Token fCallToken;
+							readingFunctionCall = true;									//static variable to know when we should stop read fCall
 							ArrayList<Expression> exprList = new ArrayList<>();
 
-							while (true) {
-								 fCallToken = getIterToken();
-
-								 if (fCallToken.getKind() == Kind.OPERATOR) {
-								 	op = (Operator) fCallToken;
-
-								 	if(op.operator == Operators.CLOSE_PARENTHESIS) {
-								 		break;
-									}
-								 }
-								 else {
-								 	iteration--;
-								 	exprList.add(getExpression(false, true, null));
-								 }
-
+							while (readingFunctionCall) {
+								exprList.add(getExpression(false, true, null));
 							}
 
 							Expression[] parameterArr = exprList.toArray(new Expression[exprList.size()]);
@@ -268,24 +260,27 @@ public class Parser {
 							expressionList.add(fCall);
 						}
 						else {
-							iteration--;
-
+							iteration--;										//it is not function call, move iteration back
 						}
+					}
+					else {
+						iteration--;										//it is not function call, move iteration back
 					}
 				}
 
 				if(theToken.getKind() != Kind.IDENT && theToken.getKind() != Kind.INT_LITERAL && theToken.getKind() != Kind.FLOAT_LITERAL && theToken.getKind() != Kind.STR_LITERAL) {
-					throw new ParserException("Error argument in expression", theToken.position);
+					throw new ParserException("Error argument in expression", exceptionPos);
 				}
+				Operand operand = new Operand(theToken);			//if exception was not throwed - add new operand in expression list
+				expressionList.add(operand);
 			}
-			tokenList.add(theToken);
 		}
 
 		if (parenthesisNumber != 0 && !inCondition) {
 			throw new ParserException("invalide expression", exceptionPos);
 		}
 
-		Expression[] exprArr = tokenList.toArray(new Token[tokenList.size()]);
+		Expression[] exprArr = expressionList.toArray(new Expression[expressionList.size()]);
 		Expression retExpr = AbstractSintaxTree.buildAST(exprArr, oneArgPossib);
 		return retExpr;
 	}
