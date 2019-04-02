@@ -55,6 +55,8 @@ public class Lexer {
             }
         }
 
+        if (isCommented) throw new LexerException("Can't find comment's end", new Position(row, column));
+
         Token[] result = new Token[tokens.size()];
         for (int i = 0; i < tokens.size(); i++) {
             result[i] = tokens.get(i);
