@@ -178,7 +178,6 @@ void add_args(std::vector<std::string> s, Command &com) {
         com.strConst1 = new char[s[1].size()];
         std::strcpy(com.strConst1, s[1].c_str());
         com.argsCount = s.size() - 3;
-        delete[] com.args;
         com.args = new int[com.argsCount];
         for (int i = 0; i < com.argsCount; i++) {
             com.args[i] = std::stoi(s[i + 2]);
@@ -198,7 +197,6 @@ void add_args(std::vector<std::string> s, Command &com) {
         std::strcpy(com.strConst2, s[2].c_str());
 
         com.argsCount = 2;
-        delete[] com.args;
         com.args = new int[com.argsCount];
         com.args[0] = std::stoi(s[3]);
         com.args[1] = std::stoi(s[4]);
@@ -212,7 +210,6 @@ void add_args(std::vector<std::string> s, Command &com) {
         std::strcpy(com.strConst2, s[2].c_str());
 
         com.argsCount = 1;
-        delete[] com.args;
         com.args = new int[com.argsCount];
         com.args[0] = std::stoi(s[3]);
         break;
@@ -237,7 +234,7 @@ std::vector<std::string> split(std::string str) {
     return vec;
 }
 
-Bytecode* readBytecode(std::string name) {
+Bytecode* read_bytecode(std::string name) {
     std::string line;
     std::vector<std::string> list;
     std::ifstream in(name);
@@ -385,9 +382,8 @@ int main(int argc, char** argv) {
     if (argc != 2) {
         std::cout << "bad arguments" << std::endl;
         return 0;
-    }
-    else {
-        Bytecode* B = readBytecode(argv[1]);
+    } else {
+        Bytecode* B = read_bytecode(argv[1]);
         bytecode_writer(*B);
     }
     return 0;
