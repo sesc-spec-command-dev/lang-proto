@@ -1,4 +1,4 @@
-package LexerPackage;
+package lexer;
 import front.Position;
 import front.Token;
 
@@ -13,17 +13,35 @@ public class Lexer {
 
         ArrayList<Token> tokens = new ArrayList<>();
 
+        boolean isLineCommented = false;
+        boolean isCommented = false;
+
         int row = 1;
         int column = 0;
         for (int i = 0; i < length; i++) {
             column++;
-            if (!Character.isWhitespace(text[i])) {
+            if (!Character.isWhitespace(text[i]) && !isLineCommented) {
                 String sToken = getWord(text, i);
                 i += sToken.length()-1;
 
+                if (!isCommented) {
+                    if (sToken.equals("//")) {
+                        isLineCommented = true;
+                        continue;
+                    } else if (sToken.equals("/*")) {
+                        isCommented = true;
+                        continue;
+                    }
+                } else if (sToken.equals("*/")) {
+                    isCommented = false;
+                    continue;
+                } else {
+                    continue;
+                }
+
                 MyPair<Token.Kind, Object> pair = identify(sToken);
-                Token.Kind kind = pair.K;
-                Object value = pair.V;
+                Token.Kind kind = pair.element0;
+                Object value = pair.element1;
 
                 if (kind == null) {
                     throw new LexerException("Can't identify token", new Position(row, column));
@@ -33,6 +51,7 @@ public class Lexer {
             } else if (text[i] == '\n') {
                 column = 0;
                 row++;
+                isLineCommented = false;
             }
         }
 
@@ -44,17 +63,23 @@ public class Lexer {
         return result;
     }
 
+
     private static String getWord(char[] text, int start) {
         String word = "";
 
         for (int i = start; i < text.length; i++) {
             if (i != text.length-1) {
-                if (isOperator(String.valueOf(text[i]) + text[i + 1]) != null && !word.equals("")) {
+                String oper = String.valueOf(text[i]) + String.valueOf(text[i+1]);
+                if (isOperator(oper) != null && !word.equals("")) {
                     return word;
-                } else if (word.equals("") && isOperator(String.valueOf(text[i]) + text[i + 1]) != null) {
-                    return String.valueOf(text[i] + text[i + 1]);
+                } else if (word.equals("") && isOperator(oper) != null) {
+                    return oper;
+                } else if (isComment(oper) != null && !word.equals("")) {
+                    return word;
+                } else if (isComment(oper) != null && word.equals("")) {
+                    return oper;
                 }
-            }
+             }
 
             if (isOperator(String.valueOf(text[i])) != null && !word.equals("")) return word;
 
@@ -148,6 +173,12 @@ public class Lexer {
                 return operator;
             }
         }
+        return null;
+    }
+
+    private static String isComment(String sToken) {
+        if (sToken.equals("//") || sToken.equals("/*") || sToken.equals("*/")) return sToken;
+
         return null;
     }
 }

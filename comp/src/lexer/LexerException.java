@@ -1,4 +1,4 @@
-package LexerPackage;
+package lexer;
 import front.Position;
 
 public class LexerException extends Error {

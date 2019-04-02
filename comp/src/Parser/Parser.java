@@ -17,7 +17,7 @@ import ir.Function;
 import ir.Function.Parameter;
 import ir.Type;
 
-import LexerPackage.Reader;
+import lexer.Reader;
 
 public class Parser {
 	static Token[] tokenArr;							//Token Array

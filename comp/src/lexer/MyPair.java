@@ -1,4 +1,4 @@
-package LexerPackage;
+package lexer;
 
 public class MyPair<K, V> {
     public final K element0;
