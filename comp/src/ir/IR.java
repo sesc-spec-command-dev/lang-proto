@@ -145,26 +145,13 @@ public class IR {
 					if (theOp instanceof SimpleExpression) {        //"SimpleExpression" case
 						SimpleExpression expr = (SimpleExpression) theOp;
 
-						if(expr.expression instanceof FunctionCall) {
-							FunctionCall fCall = (FunctionCall) expr.expression;
+						pw.println("SimpleExpression");
+						printSpaces(spaceNumber + 7);
+						pw.print("expression - ");
+						result = outputExpressionTree(expr.expression);
+						printExpressionTree(result);
 
-							pw.println("FunctionCalll");
-							printSpaces(spaceNumber + 7);
-							pw.println("name - " + fCall.link.word);
-							printSpaces(spaceNumber + 7);
-							pw.println("parameterArr:");
-
-
-						}
-						else {
-							pw.println("SimpleExpression");
-							printSpaces(spaceNumber + 7);
-							pw.print("expression - ");
-							result = outputExpressionTree(expr.expression);
-							printExpressionTree(result);
-
-							pw.println();
-						}
+						pw.println();
 					}
 
 					if (theOp instanceof Variable) {                //"Variable" case
@@ -256,7 +243,17 @@ public class IR {
 			}
 			else {
 				FunctionCall fCall = (FunctionCall) expr;
-				return fCall.link.word + "()";
+				String fCallOutputStr = "";
+
+				fCallOutputStr += fCall.link.word + "(";
+
+				for (int i = 0; i < fCall.parameterList.length; i++) {
+					fCallOutputStr += Arrays.toString(outputExpressionTree(fCall.parameterList[i]));
+					fCallOutputStr += ", ";
+				}
+				fCallOutputStr += ")";
+
+				return fCallOutputStr;
 			}
 		}
 	}

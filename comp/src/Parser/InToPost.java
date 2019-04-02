@@ -34,7 +34,7 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 						getParen();                //get all operators to ')' from stack
 						break;
 					default:
-						getOper(theOp, theOp.operator.priority(theOp));    //other operations case
+						getOper(operation, operation.operation.operator.priority(operation.operation));    //other operations case
 				}
 			}
 			else if(expr instanceof Operand){
@@ -48,7 +48,7 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 						output.add(operand);
 						break;
 					default:
-						throw new ParserException("Incorrect token, has to be an ident/operator", operand.value.position);    //we have incorrect token
+						throw new ParserException("Incorrect operand token, has to be an ident/operator", operand.value.position);    //we have incorrect token
 				}
 			}
 		}
@@ -62,23 +62,21 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 		
 	private void getParen() {			//was read ')'
 		while(!operationStack.isEmpty()) {				//while stack is not empty extract operators
-			Token theToken = operationStack.pop();
-			Operator theOp = (Operator) theToken;
+			Operation operation = operationStack.pop();
 			
-			if(theOp.operator == Operators.OPEN_PARENTHESIS) {						//if new extract operator is '('
+			if(operation.operation.operator == Operators.OPEN_PARENTHESIS) {						//if new extract operator is '('
 				break;								//stop extract operator
 			}
 			else {
-				output.add(theOp);					//push extract operator in output string
+				output.add(operation);					//push extract operator in output string
 			}
 		} //? check (
 	}
 		
-	private void getOper(Operator pasteOp, int priority) {
+	private void getOper(Operation pasteOperation, int priority) {
 			
 		while (!operationStack.isEmpty()) {
 
-			//? use stack.peek()
 			Operation operation = operationStack.peek();			//get top operator
 			
 			if(operation.operation.operator == Operators.OPEN_PARENTHESIS) {
@@ -96,6 +94,6 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 				}
 			}
 		}
-		operationStack.push(pasteOp);						//push new operator in the stack
+		operationStack.push(pasteOperation);						//push new operator in the stack
 	}
 }

@@ -25,7 +25,6 @@ public class Parser {
 	static Token[] tokenArr;							//Token Array
 	static ArrayList<Function> FunctionOtputList;		//output list of functions
 	static boolean haveExeption;						//boolean variable of exception exist
-	static boolean readingFunctionCall = false;
 	static int iteration;								//now iteration in Token array
 	
 	public Parser(Token[] inputTokenArr) {			//Parser constructor
@@ -213,10 +212,12 @@ public class Parser {
 					case CLOSE_PARENTHESIS:
 						parenthesisNumber--;
 						if (inCondition || isCall) {//if expression situate in condition, number of ')' bigger then number of '(' on 1
+							parenthesisNumber++;
+
 							if (parenthesisNumber < 0) {
-								breakFactor = true;
+								breakFactor = true;				//expression reading complete
 								if(isCall) {
-									readingFunctionCall = true;
+									isCall = false;
 								}
 							}
 							else {
@@ -240,6 +241,8 @@ public class Parser {
 				}
 			}
 			else {
+				boolean b = false;
+
 				if (theToken.getKind() == Kind.IDENT) {
 					Ident name = (Ident) theToken;
 					Token next = getIterToken();
@@ -248,35 +251,39 @@ public class Parser {
 						Operator op = (Operator) next;
 
 						if (op.operator == Operators.OPEN_PARENTHESIS) {
-							readingFunctionCall = true;									//static variable to know when we should stop read fCall
+							isCall = true;									//static variable to know when we should stop read fCall
 							ArrayList<Expression> exprList = new ArrayList<>();
 
-							while (readingFunctionCall) {
+							while (isCall) {
 								exprList.add(getExpression(false, true, null));
 							}
 
 							Expression[] parameterArr = exprList.toArray(new Expression[exprList.size()]);
 							FunctionCall fCall = new FunctionCall(name, parameterArr);
 							expressionList.add(fCall);
+							b = true;
 						}
 						else {
 							iteration--;										//it is not function call, move iteration back
+
 						}
 					}
 					else {
 						iteration--;										//it is not function call, move iteration back
 					}
 				}
-
-				if(theToken.getKind() != Kind.IDENT && theToken.getKind() != Kind.INT_LITERAL && theToken.getKind() != Kind.FLOAT_LITERAL && theToken.getKind() != Kind.STR_LITERAL) {
-					throw new ParserException("Error argument in expression", exceptionPos);
+				if (!b) {
+					theToken = getIterToken();                //updating iteration token
+					if (theToken.getKind() != Kind.IDENT && theToken.getKind() != Kind.INT_LITERAL && theToken.getKind() != Kind.FLOAT_LITERAL && theToken.getKind() != Kind.STR_LITERAL) {
+						throw new ParserException("Error argument in expression", exceptionPos);
+					}
+					Operand operand = new Operand(theToken);            //if exception was not throwed - add new operand in expression list
+					expressionList.add(operand);
 				}
-				Operand operand = new Operand(theToken);			//if exception was not throwed - add new operand in expression list
-				expressionList.add(operand);
 			}
 		}
 
-		if (parenthesisNumber != 0 && !inCondition) {
+		if (parenthesisNumber != 0) {
 			throw new ParserException("invalide expression", exceptionPos);
 		}
 
