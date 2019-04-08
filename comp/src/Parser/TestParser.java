@@ -2,7 +2,7 @@ package Parser;
 
 import java.io.IOException;
 
-import LexerPackage.Reader;
+import lexer.Reader;
 import ir.Function;
 import ir.IR;
 
