@@ -1,4 +1,7 @@
-#include "main.h"
+#include <iostream>
+#include <stdlib.h>
+#include "Bytecode.h"
+#include "Frame.h"
 
 using namespace std;
 
@@ -16,7 +19,7 @@ Frame::~Frame(){
 
 void Frame::execute() 
 { 
-    while (function -> commands[programCounter].operation != RET) { 
+    while (true) { 
         switch (function->commands[programCounter].operation) { 
             case IADD:	_IADD();  break; 
             case ISUB:	_ISUB();  break; 
@@ -48,7 +51,6 @@ void Frame::execute()
             case FCMPGE: _FCMPGE(); break; 
             case GOTO: _GOTO();   break; 
             case IF: _IF();       break; 
-            case RET: break;      break;
             case ICALL: _ICALL(); break;
             case WRITE_INT: _WRITE_INT();     break;
             case WRITE_FLOAT: _WRITE_FLOAT(); break; 
@@ -58,7 +60,9 @@ void Frame::execute()
 			case SETFIELD: _SETFIELD(); break;
 			case GETFIELD: _GETFIELD(); break;
              
-            } 
+            case IRET: break;      break;
+            case FRET: break;      break;
+        }
         programCounter++; 
 
         if (programCounter == this->function->commandsNumber) {
@@ -100,7 +104,7 @@ void Frame::_NEW()
 	Bytecode *bytecode = _BYTECODE;
 	int p;
 	for (int i = 0; i < bytecode->classNumber; i++) {
-		if (!strcmp(bytecode->classes[i].name, command->strConst)) {
+		if (!strcmp(bytecode->classes[i].name, command->strConst1)) {
 			p = (int)malloc(sizeof(int) * bytecode->classes[i].fieldsCounter);
 		}
 	}
@@ -204,33 +208,33 @@ void Frame::_ICMPGE(){
 
 void Frame::_FCMPGE(){ 
     Command *command = &function->commands[programCounter]; 
-    fRegs[command->result] = (fRegs[command->args[0]] == fRegs[command->args[1]]) ? 1 : 0;
+    iRegs[command->result] = (fRegs[command->args[0]] == fRegs[command->args[1]]) ? 1 : 0;
 } 
 
 void Frame::_FCMPBE(){ 
     Command *command = &function->commands[programCounter]; 
-    fRegs[command->result] = (fRegs[command->args[0]] >= fRegs[command->args[1]]) ? 1 : 0;
+    iRegs[command->result] = (fRegs[command->args[0]] >= fRegs[command->args[1]]) ? 1 : 0;
 } 
 
 void Frame::_FCMPLS(){ 
     Command *command = &function->commands[programCounter]; 
-    fRegs[command->result] = (fRegs[command->args[0]] < fRegs[command->args[1]]) ? 1 : 0;
+    iRegs[command->result] = (fRegs[command->args[0]] < fRegs[command->args[1]]) ? 1 : 0;
 
 } 
 
 void Frame::_FCMPBG(){ 
     Command *command = &function->commands[programCounter]; 
-    fRegs[command->result] = (fRegs[command->args[0]] > fRegs[command->args[1]]) ? 1 : 0;
+    iRegs[command->result] = (fRegs[command->args[0]] > fRegs[command->args[1]]) ? 1 : 0;
 } 
 
 void Frame::_FCMPNE(){ 
     Command *command = &function->commands[programCounter]; 
-    fRegs[command->result] = (fRegs[command->args[0]] != fRegs[command->args[1]]) ? 1 : 0;
+    iRegs[command->result] = (fRegs[command->args[0]] != fRegs[command->args[1]]) ? 1 : 0;
 } 
 
 void Frame::_FCMPEQ(){ 
     Command *command = &function->commands[programCounter]; 
-    fRegs[command->result] = (fRegs[command->args[0]] == fRegs[command->args[1]]) ? 1 : 0;
+    iRegs[command->result] = (fRegs[command->args[0]] == fRegs[command->args[1]]) ? 1 : 0;
 } 
 
 void Frame::_GOTO(){ 

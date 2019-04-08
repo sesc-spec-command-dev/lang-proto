@@ -1,7 +1,5 @@
 #pragma once
 
-#include "main.h"
-
 extern Bytecode *_BYTECODE;
 
 Function findFunction(Command *command);

@@ -1,4 +1,8 @@
-#include "main.h"
+#include <iostream>
+#include <stdlib.h>
+#include "Bytecode.h"
+#include "Frame.h"
+
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 using namespace std;
 void ips();
@@ -21,7 +25,7 @@ Bytecode *test() {
 	c1[1].args = new int[1];
 	c1[1].args[0] = 0;
 
-	c1[2].operation = RET;
+	c1[2].operation = IRET;
 
 	functions[1].name = "lol";
 	functions[1].commands = c1;
@@ -42,7 +46,7 @@ Bytecode *test() {
 	c2[2].args[1] = 1;
 	c2[2].funcName = "lol";
 
-	c2[3].operation = RET;
+	c2[3].operation = IRET;
 
 	functions[0].name = "main";
 	functions[0].commands = c2;
@@ -55,13 +59,13 @@ Bytecode *test() {
 	bytecode->functionsNumber = 2;
 	return bytecode;
 }
-
+/*
 int main(int argc, char** argv) {    
     _BYTECODE = test();
     ips();
     system("pause");
     return 0;
-}
+}*/
 
 void ips(){
     for(int i = 0 ; i < _BYTECODE -> functionsNumber; ++i){
