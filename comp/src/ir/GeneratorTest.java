@@ -68,7 +68,7 @@ public class GeneratorTest {
 
                 return x;
             }
-    */
+
 
     public static void main(String[] args) {
         Position position = new Position(0, 0);
@@ -225,4 +225,5 @@ public class GeneratorTest {
 
         Generator.generateCode(ir, "a.txt");
     }
+    */
 }

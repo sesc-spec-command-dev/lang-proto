@@ -22,7 +22,7 @@ import lexer.Reader;
 
 public class Parser {
 	static Token[] tokenArr;							//Token Array
-	static ArrayList<Function> FunctionOtputList;		//output list of functions
+	public static ArrayList<Function> FunctionOtputList;		//output list of functions
 	static boolean haveExeption;						//boolean variable of exception exist 
 	static int iteration;								//now iteration in Token array
 	
