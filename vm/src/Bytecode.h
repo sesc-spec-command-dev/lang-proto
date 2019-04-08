@@ -1,9 +1,7 @@
-//
-// Created by coolb on 22.10.2018.
-//
 #pragma once
-//#include "main.h"
-enum Operation{
+#include "main.h"
+
+enum Operation {
     IADD, 
 	ISUB, 
 	IMUL, 
