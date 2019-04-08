@@ -65,7 +65,7 @@ public class Parser {
 			switch(theKeyWord.word) {
 				case IF:
 					readOperator(Operators.OPEN_PARENTHESIS);		//read '('
-					condition = getExpression(true,false, null);
+					condition = getExpression(true, new Bool(false), null);
 					readOperator(Operators.OPEN_CURLY_BRACE);		//read '{'
   
 					bodyList = parserOp(bodyList);
@@ -92,7 +92,7 @@ public class Parser {
 					
 				case WHILE:
 					readOperator(Operators.OPEN_PARENTHESIS);		//read '('
-					condition = getExpression(true,false, null);
+					condition = getExpression(true, new Bool(false), null);
 					readOperator(Operators.OPEN_CURLY_BRACE);		//read '{'
 					
 					bodyList = parserOp(bodyList);
@@ -104,7 +104,7 @@ public class Parser {
 					
 				case RETURN:
 					KeyWord returnMarker = new KeyWord(null, null);		//in RETURN we may have expression consists of one word/number
-					condition = getExpression(false,false, returnMarker);
+					condition = getExpression(false,new Bool(false), returnMarker);
 					Return ret = new Return(condition);
 					operatorList.add(ret);								//add new parameter in the function parameter list
 					break;
@@ -123,7 +123,8 @@ public class Parser {
 		}
 		else {
 			if (theToken.getKind() == Kind.IDENT || theToken.getKind() == Kind.INT_LITERAL || theToken.getKind() == Kind.FLOAT_LITERAL || theToken.getKind() == Kind.STR_LITERAL) {			//if the next Token is expression
-				Expression expr = getExpression(false,false, theToken);
+				Bool falseVal = new Bool(false);
+				Expression expr = getExpression(false,falseVal, theToken);
 				SimpleExpression theExpr = new SimpleExpression(expr);
 				operatorList.add(theExpr);								//add new parameter in the function parameter list
 			}
@@ -167,7 +168,7 @@ public class Parser {
 		return new Variable(theType, name);
 	}
 	
-	private static Expression getExpression(boolean inCondition, boolean isCall, Token firstToken) {
+	private static Expression getExpression(boolean inCondition, Bool isCall, Token firstToken) {
 		ArrayList<Expression> expressionList = new ArrayList<>();
 		boolean breakFactor;
 		Expression oper;
@@ -196,7 +197,7 @@ public class Parser {
 				switch (theOp.operator) {
 
 					case COMMA:
-						if (isCall) {
+						if (isCall.booleanVal) {
 							oneArgPossib = true;                                //possibility of one argument in expression - true
 						} else {
 							throw new ParserException("Error argument - (',') in expression", exceptionPos);
@@ -211,13 +212,13 @@ public class Parser {
 
 					case CLOSE_PARENTHESIS:
 						parenthesisNumber--;
-						if (inCondition || isCall) {//if expression situate in condition, number of ')' bigger then number of '(' on 1
+						if (inCondition || isCall.booleanVal) {//if expression situate in condition, number of ')' bigger then number of '(' on 1
 							parenthesisNumber++;
 
 							if (parenthesisNumber < 0) {
 								breakFactor = true;				//expression reading complete
-								if(isCall) {
-									isCall = false;
+								if(isCall.booleanVal) {
+									isCall.booleanVal = false;
 								}
 							}
 							else {
@@ -251,11 +252,13 @@ public class Parser {
 						Operator op = (Operator) next;
 
 						if (op.operator == Operators.OPEN_PARENTHESIS) {
-							isCall = true;									//static variable to know when we should stop read fCall
 							ArrayList<Expression> exprList = new ArrayList<>();
 
-							while (isCall) {
-								exprList.add(getExpression(false, true, null));
+							Bool isCallVal = new Bool(true);
+
+							while (isCallVal.booleanVal) {
+
+								exprList.add(getExpression(false, isCallVal, null));
 							}
 
 							Expression[] parameterArr = exprList.toArray(new Expression[exprList.size()]);
