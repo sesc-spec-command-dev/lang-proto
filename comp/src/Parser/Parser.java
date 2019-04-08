@@ -18,6 +18,8 @@ import ir.Operator.While;
 import ir.Type;
 import front.Position;
 
+import lexer.Reader;
+
 public class Parser {
 	static Token[] tokenArr;							//Token Array
 	static ArrayList<Function> FunctionOtputList;		//output list of functions

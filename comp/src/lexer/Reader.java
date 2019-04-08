@@ -1,4 +1,4 @@
-package LexerPackage;
+package lexer;
 import front.Token;
 
 import java.io.BufferedReader;
@@ -28,6 +28,10 @@ public class Reader {
         }
 
         return fileContent;
+    }
+
+    public static void main(String[] args) throws IOException {
+        for (Token x : getTokens()) System.out.println(x.getKind() + " " + x.position.row + " " + x.position.column);
     }
 
     public static Token[] getTokens() throws IOException {
