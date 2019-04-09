@@ -7,6 +7,7 @@ Frame::Frame(Function &function){
     this->function = &function;
     this->iRegs = new int[function.intRegsNumber];
     this->fRegs = new float[function.floatRegsNumber];
+	this->pRegs = new void*[function.pointersNumber];
 }
 
 Frame::~Frame(){
