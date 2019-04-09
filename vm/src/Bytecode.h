@@ -1,5 +1,4 @@
 #pragma once
-#include "main.h"
 
 enum Operation{
     IADD, 
@@ -61,7 +60,7 @@ struct Command {
     float floatConst;
     char* strConst1;
 	char* strConst2;
-	const char* funcName;
+	char* funcName;
 };
 
 struct Function {
@@ -83,7 +82,6 @@ struct Field {
 struct Class {
 	const char *name;
 	int fieldsCounter;
-	//std::map <std::string, Field> *fields;
 	Field *fields;
 };
 

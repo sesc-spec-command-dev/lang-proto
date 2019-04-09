@@ -1,4 +1,4 @@
-#include "main.h"
+#include "Frame.h"
 
 using namespace std;
 
@@ -68,6 +68,25 @@ void Frame::execute()
 }
 }
 
+int find_offset(char* class_name, char* field_name) {
+	Bytecode *bytecode = _BYTECODE;
+	int offset = -1;
+
+	for (int i = 0; i < bytecode->classNumber; i++) {
+		if (!strcmp(bytecode->classes[i].name, class_name)) {
+			for (int j = 0; j < bytecode->classes[i].fieldsCounter; j++) {
+				if (!strcmp(bytecode->classes[i].fields[j].name, field_name)) {
+					offset = bytecode->classes[i].fields[j].offset;
+					break;
+				}
+			}
+			break;
+		}
+	}
+
+	return offset;
+}
+
 Function findFunction(Command *command) {
 	Function f;
 	f.name = NULL;
@@ -109,38 +128,25 @@ void Frame::_NEW()
 
 void Frame::_SETFIELD()
 {
+	Command *command = &function->commands[programCounter];
+	char* class_name = command->strConst1;
+	char* field_name = command->strConst2;
+	int offset = find_offset(class_name, field_name);
+	if (offset == -1) throw ("SETFIELD%OffsetNullError");
+	int *p = (int*)(pRegs[command->args[0]]);
+	p[(int)(offset/sizeof(int))] = iRegs[command->args[1]];
 
 }
 
 void Frame::_GETFIELD()
 {
 	Command *command = &function->commands[programCounter];
-	int *args = command->args;
-	Field *field = NULL;
-	const char *class_name = command->strConst1;
-	const char* field_name = command->strConst2;
-
-	for (int i = 0; i < _BYTECODE->classNumber; ++i) {
-		Class *curr_class = &_BYTECODE->classes[i];
-		const char *curr_class_name = curr_class->name;
-		if (!strcmp(curr_class_name, class_name)) {
-			for (int j = 0; j < curr_class->fieldsCounter; ++j) {
-				Field *curr_field = &curr_class->fields[j];
-				const char *curr_field_name = curr_field->name;
-
-				if (!strcmp(field_name, curr_field_name)) {
-					field = curr_field;
-					break;
-				}
-			}
-			break;
-		}
-	}
-
-	if(field != NULL){
-		
-	}
-	else throw("");
+	char *class_name = command->strConst1;
+	char* field_name = command->strConst2;
+	int offset = find_offset(class_name, field_name);
+	if (offset == -1) throw ("GETFIELD%OffsetNullError");
+	int *p = (int*)(pRegs[command->args[0]]);
+	this->iRegs[(int)(command->args[1])] = (int)(p[(offset / sizeof(int))]);
 }
 
 
@@ -257,7 +263,7 @@ void Frame::_FCMPNE(){
 void Frame::_FCMPEQ(){ 
     Command *command = &function->commands[programCounter]; 
     fRegs[command->result] = (fRegs[command->args[0]] == fRegs[command->args[1]]) ? 1 : 0;
-} 
+}
 
 void Frame::_GOTO(){ 
     Command *command = &function->commands[programCounter]; 
@@ -265,7 +271,7 @@ void Frame::_GOTO(){
 } 
 
 void Frame::_GOTO(int line){
-    programCounter = line; 
+    programCounter = line - 1; // -1 обусловлен тем, что при выполнении execute() после вызова _GOTO мы прибавим 1 к programCounter 
 } 
 
 void Frame::_IF(){ 

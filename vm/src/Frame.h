@@ -1,6 +1,7 @@
 #pragma once
-
-#include "main.h"
+#include <iostream>
+#include <stdlib.h>
+#include "Bytecode.h"
 
 extern Bytecode *_BYTECODE;
 
