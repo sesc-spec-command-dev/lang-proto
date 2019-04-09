@@ -32,6 +32,7 @@ void ips(){
 
      //       cout << "main" << endl;
             Frame firstFrame(_BYTECODE -> functions[i]);
+            bytecode_writer(*_BYTECODE);
             firstFrame.execute();
             break;
 

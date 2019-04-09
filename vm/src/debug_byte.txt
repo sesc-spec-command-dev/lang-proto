@@ -1,79 +1,43 @@
 BYTECODE:
-function count = 2
+function count = 1
 FUNCTIONS:
- function fibonacci123321
+ function main
 ########################
-int count 5
+int count 2
 float count 0
-commands count 10
+commands count 6
 
 command ILOAD
 args count 0
-result -842150451
-int const 1
+result 0
+int const 0
 float const -4.31602e+08
 
-command ICMPEQ
+command ILOAD
+args count 0
+result 1
+int const 10
+float const -4.31602e+08
+
+command GOTO
+args count 0
+result -842150451
+int const 4
+float const -4.31602e+08
+
+command ICMPGE
 args count 2
 0: 0
 1: 1
-result 2
+result 1
 int const -842150451
 float const -4.31602e+08
 
-command ILOAD
-args count 0
-result -842150451
-int const 2
-float const -4.31602e+08
-
-command ICMPEQ
-args count 2
-0: 0
-1: 3
-result 4
-int const -842150451
-float const -4.31602e+08
-
-command LOR
-args count 2
-0: 2
-1: 4
-result 2
-int const -842150451
-float const -4.31602e+08
-
-command ILOAD
+command WRITE_INT
 args count 0
 result -842150451
 int const 1
 float const -4.31602e+08
-
-command NEW
-args count 0
-result 12
-int const -842150451
-float const -4.31602e+08
-string1 Foo
-
-command SETFIELD
-args count 2
-0: 3
-1: 4
-result -842150451
-int const -842150451
-float const -4.31602e+08
-string1 Foo
-string2 a
-
-command GETFIELD
-args count 1
-0: 1
-result 0
-int const -842150451
-float const -4.31602e+08
-string1 Foo
-string2 a
 
 command RET
 args count 0
@@ -81,66 +45,4 @@ result -842150451
 int const -842150451
 float const -4.31602e+08
 ########################
- function fibonacci118
-########################
-int count 2
-float count 0
-commands count 5
-
-command ILOAD
-args count 0
-result -842150451
-int const 2
-float const -4.31602e+08
-
-command LOR
-args count 2
-0: 2
-1: 5
-result 2
-int const -842150451
-float const -4.31602e+08
-
-command WRITE_STR
-args count 0
-result -842150451
-int const -842150451
-float const -4.31602e+08
-string1 qwerty1234
-
-command READ_INT
-args count 0
-result -842150451
-int const 40
-float const -4.31602e+08
-
-command ICALL
-args count 6
-0: 1
-1: 1
-2: 28
-3: 759
-4: 14
-5: 773
-result 344
-int const -842150451
-float const -4.31602e+08
-string1 fibonacci
-########################
-class count 2
- class Foo
-************************
-name a
-type int
-name b
-type int
-************************
- class Foo22
-************************
-name a
-type string
-name b
-type int
-name c
-type float
-************************
+class count 0

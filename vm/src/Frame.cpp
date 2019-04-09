@@ -238,11 +238,11 @@ void Frame::_FCMPEQ(){
 
 void Frame::_GOTO(){ 
     Command *command = &function->commands[programCounter]; 
-    programCounter = command -> intConst; 
+    programCounter = (command -> intConst) - 1; 
 } 
 
 void Frame::_GOTO(int line){
-    programCounter = line; 
+    programCounter = line ; 
 } 
 
 void Frame::_IF(){ 
@@ -257,7 +257,7 @@ void Frame::_WRITE_INT(){
 
 void Frame::_WRITE_FLOAT() {
     Command *command = &function->commands[programCounter];
-    std::cout << fRegs[command->args[0]] << std::flush;
+    std::cout << fRegs[command -> intConst] << std::flush;
 }
 
 void Frame::_WRITE_STR() {

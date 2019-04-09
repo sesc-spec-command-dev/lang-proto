@@ -60,7 +60,6 @@ int specialArgsType(Operation op) {
     case GOTO:
     case IF:
         return 1;
-    case FLOAD:
     case WRITE_FLOAT:
     case READ_FLOAT:
         return 2;
@@ -70,12 +69,13 @@ int specialArgsType(Operation op) {
     case WRITE_STR:
         return 4;
     case SETFIELD:
-        return 5;
     case GETFIELD:
-        return 6;
+        return 5;
     case NEW:
-        return 7;
+        return 6;
     case ILOAD:
+        return 7;
+    case FLOAD:
         return 8;
     default:
         return 0;
@@ -148,6 +148,7 @@ int resultCount(Operation op) {
     case FCMPGE:
     case NEW:
     case GETFIELD:
+    case SETFIELD:
     case ILOAD:
     case FLOAD:
         return 1;
@@ -174,7 +175,7 @@ void add_args(std::vector<std::string> s, Command &com) {
         break;
 
     case 2:
-        com.floatConst = std::stof(s[s.size() - 1]);
+        com.intConst = std::stoi(s[s.size() - 1]);
         break;
 
     case 3:
@@ -199,30 +200,20 @@ void add_args(std::vector<std::string> s, Command &com) {
         com.strConst2 = new char[s[2].size()];
         std::strcpy(com.strConst2, s[2].c_str());
 
-        com.argsCount = 2;
-        com.args = new int[com.argsCount];
-        com.args[0] = std::stoi(s[3]);
-        com.args[1] = std::stoi(s[4]);
-        break;
-
-    case 6:
-        com.strConst1 = new char[s[1].size()];
-        std::strcpy(com.strConst1, s[1].c_str());
-
-        com.strConst2 = new char[s[2].size()];
-        std::strcpy(com.strConst2, s[2].c_str());
-
         com.argsCount = 1;
         com.args = new int[com.argsCount];
         com.args[0] = std::stoi(s[3]);
         break;
 
-    case 7:
+    case 6:
         com.strConst1 = new char[s[1].size()];
         std::strcpy(com.strConst1, s[1].c_str());
         break;
-    case 8:
+    case 7:
         com.intConst = std::stoi(s[1]);
+        break;
+    case 8:
+        com.floatConst = std::stof(s[1]);
         break;
     }
 }
@@ -288,6 +279,8 @@ Bytecode* read_bytecode(std::string name) {
 
             class_list[i].fields[j].className = new char[sizeof(class_list[i].name)];
             std::strcpy(class_list[i].fields[j].className, class_list[i].name);
+
+            class_list[i].fields[j].offset = j * 4;
         }
 
     }
