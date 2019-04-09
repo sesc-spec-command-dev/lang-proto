@@ -57,8 +57,9 @@ class Frame{
     void _GOTO(int line); 
     void _IF(); 
     void _WRITE_INT(); 
-    void _WRITE_FLOAT(); 
-    void _READ_INT(); 
+    void _WRITE_FLOAT();
+    void _WRITE_STR();
+    void _READ_INT();
     void _READ_FLOAT(); 
     
     void _ICALL();

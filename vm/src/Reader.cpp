@@ -39,8 +39,7 @@ Operation operationByName(std::string str) {
     if (str == "FCMPGE")     return FCMPGE;
     if (str == "GOTO")       return GOTO;
     if (str == "IF")         return IF;
-    if (str == "FRET")       return FRET;
-    if (str == "IRET")       return IRET;
+    if (str == "RET")       return RET;
     if (str == "WRITE_INT")  return WRITE_INT;
     if (str == "WRITE_FLOAT")return WRITE_FLOAT;
     if (str == "READ_INT")   return READ_INT;
@@ -56,7 +55,6 @@ Operation operationByName(std::string str) {
 
 int specialArgsType(Operation op) {
     switch (op) {
-    case ILOAD:
     case WRITE_INT:
     case READ_INT:
     case GOTO:
@@ -77,6 +75,8 @@ int specialArgsType(Operation op) {
         return 6;
     case NEW:
         return 7;
+    case ILOAD:
+        return 8;
     default:
         return 0;
     }
@@ -111,6 +111,7 @@ int defaultArgsCount(Operation op) {
         return 2;
     case FMOV:
     case IMOV:
+    case IF:
         return 1;
     default:
         return 0;
@@ -147,6 +148,8 @@ int resultCount(Operation op) {
     case FCMPGE:
     case NEW:
     case GETFIELD:
+    case ILOAD:
+    case FLOAD:
         return 1;
     default:
         return 0;
@@ -217,6 +220,9 @@ void add_args(std::vector<std::string> s, Command &com) {
     case 7:
         com.strConst1 = new char[s[1].size()];
         std::strcpy(com.strConst1, s[1].c_str());
+        break;
+    case 8:
+        com.intConst = std::stoi(s[1]);
         break;
     }
 }
@@ -322,8 +328,7 @@ void bytecode_writer(Bytecode & B) {
         "FCMPGE",
         "GOTO", 
         "IF",
-        "FRET",
-        "IRET",
+        "RET",
         "WRITE_INT",
         "WRITE_FLOAT",
         "READ_INT",
@@ -375,16 +380,4 @@ void bytecode_writer(Bytecode & B) {
         out << "************************" << std::endl;
     }
     out.close();
-}
-
-int main(int argc, char** argv) {
-
-    if (argc != 2) {
-        std::cout << "bad arguments" << std::endl;
-        return 0;
-    } else {
-        Bytecode* B = read_bytecode(argv[1]);
-        bytecode_writer(*B);
-    }
-    return 0;
 }

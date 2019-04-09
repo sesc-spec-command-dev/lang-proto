@@ -54,22 +54,21 @@ void Frame::execute()
             case ICALL: _ICALL(); break;
             case WRITE_INT: _WRITE_INT();     break;
             case WRITE_FLOAT: _WRITE_FLOAT(); break; 
+            case WRITE_STR: _WRITE_STR(); break;
             case READ_INT: _READ_INT();		  break;
             case READ_FLOAT: _READ_FLOAT();	  break;
 			case NEW: _NEW(); break;
 			case SETFIELD: _SETFIELD(); break;
 			case GETFIELD: _GETFIELD(); break;
-             
-            case IRET: break;      break;
-            case FRET: break;      break;
+
+            case RET: return;
         }
         programCounter++; 
 
         if (programCounter == this->function->commandsNumber) {
             throw exception("No ret func");
         }
-    
-}
+    }
 }
 
 Function findFunction(Command *command) {
@@ -253,15 +252,20 @@ void Frame::_IF(){
 
 void Frame::_WRITE_INT(){ 
     Command *command = &(function->commands[programCounter]);
-    std::cout << iRegs[command -> args[0]] << std::flush; 
+    std::cout << iRegs[command -> intConst] << std::flush; 
 } 
 
-void Frame::_WRITE_FLOAT(){ 
-    Command *command = &function->commands[programCounter]; 
-    std::cout << fRegs[command -> args[0]] << std::flush; 
-} 
+void Frame::_WRITE_FLOAT() {
+    Command *command = &function->commands[programCounter];
+    std::cout << fRegs[command->args[0]] << std::flush;
+}
 
-void Frame::_READ_INT(){ 
+void Frame::_WRITE_STR() {
+    Command *command = &function->commands[programCounter];
+    std::cout << command->strConst1 << std::flush;
+}
+
+void Frame::_READ_INT(){
     Command *command = &function->commands[programCounter]; 
     std::cin >> iRegs[command -> result]; 
 } 

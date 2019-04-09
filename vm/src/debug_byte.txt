@@ -5,7 +5,7 @@ FUNCTIONS:
 ########################
 int count 5
 float count 0
-commands count 9
+commands count 10
 
 command ILOAD
 args count 0
@@ -74,6 +74,12 @@ int const -842150451
 float const -4.31602e+08
 string1 Foo
 string2 a
+
+command RET
+args count 0
+result -842150451
+int const -842150451
+float const -4.31602e+08
 ########################
  function fibonacci118
 ########################

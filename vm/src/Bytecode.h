@@ -35,8 +35,7 @@ enum Operation {
 	
 	GOTO, // 
 	IF, 
-	FRET, 
-	IRET, 
+    RET, 
 	WRITE_INT, 
 	WRITE_FLOAT, 
 	READ_INT, 
@@ -94,3 +93,6 @@ struct Bytecode {
     int classNumber;
     Class *classes;
 };
+
+Bytecode* read_bytecode(std::string name);
+void bytecode_writer(Bytecode & B);
