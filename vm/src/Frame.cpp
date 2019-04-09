@@ -10,7 +10,6 @@ Frame::Frame(Function &function){
     this->function = &function;
     this->iRegs = new int[function.intRegsNumber];
     this->fRegs = new float[function.floatRegsNumber];
-	this->pRegs = new int[function.pointersNumber];
 }
 
 Frame::~Frame(){
@@ -101,10 +100,10 @@ void Frame::_NEW()
 {
 	Command *command = &function->commands[programCounter];
 	Bytecode *bytecode = _BYTECODE;
-	int p;
+	void *p = NULL;
 	for (int i = 0; i < bytecode->classNumber; i++) {
 		if (!strcmp(bytecode->classes[i].name, command->strConst1)) {
-			p = (int)malloc(sizeof(int) * bytecode->classes[i].fieldsCounter);
+			p = malloc(sizeof(int) * bytecode->classes[i].fieldsCounter);
 		}
 	}
 	pRegs[command->result] = p;
@@ -117,7 +116,33 @@ void Frame::_SETFIELD()
 
 void Frame::_GETFIELD()
 {
+	Command *command = &function->commands[programCounter];
+	int *args = command->args;
+	Field *field = NULL;
+	const char *class_name = command->strConst1;
+	const char* field_name = command->strConst2;
 
+	for (int i = 0; i < _BYTECODE->classNumber; ++i) {
+		Class *curr_class = &_BYTECODE->classes[i];
+		const char *curr_class_name = curr_class->name;
+		if (!strcmp(curr_class_name, class_name)) {
+			for (int j = 0; j < curr_class->fieldsCounter; ++j) {
+				Field *curr_field = &curr_class->fields[j];
+				const char *curr_field_name = curr_field->name;
+
+				if (!strcmp(field_name, curr_field_name)) {
+					field = curr_field;
+					break;
+				}
+			}
+			break;
+		}
+	}
+
+	if(field != NULL){
+		
+	}
+	else throw("");
 }
 
 
