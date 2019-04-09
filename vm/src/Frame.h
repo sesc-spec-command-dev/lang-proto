@@ -10,7 +10,7 @@ class Frame{
         int programCounter;
         Function *function;
     public:
-		int *pRegs;
+		void **pRegs;
         int *iRegs;
         float *fRegs;
         Frame(Function &function);

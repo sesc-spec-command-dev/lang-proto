@@ -59,8 +59,9 @@ struct Command {
 
     int intConst;
     float floatConst;
-    const char* strConst;
-    const char* funcName;
+    char* strConst1;
+	char* strConst2;
+	const char* funcName;
 };
 
 struct Function {
@@ -82,6 +83,7 @@ struct Field {
 struct Class {
 	const char *name;
 	int fieldsCounter;
+	//std::map <std::string, Field> *fields;
 	Field *fields;
 };
 
