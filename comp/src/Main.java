@@ -10,6 +10,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Parser theParser = new Parser(Reader.getTokens());
+        theParser.parserfunc();
         Function[] funcArr = theParser.FunctionOtputList.toArray(new Function[theParser.FunctionOtputList.size()]);
         IR ir = new IR(funcArr);
         ir.printIR("test parsing output");

@@ -151,7 +151,7 @@ public class Generator{
 
                 generateBody(expression.thenPart);
 
-                if (expression.elsePart.length == 0) {
+                if (expression.elsePart == null) {
                     commands.add(pos, "GOTO " + (commands.size() + 1));
                 } else {
                     commands.add(pos, "GOTO " + (commands.size() + 2));
@@ -179,14 +179,16 @@ public class Generator{
         println(ir.functions.length);
 
         for (Function function : ir.functions) {
-            for (Function.Parameter parameter : function.parameters) {
-                switch (parameter.type) {
-                    case INT:
-                        varRegs.put(parameter.name, getIReg());
-                        break;
-                    case FLOAT:
-                        varRegs.put(parameter.name, getFReg());
-                        break;
+            if (function.parameters != null) {
+                for (Function.Parameter parameter : function.parameters) {
+                    switch (parameter.type) {
+                        case INT:
+                            varRegs.put(parameter.name, getIReg());
+                            break;
+                        case FLOAT:
+                            varRegs.put(parameter.name, getFReg());
+                            break;
+                    }
                 }
             }
 
