@@ -130,7 +130,7 @@ public class Parser {
 			}
 			else {
 				if (theToken.getKind() == Kind.OPERATOR) {
-					iteration--;
+      				iteration--;
 					readOperator(Operators.CLOSE_CURLY_BRACE);			//if during token is '}'
 					return operatorList;								//return operator list
 				}
@@ -199,6 +199,7 @@ public class Parser {
 					case COMMA:
 						if (isCall.booleanVal) {
 							oneArgPossib = true;                                //possibility of one argument in expression - true
+							breakFactor = true;
 						} else {
 							throw new ParserException("Error argument - (',') in expression", exceptionPos);
 						}
@@ -213,12 +214,13 @@ public class Parser {
 					case CLOSE_PARENTHESIS:
 						parenthesisNumber--;
 						if (inCondition || isCall.booleanVal) {//if expression situate in condition, number of ')' bigger then number of '(' on 1
-							parenthesisNumber++;
 
 							if (parenthesisNumber < 0) {
 								breakFactor = true;				//expression reading complete
 								if(isCall.booleanVal) {
 									isCall.booleanVal = false;
+									oneArgPossib = true;
+									parenthesisNumber++;
 								}
 							}
 							else {
@@ -257,18 +259,17 @@ public class Parser {
 							Bool isCallVal = new Bool(true);
 
 							while (isCallVal.booleanVal) {
-
 								exprList.add(getExpression(false, isCallVal, null));
 							}
 
 							Expression[] parameterArr = exprList.toArray(new Expression[exprList.size()]);
 							FunctionCall fCall = new FunctionCall(name, parameterArr);
 							expressionList.add(fCall);
+							oneArgPossib = true;
 							b = true;
 						}
 						else {
 							iteration--;										//it is not function call, move iteration back
-
 						}
 					}
 					else {
@@ -276,7 +277,6 @@ public class Parser {
 					}
 				}
 				if (!b) {
-					theToken = getIterToken();                //updating iteration token
 					if (theToken.getKind() != Kind.IDENT && theToken.getKind() != Kind.INT_LITERAL && theToken.getKind() != Kind.FLOAT_LITERAL && theToken.getKind() != Kind.STR_LITERAL) {
 						throw new ParserException("Error argument in expression", exceptionPos);
 					}
@@ -286,7 +286,7 @@ public class Parser {
 			}
 		}
 
-		if (parenthesisNumber != 0) {
+		if (parenthesisNumber != 0 && !isCall.booleanVal && !inCondition) {
 			throw new ParserException("invalide expression", exceptionPos);
 		}
 

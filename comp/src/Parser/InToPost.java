@@ -1,8 +1,6 @@
 package Parser;
 import java.util.ArrayList;  
 
-import front.Token;
-import front.Token.Operator;
 import front.Token.Operators;
 import ir.Expression;
 import ir.Expression.Operation;
