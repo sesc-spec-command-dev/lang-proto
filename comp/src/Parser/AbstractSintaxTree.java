@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import ir.Expression;
 import ir.Expression.Operand;
 import ir.Expression.Operation;
+import ir.Expression.FunctionCall;
 
 public class AbstractSintaxTree {
 	
@@ -27,15 +28,20 @@ public class AbstractSintaxTree {
 				theOper.left = leftExpr;
 				theStack.push(theOper);
 			}
-			else {
+			else if(expr instanceof Operand) {
 				Operand operand = (Operand) expr;					//the element is variable/number
 				theStack.push(operand);										//push element in stack
+			}
+			else {													//Function call case
+				FunctionCall fCall = (FunctionCall) expr;
+				theStack.push(fCall);								//push function call in the stack as a simple operand
 			}
 		}
 		
 		if(theStack.size() > 1 || (!(theStack.peek() instanceof Operation) && oneArgumentPossib != true)) {
 			throw new ParserException("Invalid expression", theStack.peek().position());			//the tree do not build correctly
 		}
+
 		return theStack.pop();
 	}
 }

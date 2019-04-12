@@ -5,6 +5,7 @@ import front.Token.Operators;
 import ir.Expression;
 import ir.Expression.Operation;
 import ir.Expression.Operand;
+import ir.Expression.FunctionCall;
 
 public class InToPost {				//make postfix entry(include throwing an exception if we have incorrect token/operator)
 	ArrayList<Expression> output;
@@ -48,6 +49,10 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 					default:
 						throw new ParserException("Incorrect operand token, has to be an ident/operator", operand.value.position);    //we have incorrect token
 				}
+			}
+			else {												//function call case
+				FunctionCall fCall = (FunctionCall) expr;
+				output.add(fCall);								//add function call in output list as simple operand
 			}
 		}
 			

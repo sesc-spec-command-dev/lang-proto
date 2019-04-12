@@ -248,14 +248,27 @@ public class IR {
 				fCallOutputStr += fCall.link.word + "(";
 
 				for (int i = 0; i < fCall.parameterList.length; i++) {
-					fCallOutputStr += Arrays.toString(outputExpressionTree(fCall.parameterList[i]));
-					fCallOutputStr += ", ";
+					fCallOutputStr += arrayToString(outputExpressionTree(fCall.parameterList[i]));
+
+					if (i < fCall.parameterList.length - 1) {
+						fCallOutputStr += ", ";
+					}
 				}
 				fCallOutputStr += ")";
 
 				return fCallOutputStr;
 			}
 		}
+	}
+
+	public static String arrayToString(Object[] arr) {
+    	String retStr = "";
+
+    	for (int i = 0; i < arr.length; i++) {
+			retStr += arr[i];
+		}
+
+		return retStr;
 	}
     
     private static void printSpaces(int spaceNumber) {
