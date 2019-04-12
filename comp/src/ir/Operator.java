@@ -50,4 +50,9 @@ public abstract class Operator {
         }
     }
 
+    public static class Write extends Operator {
+        public Expression writeExpression;
+
+        public Write(Expression expression) {this.writeExpression = expression;}
+    }
 }
