@@ -20,6 +20,7 @@ import front.Position;
 import ir.Expression.FunctionCall;
 import ir.Expression.Operation;
 import ir.Expression.Operand;
+import ir.Operator.Write;
 
 public class Parser {
 	static Token[] tokenArr;							//Token Array
@@ -65,7 +66,7 @@ public class Parser {
 			switch(theKeyWord.word) {
 				case IF:
 					readOperator(Operators.OPEN_PARENTHESIS);		//read '('
-					condition = getExpression(true, new Bool(false), null);
+					condition = getExpression(true, new Bool(false), false);
 					readOperator(Operators.OPEN_CURLY_BRACE);		//read '{'
   
 					bodyList = parserOp(bodyList);
@@ -92,7 +93,7 @@ public class Parser {
 					
 				case WHILE:
 					readOperator(Operators.OPEN_PARENTHESIS);		//read '('
-					condition = getExpression(true, new Bool(false), null);
+					condition = getExpression(true, new Bool(false), false);
 					readOperator(Operators.OPEN_CURLY_BRACE);		//read '{'
 					
 					bodyList = parserOp(bodyList);
@@ -103,12 +104,20 @@ public class Parser {
 					break;
 					
 				case RETURN:
-					KeyWord returnMarker = new KeyWord(null, null);		//in RETURN we may have expression consists of one word/number
-					condition = getExpression(false,new Bool(false), returnMarker);
+					boolean marker = true;		//in RETURN we may have expression consists of one word/number
+					condition = getExpression(false,new Bool(false), marker);
 					Return ret = new Return(condition);
 					operatorList.add(ret);								//add new parameter in the function parameter list
 					break;
-					
+
+				case WRITE:
+					readOperator(Operators.OPEN_PARENTHESIS);			//read '('
+					Expression writeExp = getExpression(true, new Bool(false), true);	//get print expression (we may have expression consists of one word/number)
+					Write write = new Write(writeExp);
+					operatorList.add(write);
+					readOperator(Operators.SEMICOLON);					//';' at the end of Write operator
+					break;
+
 				case INT:												//variable declaration
 					operatorList.add(getVariable(Type.INT));
 					break;
@@ -124,7 +133,8 @@ public class Parser {
 		else {
 			if (theToken.getKind() == Kind.IDENT || theToken.getKind() == Kind.INT_LITERAL || theToken.getKind() == Kind.FLOAT_LITERAL || theToken.getKind() == Kind.STR_LITERAL) {			//if the next Token is expression
 				Bool falseVal = new Bool(false);
-				Expression expr = getExpression(false,falseVal, theToken);
+				iteration--;
+				Expression expr = getExpression(false, falseVal, false);
 				SimpleExpression theExpr = new SimpleExpression(expr);
 				operatorList.add(theExpr);								//add new parameter in the function parameter list
 			}
@@ -168,20 +178,11 @@ public class Parser {
 		return new Variable(theType, name);
 	}
 	
-	private static Expression getExpression(boolean inCondition, Bool isCall, Token firstToken) {
+	private static Expression getExpression(boolean inCondition, Bool isCall, boolean marker) {
 		ArrayList<Expression> expressionList = new ArrayList<>();
 		boolean breakFactor;
 		Expression oper;
-		boolean oneArgPossib = false;									//one argument possibility
-		
-		if (firstToken != null) {
-			if (firstToken.getKind() == Kind.KEYWORD) {					//it is return marker
-				oneArgPossib = true;									//possibility of one argument in expression - true
-			}
-			else {
-				iteration--;
-			}
-		}
+		boolean oneArgPossib = marker;									//one argument possibility
 		
 		int parenthesisNumber = 0;
 		Position exceptionPos = null;
@@ -259,7 +260,7 @@ public class Parser {
 							Bool isCallVal = new Bool(true);
 
 							while (isCallVal.booleanVal) {
-								exprList.add(getExpression(false, isCallVal, null));
+								exprList.add(getExpression(false, isCallVal, false));
 							}
 
 							Expression[] parameterArr = exprList.toArray(new Expression[exprList.size()]);

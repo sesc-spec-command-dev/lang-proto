@@ -20,7 +20,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import ir.Operator.Write;
 
 public class IR {
     public final Function[] functions;
@@ -137,6 +137,17 @@ public class IR {
 						printSpaces(spaceNumber + 7);
 						pw.print("value - ");
 						result = outputExpressionTree(ret.value);
+						printExpressionTree(result);
+
+						pw.println();
+					}
+
+					if (theOp instanceof Write) {
+						Write write = (Write) theOp;
+						pw.println("Write");
+						printSpaces(spaceNumber + 7);
+						pw.print("write expression - ");
+						result = outputExpressionTree(write.writeExpression);
 						printExpressionTree(result);
 
 						pw.println();

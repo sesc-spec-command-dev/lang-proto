@@ -30,7 +30,7 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 						operationStack.push(operation);            //push in to the stack immediately ( '(' )
 						break;
 					case CLOSE_PARENTHESIS:
-						getParen();                //get all operators to ')' from stack
+						getParen(expr);                //get all operators to ')' from stack
 						break;
 					default:
 						getOper(operation, operation.operation.operator.priority(operation.operation));    //other operations case
@@ -63,17 +63,24 @@ public class InToPost {				//make postfix entry(include throwing an exception if
 		return output;
 	}
 		
-	private void getParen() {			//was read ')'
+	private void getParen(Expression expr) {			//was read ')'
+		boolean b = false;
+
 		while(!operationStack.isEmpty()) {				//while stack is not empty extract operators
 			Operation operation = operationStack.pop();
 			
 			if(operation.operation.operator == Operators.OPEN_PARENTHESIS) {						//if new extract operator is '('
+				b = true;
 				break;								//stop extract operator
 			}
 			else {
 				output.add(operation);					//push extract operator in output string
 			}
-		} //? check (
+		}
+
+		if (!b) {
+			throw new ParserException("missed '(' in expression", expr.position());
+		}
 	}
 		
 	private void getOper(Operation pasteOperation, int priority) {
