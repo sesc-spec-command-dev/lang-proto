@@ -242,7 +242,7 @@ void Frame::_GOTO(){
 } 
 
 void Frame::_GOTO(int line){
-    programCounter = line ; 
+    programCounter = line - 1 ; 
 } 
 
 void Frame::_IF(){ 

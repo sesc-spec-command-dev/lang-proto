@@ -5,7 +5,7 @@ FUNCTIONS:
 ########################
 int count 2
 float count 0
-commands count 6
+commands count 5
 
 command ILOAD
 args count 0
@@ -19,24 +19,17 @@ result 1
 int const 10
 float const -4.31602e+08
 
-command GOTO
-args count 0
+command IMOV
+args count 1
+0: 1
 result -842150451
-int const 4
-float const -4.31602e+08
-
-command ICMPGE
-args count 2
-0: 0
-1: 1
-result 1
 int const -842150451
 float const -4.31602e+08
 
 command WRITE_INT
 args count 0
 result -842150451
-int const 1
+int const 0
 float const -4.31602e+08
 
 command RET
