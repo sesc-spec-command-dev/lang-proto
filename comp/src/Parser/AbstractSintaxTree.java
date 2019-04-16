@@ -1,44 +1,47 @@
 package Parser;
 
-import java.util.ArrayList; 
-import front.Token;
-import front.Token.Kind;
-import front.Token.Operator;
-import front.Token.Operators;
+import java.util.ArrayList;
 import ir.Expression;
 import ir.Expression.Operand;
 import ir.Expression.Operation;
+import ir.Expression.FunctionCall;
 
 public class AbstractSintaxTree {
 	
-	static Expression buildAST(Token[] inputTokenArr, boolean isReturnExpr) {	
+	static Expression buildAST(Expression[] inputExprArr, boolean oneArgumentPossib) {
 		
-		InToPost converter = new InToPost(inputTokenArr);
-		ArrayList<Token> tokenList = converter.doTrans(inputTokenArr);
+		InToPost converter = new InToPost(inputExprArr);
+		ArrayList<Expression> exprList = converter.doTrans(inputExprArr);
 
 		java.util.Stack<Expression> theStack = new java.util.Stack<>();
-		Token theToken;
+		Expression expr;
 		
-		for (int i = 0; i < tokenList.size(); i++) {
-			theToken = tokenList.get(i);
+		for (int i = 0; i < exprList.size(); i++) {
+			expr = exprList.get(i);
 			
-			if (theToken.getKind() == Kind.OPERATOR) {						//the element is operation
-				Operator theOp = (Operator) theToken;
+			if (expr instanceof Operation) {						//the element is operation
+				Operation theOper = (Operation) expr;
 				Expression rightExpr = theStack.pop();
 				Expression leftExpr = theStack.pop();
 				
-				Operation theOper = new Operation(theOp,leftExpr,rightExpr);
+				theOper.right = rightExpr;
+				theOper.left = leftExpr;
 				theStack.push(theOper);
 			}
-			else {
-				Operand operand = new Operand(theToken);					//the element is variable/number
+			else if(expr instanceof Operand) {
+				Operand operand = (Operand) expr;					//the element is variable/number
 				theStack.push(operand);										//push element in stack
+			}
+			else {													//Function call case
+				FunctionCall fCall = (FunctionCall) expr;
+				theStack.push(fCall);								//push function call in the stack as a simple operand
 			}
 		}
 		
-		if(theStack.size() > 1 || (!(theStack.peek() instanceof Operation) && isReturnExpr != true)) {
+		if(theStack.size() > 1 || (!(theStack.peek() instanceof Operation) && oneArgumentPossib != true)) {
 			throw new ParserException("Invalid expression", theStack.peek().position());			//the tree do not build correctly
 		}
+
 		return theStack.pop();
 	}
 }

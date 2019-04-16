@@ -44,7 +44,8 @@ public abstract class Token {
         IF,
         ELSE,
         WHILE,
-        RETURN;
+        RETURN,
+        WRITE;
 
         public String getText() {
             return name().toLowerCase();

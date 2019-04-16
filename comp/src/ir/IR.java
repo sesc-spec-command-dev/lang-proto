@@ -9,16 +9,18 @@ import ir.Operator.Variable;
 import ir.Operator.While;
 import ir.Expression.Operation;
 import ir.Expression.Operand;
+import ir.Expression.FunctionCall;
 import front.Token.Ident;
 import front.Token.IntLiteral;
 import front.Token.FloatLiteral;
 import front.Token.StrLiteral;
 
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import ir.Operator.Write;
 
 public class IR {
     public final Function[] functions;
@@ -140,6 +142,17 @@ public class IR {
 						pw.println();
 					}
 
+					if (theOp instanceof Write) {
+						Write write = (Write) theOp;
+						pw.println("Write");
+						printSpaces(spaceNumber + 7);
+						pw.print("write expression - ");
+						result = outputExpressionTree(write.writeExpression);
+						printExpressionTree(result);
+
+						pw.println();
+					}
+
 					if (theOp instanceof SimpleExpression) {        //"SimpleExpression" case
 						SimpleExpression expr = (SimpleExpression) theOp;
 
@@ -215,29 +228,58 @@ public class IR {
     		return theOper.operation.operator.value;
 		}
 		else {
-			Operand op = (Operand) expr;
-			Token val = op.value;
+			if(expr instanceof Operand) {
+				Operand op = (Operand) expr;
+				Token val = op.value;
 
-			switch(val.getKind()) {
-				case IDENT:
-					Ident ident = (Ident) val;
-					return ident.word;
+				switch (val.getKind()) {
+					case IDENT:
+						Ident ident = (Ident) val;
+						return ident.word;
 
-				case INT_LITERAL:
-					IntLiteral intLit = (IntLiteral) val;
-					return Integer.toString(intLit.value);
+					case INT_LITERAL:
+						IntLiteral intLit = (IntLiteral) val;
+						return Integer.toString(intLit.value);
 
-				case FLOAT_LITERAL:
-					FloatLiteral fLit = (FloatLiteral) val;
-					return Float.toString(fLit.value);
+					case FLOAT_LITERAL:
+						FloatLiteral fLit = (FloatLiteral) val;
+						return Float.toString(fLit.value);
 
-				case STR_LITERAL:
-					StrLiteral strLit = (StrLiteral) val;
-					return strLit.value;
-				default:
-					throw new ParserException("Incorrect operand value in expression",val.position);
+					case STR_LITERAL:
+						StrLiteral strLit = (StrLiteral) val;
+						return strLit.value;
+					default:
+						throw new ParserException("Incorrect operand value in expression", val.position);
+				}
+			}
+			else {
+				FunctionCall fCall = (FunctionCall) expr;
+				String fCallOutputStr = "";
+
+				fCallOutputStr += fCall.link.word + "(";
+
+				for (int i = 0; i < fCall.parameterList.length; i++) {
+					fCallOutputStr += arrayToString(outputExpressionTree(fCall.parameterList[i]));
+
+					if (i < fCall.parameterList.length - 1) {
+						fCallOutputStr += ", ";
+					}
+				}
+				fCallOutputStr += ")";
+
+				return fCallOutputStr;
 			}
 		}
+	}
+
+	public static String arrayToString(Object[] arr) {
+    	String retStr = "";
+
+    	for (int i = 0; i < arr.length; i++) {
+			retStr += arr[i];
+		}
+
+		return retStr;
 	}
     
     private static void printSpaces(int spaceNumber) {

@@ -2,6 +2,7 @@ package ir;
 
 import front.Position;
 import front.Token;
+import front.Token.Ident;
 
 public abstract class Expression {
 	public abstract Position position();
@@ -21,8 +22,8 @@ public abstract class Expression {
 
     public static class Operation extends Expression {			
         public final Token.Operator operation;
-        public final Expression left;							
-        public final Expression right;							
+        public Expression left;
+        public Expression right;
 
         public Operation(Token.Operator operation, Expression left, Expression right) {
             this.operation = operation;
@@ -35,6 +36,19 @@ public abstract class Expression {
 			return operation.position;
 		}
 
+    }
+
+    public static class FunctionCall extends Expression {
+        public final Ident link;
+        public Expression[] parameterList;
+
+        public FunctionCall(Ident link, Expression[] pList) {
+            this.link = link;
+            this.parameterList = pList;
+        }
+
+        @Override
+        public Position position() {return link.position;}
     }
 
 }
