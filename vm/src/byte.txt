@@ -1,0 +1,11 @@
+1
+main
+2
+0
+0
+4
+ILOAD 0 0
+ILOAD 10 1
+WRITE_INT 1
+RET
+0

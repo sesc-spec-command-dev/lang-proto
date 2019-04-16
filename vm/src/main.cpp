@@ -1,5 +1,6 @@
 #include "Bytecode.h"
 #include "Frame.h"
+#include "Reader.h"
 
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 using namespace std;
@@ -14,11 +15,11 @@ Bytecode *test2() {
 	// Описание класса
 	Class *classes = new Class[1];
 	Field *fields = new Field[1];
-	fields[0].name = "a";
-	fields[0].className = "Foo";
-	fields[0].type = "int";
+	fields[0].name = (char*)"a";
+	fields[0].className = (char*)"Foo";
+	fields[0].type = (char*)"int";
 	fields[0].offset = 0;
-	classes[0].name = "Foo";
+	classes[0].name = (char*)"Foo";
 	classes[0].fieldsCounter = 1;
 	classes[0].fields = fields;
 	
@@ -90,7 +91,7 @@ Bytecode *test1() {
 
 	c1[2].operation = RET;
 
-	functions[1].name = "lol";
+	functions[1].name = (char*)"lol";
 	functions[1].commands = c1;
 	functions[1].commandsNumber = 3;
 	functions[1].intRegsNumber = 2;
@@ -111,7 +112,7 @@ Bytecode *test1() {
 
 	c2[3].operation = RET;
 
-	functions[0].name = "main";
+	functions[0].name = (char*)"main";
 	functions[0].commands = c2;
 	functions[0].intRegsNumber = 2;
 	functions[0].floatRegsNumber = 0;
@@ -124,7 +125,7 @@ Bytecode *test1() {
 }
 
 int main(int argc, char** argv) {    
-    _BYTECODE = test2();
+	_BYTECODE = read_bytecode("C:\\Users\\User\\Documents\\GitHub\\lang-proto\\vm\\src\\byte.txt");
     ips();
     system("pause");
     return 0;
@@ -132,16 +133,10 @@ int main(int argc, char** argv) {
 
 void ips(){
     for(int i = 0 ; i < _BYTECODE -> functionsNumber; ++i){
-
-        cout << i << endl;
-
         if(!strcmp("main",_BYTECODE -> functions[i].name)) {
-
-            cout << "main" << endl;
             Frame firstFrame(_BYTECODE -> functions[i]);
             firstFrame.execute();
             break;
-
         }
     }
     

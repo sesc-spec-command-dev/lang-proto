@@ -38,6 +38,7 @@ enum Operation{
     RET, 
     WRITE_INT, 
     WRITE_FLOAT, 
+	WRITE_STR,
     READ_INT, 
     READ_FLOAT, 
     ICALL, 
@@ -64,7 +65,7 @@ struct Command {
 };
 
 struct Function {
-    const char* name;
+    char* name;
 	int pointersNumber;
     int intRegsNumber;
     int floatRegsNumber;
@@ -73,14 +74,14 @@ struct Function {
 };
 
 struct Field {
-	const char *name;
-	const char *className;
-	const char *type;
+	char *name;
+	char *className;
+	char *type;
 	int offset;
 };
 
 struct Class {
-	const char *name;
+	char *name;
 	int fieldsCounter;
 	Field *fields;
 };
