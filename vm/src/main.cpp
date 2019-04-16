@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "Bytecode.h"
 #include "Frame.h"
+#include "Reader.h"
 
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 using namespace std;
@@ -25,17 +26,11 @@ int main(int argc, char** argv) {
 
 void ips(){
     for(int i = 0 ; i < _BYTECODE -> functionsNumber; ++i){
-
-    //    cout << i << endl;
-
         if(!strcmp("main",_BYTECODE -> functions[i].name)) {
-
-     //       cout << "main" << endl;
             Frame firstFrame(_BYTECODE -> functions[i]);
             bytecode_writer(*_BYTECODE);
             firstFrame.execute();
             break;
-
         }
     }
     

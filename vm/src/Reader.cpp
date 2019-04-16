@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include <assert.h>
+#include "Reader.h"
 
 Operation operationByName(std::string str) {
     if (str == "IADD")       return IADD;
@@ -58,6 +59,7 @@ int specialArgsType(Operation op) {
     case WRITE_INT:
     case READ_INT:
     case GOTO:
+    case IF:
         return 1;
     case WRITE_FLOAT:
     case READ_FLOAT:
@@ -107,10 +109,10 @@ int defaultArgsCount(Operation op) {
     case FCMPLS:
     case FCMPBE:
     case FCMPGE:
-    case IF:
         return 2;
     case FMOV:
     case IMOV:
+    case IF:
         return 1;
     default:
         return 0;

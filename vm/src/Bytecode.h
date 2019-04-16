@@ -36,6 +36,7 @@ enum Operation {
 	GOTO, // 
 	IF, 
     RET, 
+
 	WRITE_INT, 
 	WRITE_FLOAT, 
 	READ_INT, 
@@ -75,16 +76,16 @@ struct Function {
 };
 
 struct Field {
-    char *name;
-    char *className;
-    char *type;
-    int offset;
+	char *name;
+	char *className;
+	char *type;
+	int offset;
 };
 
 struct Class {
-    char *name;
-    int fieldsCounter;
-    Field *fields;
+	char *name;
+	int fieldsCounter;
+	Field *fields;
 };
 
 struct Bytecode {

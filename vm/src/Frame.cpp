@@ -274,7 +274,7 @@ void Frame::_GOTO(){
 } 
 
 void Frame::_GOTO(int line){
-    programCounter = line - 1; // -1 обусловлен тем, что при выполнении execute() после вызова _GOTO мы прибавим 1 к programCounter 
+    programCounter = line - 1; // - 1 обусловленно тем, что при выполнении execute() после вызова _GOTO мы прибавим 1 к programCounter 
 } 
 
 void Frame::_IF(){ 
