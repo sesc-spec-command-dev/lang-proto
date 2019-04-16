@@ -13,11 +13,11 @@ public abstract class Expression {
         public Operand(Token value) {
             this.value = value;
         }
-        
-		@Override
-		public Position position() {
-			return value.position;
-		}
+
+        @Override
+        public Position position() {
+            return value.position;
+        }
     }
 
     public static class Operation extends Expression {			
@@ -50,5 +50,4 @@ public abstract class Expression {
         @Override
         public Position position() {return link.position;}
     }
-
 }
