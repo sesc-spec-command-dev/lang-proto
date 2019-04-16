@@ -229,6 +229,10 @@ public class Parser {
 								expressionList.add(oper);
 							}
 						}
+						else {
+							oper = new Operation(theOp, null, null);
+							expressionList.add(oper);
+						}
 						break;
 
 					case SEMICOLON:	//if expression situate in operator body
