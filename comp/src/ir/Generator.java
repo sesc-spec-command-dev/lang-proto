@@ -40,7 +40,7 @@ public class Generator{
                     commands.add("ILOAD " + intLiteral.value + " " + iReg);
                 return iReg;
                 case FLOAT_LITERAL:
-                    Token.IntLiteral floatLiteral = (Token.IntLiteral) value;
+                    Token.FloatLiteral floatLiteral = (Token.FloatLiteral) value;
                     int fReg = getIReg();
                     commands.add("FLOAD " + floatLiteral.value + " " + fReg);
                     return fReg;
@@ -194,6 +194,13 @@ public class Generator{
 
                 commands.add(pos, "GOTO " + (commands.size() + 2));
                 commands.add("GOTO " + (pos-3));
+            } else if (operator instanceof Operator.Write) {
+                Operator.Write write = (Operator.Write) operator;
+
+                if(write.writeExpression instanceof Expression.Operation) {
+                    int condition = genExpression(write.writeExpression);
+                    commands.add("WRITE_INT " + condition);
+                }
             }
         }
     }
