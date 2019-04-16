@@ -114,6 +114,7 @@ void Frame::_ICALL() {
 		nextFrame.iRegs[i] = this->iRegs[i];
 	}
     nextFrame.execute();
+	this->iRegs[command->result] = nextFrame.iRegs[0];
 }
 
 void Frame::_NEW()
