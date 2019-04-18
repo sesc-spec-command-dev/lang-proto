@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class Generator{
     private static void println(String line) { System.out.println(line);}
 
@@ -197,9 +198,20 @@ public class Generator{
             } else if (operator instanceof Operator.Write) {
                 Operator.Write write = (Operator.Write) operator;
 
-                if(write.writeExpression instanceof Expression.Operation) {
+                if(write.writeExpression instanceof Expression.Operation || write.writeExpression instanceof Expression.FunctionCall) {
                     int condition = genExpression(write.writeExpression);
                     commands.add("WRITE_INT " + condition);
+                } else if (write.writeExpression instanceof Expression.Operand) {
+                    Expression.Operand theOp = (Expression.Operand) write.writeExpression;
+
+                    if(theOp.value.getKind() == Token.Kind.STR_LITERAL) {
+                        Token.StrLiteral strLit = (Token.StrLiteral) theOp.value;
+                        commands.add("WRITE_STR " + strLit.value.substring(1, strLit.value.length() - 1));
+                    }
+                    else {
+                        int condition = genExpression(write.writeExpression);
+                        commands.add("WRITE_INT " + condition);
+                    }
                 }
             }
         }
