@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class Generator{
     private static void println(String line) { System.out.println(line);}
 
@@ -21,6 +22,8 @@ public class Generator{
 
     private static Map<String, Integer> varRegs = new HashMap<>();
 
+    private static List<String> funcNames = new ArrayList<>();
+
     private static int genExpression(Expression expr) {
         if (expr instanceof Expression.Operand) {
             Expression.Operand operand = (Expression.Operand) expr;
@@ -29,6 +32,7 @@ public class Generator{
                 case IDENT:
                     Token.Ident ident = (Token.Ident) value;
                     if (varRegs.containsKey(ident.word)) return varRegs.get(ident.word);
+                    else if (funcNames.contains(ident.word)) return funcNames.indexOf(ident.word);
                     // add exception?
                     break;
                 case INT_LITERAL:
@@ -37,9 +41,9 @@ public class Generator{
                     commands.add("ILOAD " + intLiteral.value + " " + iReg);
                 return iReg;
                 case FLOAT_LITERAL:
-                    Token.IntLiteral floatLiteral = (Token.IntLiteral) value;
+                    Token.FloatLiteral floatLiteral = (Token.FloatLiteral) value;
                     int fReg = getIReg();
-                    commands.add("ILOAD " + floatLiteral.value + " " + fReg);
+                    commands.add("FLOAD " + floatLiteral.value + " " + fReg);
                     return fReg;
                 case STR_LITERAL:
                     assert false;
@@ -48,7 +52,7 @@ public class Generator{
                     assert false;
                     break;
             }
-        } else {
+        } else if (expr instanceof Expression.Operation){
             Expression.Operation operation = (Expression.Operation) expr;
             int res_1 = genExpression(operation.left);
             int res_2 = genExpression(operation.right);
@@ -115,12 +119,32 @@ public class Generator{
                     commands.add("LNOT " + res_1 + " " + res_2 + " " + notRegs);
                     return notRegs;
             }
+        } else if (expr instanceof Expression.FunctionCall) {
+            int callRegs = getIReg();
 
+            Expression.FunctionCall functionCall = (Expression.FunctionCall) expr;
+            List<Integer> res = new ArrayList<>();
+
+            for (Expression expression : functionCall.parameterList) {
+                res.add(genExpression(expression));
+            }
+
+            StringBuilder callString = new StringBuilder("CALL ");
+            callString.append(functionCall.link.word).append(" ");
+
+            for (int r : res) {
+                callString.append(r).append(" ");
+            }
+
+            callString.append(callRegs);
+            commands.add(callString.toString());
+
+            return callRegs;
         }
         return -1;
     }
 
-    public static void generateBody(Operator[] body) {
+    private static void generateBody(Operator[] body) {
         for (Operator operator: body) {
             if (operator instanceof Operator.Return) {
                 Operator.Return ret = (Operator.Return) operator;
@@ -171,6 +195,24 @@ public class Generator{
 
                 commands.add(pos, "GOTO " + (commands.size() + 2));
                 commands.add("GOTO " + (pos-3));
+            } else if (operator instanceof Operator.Write) {
+                Operator.Write write = (Operator.Write) operator;
+
+                if(write.writeExpression instanceof Expression.Operation || write.writeExpression instanceof Expression.FunctionCall) {
+                    int condition = genExpression(write.writeExpression);
+                    commands.add("WRITE_INT " + condition);
+                } else if (write.writeExpression instanceof Expression.Operand) {
+                    Expression.Operand theOp = (Expression.Operand) write.writeExpression;
+
+                    if(theOp.value.getKind() == Token.Kind.STR_LITERAL) {
+                        Token.StrLiteral strLit = (Token.StrLiteral) theOp.value;
+                        commands.add("WRITE_STR " + strLit.value.substring(1, strLit.value.length() - 1));
+                    }
+                    else {
+                        int condition = genExpression(write.writeExpression);
+                        commands.add("WRITE_INT " + condition);
+                    }
+                }
             }
         }
     }
@@ -180,14 +222,16 @@ public class Generator{
 
         for (Function function : ir.functions) {
             if (function.parameters != null) {
-                for (Function.Parameter parameter : function.parameters) {
-                    switch (parameter.type) {
-                        case INT:
-                            varRegs.put(parameter.name, getIReg());
-                            break;
-                        case FLOAT:
-                            varRegs.put(parameter.name, getFReg());
-                            break;
+                if (function.parameters != null) {
+                    for (Function.Parameter parameter : function.parameters) {
+                        switch (parameter.type) {
+                            case INT:
+                                varRegs.put(parameter.name, getIReg());
+                                break;
+                            case FLOAT:
+                                varRegs.put(parameter.name, getFReg());
+                                break;
+                        }
                     }
                 }
             }
