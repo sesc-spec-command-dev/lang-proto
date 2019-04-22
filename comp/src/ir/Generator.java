@@ -22,8 +22,6 @@ public class Generator{
 
     private static Map<String, Integer> varRegs = new HashMap<>();
 
-    private static List<String> funcNames = new ArrayList<>();
-
     private static int genExpression(Expression expr) {
         if (expr instanceof Expression.Operand) {
             Expression.Operand operand = (Expression.Operand) expr;
@@ -32,8 +30,6 @@ public class Generator{
                 case IDENT:
                     Token.Ident ident = (Token.Ident) value;
                     if (varRegs.containsKey(ident.word)) return varRegs.get(ident.word);
-                    else if (funcNames.contains(ident.word)) return funcNames.indexOf(ident.word);
-                    // add exception?
                     break;
                 case INT_LITERAL:
                     Token.IntLiteral intLiteral = (Token.IntLiteral) value;
@@ -222,16 +218,14 @@ public class Generator{
 
         for (Function function : ir.functions) {
             if (function.parameters != null) {
-                if (function.parameters != null) {
-                    for (Function.Parameter parameter : function.parameters) {
-                        switch (parameter.type) {
-                            case INT:
-                                varRegs.put(parameter.name, getIReg());
-                                break;
-                            case FLOAT:
-                                varRegs.put(parameter.name, getFReg());
-                                break;
-                        }
+                for (Function.Parameter parameter : function.parameters) {
+                    switch (parameter.type) {
+                        case INT:
+                            varRegs.put(parameter.name, getIReg());
+                            break;
+                        case FLOAT:
+                            varRegs.put(parameter.name, getFReg());
+                            break;
                     }
                 }
             }
