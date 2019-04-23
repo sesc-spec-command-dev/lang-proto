@@ -1,8 +1,8 @@
 package front;
 
 public class Position {
-    public final int row;
-    public final int column;
+    public int row;
+    public int column;
 
     public Position(int row, int column) {
         this.row = row;

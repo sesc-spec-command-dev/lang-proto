@@ -1,5 +1,7 @@
 package front;
 
+import Parser.ParserException;
+
 public abstract class Token {
 
     public static Token make(Kind kind, Position position, Object value) {
@@ -42,7 +44,12 @@ public abstract class Token {
         IF,
         ELSE,
         WHILE,
-        RETURN
+        RETURN,
+        WRITE;
+
+        public String getText() {
+            return name().toLowerCase();
+        }
     }
 
     public static class KeyWord extends Token {
@@ -131,27 +138,63 @@ public abstract class Token {
     ///////////////////////////////////////////////////////
 
     public enum Operators {
-        ADD, // +
-        SUB, // -
-        MUL, // *
-        DIV, // /
-        MOD, // %
-        ASSIGN, // =
-        EQ, // ==
-        NE, // !=
-        BG, // >
-        LS, // <
-        BGEQ, // >=
-        LSEQ, // <=
-        AND, // &&
-        OR, // ||
-        NOT, // !
-        OPEN_PARENTHESIS, // (
-        CLOSE_PARENTHESIS, // )
-        OPEN_BRACKET, // [
-        CLOSE_BRACKET, // ]
-        SEMICOLON, // ;
-        COMMA // ,
+        ADD("+"), // +
+        SUB("-"), // -
+        MUL("*"), // *
+        DIV("/"), // /
+        MOD("%"), // %
+        ASSIGN("="), // =
+        EQ("=="), // ==
+        NE("!="), // !=
+        BG(">"), // >
+        LS("<"), // <
+        BGEQ(">="), // >=
+        LSEQ("<="), // <=
+        AND("&&"), // &&
+        OR("||"), // ||
+        NOT("!"), // !
+        OPEN_CURLY_BRACE("{"), // {
+        CLOSE_CURLY_BRACE("}"), // }
+        OPEN_PARENTHESIS("("), // (
+        CLOSE_PARENTHESIS(")"), // )
+        OPEN_BRACKET("["), // [
+        CLOSE_BRACKET("]"), // ]
+        COLON(":"), // :
+        SEMICOLON(";"), // ;
+        COMMA(","); // ,
+
+        public final String value;
+      
+        //? int priority(), with check of correct operator
+        public int priority(Operator op) {
+        	switch(op.operator.value) {
+        		case "=":
+        			return -1;
+        		case "&&":
+        		case "||":
+        		case "!":
+        			return 0;
+        		case "==":
+        		case "!=":
+        		case ">=":
+        		case "<=":
+        		case ">":
+        		case "<":
+        			return 1;
+        		case "+":
+        		case "-":
+        			return 2;
+        		case "*":
+        		case "/":
+        			return 3;
+        		default:
+        			throw new ParserException("Incorrect operation in expression", op.position);
+        	}
+        }
+        
+        Operators(String value) {
+            this.value = value;
+        }
     }
 
     public static class Operator extends Token {

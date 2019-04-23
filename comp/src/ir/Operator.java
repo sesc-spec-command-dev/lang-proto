@@ -3,7 +3,7 @@ package ir;
 public abstract class Operator {
 
     public static class If extends Operator {
-        public final Expression condition;
+        public Expression condition;
         public final Operator[] thenPart;
         public final Operator[] elsePart;
 
@@ -15,9 +15,9 @@ public abstract class Operator {
     }
 
     public static class While extends Operator {
-        public final Expression condition;
+        public Expression condition;
         public final Operator[] body;
-
+        
         public While(Expression condition, Operator[] body) {
             this.condition = condition;
             this.body = body;
@@ -25,7 +25,7 @@ public abstract class Operator {
     }
 
     public static class Return extends Operator {
-        public final Expression value;
+        public Expression value;
 
         public Return(Expression value) {
             this.value = value;
@@ -43,11 +43,16 @@ public abstract class Operator {
     }
 
     public static class SimpleExpression extends Operator {
-        public final Expression expression;
+        public Expression expression;
 
         public SimpleExpression(Expression expression) {
             this.expression = expression;
         }
     }
 
+    public static class Write extends Operator {
+        public Expression writeExpression;
+
+        public Write(Expression expression) {this.writeExpression = expression;}
+    }
 }
