@@ -182,7 +182,7 @@ void add_args(std::vector<std::string> s, Command &com) {
         break;
 
     case 3:
-        com.strConst1 = new char[s[1].size()];
+        com.funcName = new char[s[1].size()];
         std::strcpy(com.strConst1, s[1].c_str());
         com.argsCount = s.size() - 3;
         com.args = new int[com.argsCount];
@@ -238,6 +238,7 @@ Bytecode* read_bytecode(std::string name) {
     std::string line;
     std::vector<std::string> list;
     std::ifstream in(name);
+
     while (getline(in, line)) {
         list.push_back(line);
     }

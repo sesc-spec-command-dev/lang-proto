@@ -12,7 +12,8 @@ void ips();
 Bytecode *_BYTECODE;
 
 
-int main(int argc, char** argv) {    
+int main(int argc, char** argv) {  
+	std::cout << argc << " " << argv[1];
     if (argc != 2) {
         std::cout << "bad arguments" << std::endl;
         return 0;
@@ -33,5 +34,4 @@ void ips(){
             break;
         }
     }
-    
 }
