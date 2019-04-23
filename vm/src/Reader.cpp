@@ -183,7 +183,7 @@ void add_args(std::vector<std::string> s, Command &com) {
 
     case 3:
         com.funcName = new char[s[1].size()];
-        std::strcpy(com.strConst1, s[1].c_str());
+        std::strcpy(com.funcName, s[1].c_str());
         com.argsCount = s.size() - 3;
         com.args = new int[com.argsCount];
         for (int i = 0; i < com.argsCount; i++) {
