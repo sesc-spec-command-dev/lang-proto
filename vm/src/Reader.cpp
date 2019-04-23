@@ -170,7 +170,7 @@ void add_args(std::vector<std::string> s, Command &com) {
     if (resultCount(com.operation) == 1) {
         com.result = std::stoi(s[s.size() - 1]);
     }
-    int  sn = specialArgsType(com.operation);
+
     switch (specialArgsType(com.operation)) {
 
     case 1:

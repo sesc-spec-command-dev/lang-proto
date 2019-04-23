@@ -1,27 +1,30 @@
 2
-hello_world
-3
-0
-0
-6
-ILOAD 666 1
-ILOAD 666 2
-IADD 1 2 0
-WRITE_INT 0
-WRITE_STR ______________
-RET
 main
 3
 0
 0
-9
+6
 ILOAD 27 0
 ILOAD 7 1
 IADD 0 1 2
 WRITE_INT 2
-WRITE_STR ______________
-ICALL hello_world 2
-WRITE_INT 2
-WRITE_STR ______________
+ICALL main2 0
 RET
+main2
+2
 0
+1
+6
+NEW first_class 0
+ILOAD 32 0
+SETFIELD first_class x 0 0
+GETFIELD first_class x 0 1
+WRITE_INT 1
+RET
+1
+first_class
+2
+x
+int
+y
+int

@@ -138,7 +138,7 @@ void Frame::_SETFIELD()
 	int offset = find_offset(class_name, field_name);
 	if (offset == -1) throw ("SETFIELD%OffsetNullError");
 	int *p = (int*)(pRegs[command->args[0]]);
-	p[(int)(offset/sizeof(int))] = iRegs[command->args[1]];
+	p[(int)(offset/sizeof(int))] = iRegs[command->result];	// поменять на args[1]
 
 }
 
@@ -150,7 +150,7 @@ void Frame::_GETFIELD()
 	int offset = find_offset(class_name, field_name);
 	if (offset == -1) throw ("GETFIELD%OffsetNullError");
 	int *p = (int*)(pRegs[command->args[0]]);
-	this->iRegs[(int)(command->args[1])] = (int)(p[(offset / sizeof(int))]);
+	this->iRegs[(int)(command->result)] = (int)(p[(offset / sizeof(int))]);	// поменять на args[1]
 }
 
 

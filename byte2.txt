@@ -1,0 +1,27 @@
+2
+hello_world
+3
+0
+0
+6
+ILOAD 666 1
+ILOAD 666 2
+IADD 1 2 0
+WRITE_INT 0
+WRITE_STR ______________
+RET
+main
+3
+0
+0
+9
+ILOAD 27 0
+ILOAD 7 1
+IADD 0 1 2
+WRITE_INT 2
+WRITE_STR ______________
+ICALL hello_world 2
+WRITE_INT 2
+WRITE_STR ______________
+RET
+0
