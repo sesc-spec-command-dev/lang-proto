@@ -247,7 +247,7 @@ public class Generator{
             fRegs = 0;
             commands.clear();
             varRegs.clear();
-            pw.close();
         }
+        pw.close();
     }
 }
