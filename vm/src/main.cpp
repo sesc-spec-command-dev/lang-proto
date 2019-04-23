@@ -13,7 +13,7 @@ Bytecode *_BYTECODE;
 
 
 int main(int argc, char** argv) {  
-	std::cout << argc << " " << argv[1];
+	std::cout << argc << " " << argv[1] << std::endl;
     if (argc != 2) {
         std::cout << "bad arguments" << std::endl;
         return 0;
