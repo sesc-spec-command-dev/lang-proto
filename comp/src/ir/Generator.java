@@ -216,7 +216,7 @@ public class Generator{
     }
 
     public static void generateCode(IR ir, String name) throws FileNotFoundException {
-        File outputFile = new File("Bytecode.txt");
+        File outputFile = new File("..\\Bytecode.txt");
         PrintWriter pw = new PrintWriter(outputFile);
 
         println(ir.functions.length, pw);
