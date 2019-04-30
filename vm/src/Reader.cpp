@@ -9,7 +9,7 @@
 #include <assert.h>
 #include "Reader.h"
 
-Operation operationByName(std::string str) {
+Operation operation_by_name(std::string str) {
     if (str == "IADD")       return IADD;
     if (str == "ISUB")       return ISUB;
     if (str == "IMUL")       return IMUL;
@@ -54,7 +54,7 @@ Operation operationByName(std::string str) {
     assert(false);
 }
 
-int specialArgsType(Operation op) {
+int special_args_type(Operation op) {
     switch (op) {
     case WRITE_INT:
     case READ_INT:
@@ -83,7 +83,7 @@ int specialArgsType(Operation op) {
     }
 }
 
-int defaultArgsCount(Operation op) {
+int default_args_count(Operation op) {
     switch (op) {
     case IADD:
     case ISUB:
@@ -119,7 +119,7 @@ int defaultArgsCount(Operation op) {
     }
 }
 
-int resultCount(Operation op) {
+int result_count(Operation op) {
     switch (op) {
     case IADD:
     case ISUB:
@@ -149,7 +149,7 @@ int resultCount(Operation op) {
     case FCMPGE:
     case NEW:
     case GETFIELD:
-    case SETFIELD:
+    //case SETFIELD:
     case ILOAD:
     case FLOAD:
     case IMOV:
@@ -161,17 +161,17 @@ int resultCount(Operation op) {
 }
 
 void add_args(std::vector<std::string> s, Command &com) {
-    com.operation = operationByName(s[0]);
-    com.argsCount = defaultArgsCount(com.operation);
+    com.operation = operation_by_name(s[0]);
+    com.argsCount = default_args_count(com.operation);
     com.args = new int[com.argsCount];
-    for (int i = 0; i < com.argsCount; i++) {
+    for (int i = 0; i < com.argsCount; i++) {		// common args
         com.args[i] = std::stoi(s[i + 1]);
     }
-    if (resultCount(com.operation) == 1) {
+    if (result_count(com.operation) == 1) {
         com.result = std::stoi(s[s.size() - 1]);
     }
 
-    switch (specialArgsType(com.operation)) {
+    switch (special_args_type(com.operation)) {		// special args
 
     case 1:
         com.intConst = std::stoi(s[s.size() - 1]);
@@ -181,7 +181,7 @@ void add_args(std::vector<std::string> s, Command &com) {
         com.intConst = std::stoi(s[s.size() - 1]);
         break;
 
-    case 3:
+    case 3:											
         com.funcName = new char[s[1].size()];
         std::strcpy(com.funcName, s[1].c_str());
         com.argsCount = s.size() - 3;
@@ -192,20 +192,30 @@ void add_args(std::vector<std::string> s, Command &com) {
         break;
 
     case 4:
+
         com.strConst1 = new char[s[s.size() - 1].size()];
         std::strcpy(com.strConst1, s[s.size() - 1].c_str());
         break;
 
     case 5:
+		// SETFIELD & GETFIELD 
         com.strConst1 = new char[s[1].size()];
         std::strcpy(com.strConst1, s[1].c_str());
 
         com.strConst2 = new char[s[2].size()];
         std::strcpy(com.strConst2, s[2].c_str());
 
-        com.argsCount = 1;
-        com.args = new int[com.argsCount];
-        com.args[0] = std::stoi(s[3]);
+		if (com.operation == SETFIELD) {
+			com.argsCount = 2;
+			com.args = new int[com.argsCount];
+			com.args[0] = std::stoi(s[3]);
+			com.args[1] = std::stoi(s[4]);
+		}
+		else {
+			com.argsCount = 1;
+			com.args = new int[com.argsCount];
+			com.args[0] = std::stoi(s[3]);
+		}
         break;
 
     case 6:

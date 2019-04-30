@@ -3,11 +3,10 @@ main
 3
 0
 0
-6
+5
 ILOAD 27 0
 ILOAD 7 1
 IADD 0 1 2
-WRITE_INT 2
 ICALL main2 0
 RET
 main2
@@ -16,7 +15,7 @@ main2
 1
 6
 NEW first_class 0
-ILOAD 32 0
+ILOAD 666 0
 SETFIELD first_class x 0 0
 GETFIELD first_class x 0 1
 WRITE_INT 1
