@@ -2,6 +2,9 @@ package ir;
 
 import front.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,9 +12,9 @@ import java.util.Map;
 
 
 public class Generator{
-    private static void println(String line) { System.out.println(line);}
+    private static void println(String line, PrintWriter pw) { pw.println(line);}
 
-    private static void println(int x) {println(String.valueOf(x)); }
+    private static void println(int x, PrintWriter pw) { println(String.valueOf(x), pw); }
 
     static int iRegs = 0;
     static int fRegs = 0;
@@ -213,8 +216,11 @@ public class Generator{
         }
     }
 
-    public static void generateCode(IR ir, String name) {
-        println(ir.functions.length);
+    public static void generateCode(IR ir, String name) throws FileNotFoundException {
+        File outputFile = new File("Bytecode.txt");
+        PrintWriter pw = new PrintWriter(outputFile);
+
+        println(ir.functions.length, pw);
 
         for (Function function : ir.functions) {
             if (function.parameters != null) {
@@ -230,15 +236,15 @@ public class Generator{
                 }
             }
 
-            println(function.name);
+            println(function.name, pw);
 
             generateBody(function.body);
 
-            println(iRegs);
-            println(fRegs);
-            println(commands.size());
+            println(iRegs, pw);
+            println(fRegs, pw);
+            println(commands.size(), pw);
             for (String command: commands) {
-                println(command);
+                println(command, pw);
             }
 
             iRegs = 0;
@@ -246,5 +252,6 @@ public class Generator{
             commands.clear();
             varRegs.clear();
         }
+        pw.close();
     }
 }
