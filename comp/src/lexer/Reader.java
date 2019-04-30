@@ -31,11 +31,11 @@ public class Reader {
     }
 
     public static void main(String[] args) throws IOException {
-        for (Token x : getTokens()) System.out.println(x.getKind() + " " + x.position.row + " " + x.position.column);
+        for (Token x : getTokens("input.txt")) System.out.println(x.getKind() + " " + x.position.row + " " + x.position.column);
     }
 
-    public static Token[] getTokens() throws IOException {
-        Token[] tokens = Lexer.makeTokens(readFile("input.txt"));
+    public static Token[] getTokens(String fileName) throws IOException {
+        Token[] tokens = Lexer.makeTokens(readFile(fileName));
 
 /*      for (Token token : tokens) {
             System.out.println(token.getKind() + " " + token.position.row + " " + token.position.column);

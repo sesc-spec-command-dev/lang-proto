@@ -9,7 +9,7 @@ import ir.IR;
 public class TestParser {
 
 	public static void main(String[] args) throws IOException{
-		Parser theParser = new Parser(Reader.getTokens());
+		Parser theParser = new Parser(Reader.getTokens("input.txt"));
 		theParser.parserfunc();
 		Function[] funcArr = theParser.FunctionOtputList.toArray(new Function[theParser.FunctionOtputList.size()]);
 		IR ir = new IR(funcArr);

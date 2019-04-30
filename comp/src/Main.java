@@ -9,11 +9,16 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        Parser theParser = new Parser(Reader.getTokens());
+        if (args.length != 1) {
+            System.out.println("Usage: one arg - file name");
+            return;
+        }
+
+        Parser theParser = new Parser(Reader.getTokens(args[0]));
         theParser.parserfunc();
         Function[] funcArr = theParser.FunctionOtputList.toArray(new Function[theParser.FunctionOtputList.size()]);
         IR ir = new IR(funcArr);
         ir.printIR("test parsing output");
-        Generator.generateCode(ir, "a.txt");
+        Generator.generateCode(ir, "bytecode.txt");
     }
 }

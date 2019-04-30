@@ -24,6 +24,7 @@ public class Generator{
     private int classCounter = 0;
     private static int getIReg() {return iRegs++;}
     private static int getFReg() {return fRegs++;}
+    private static int getPReg() {return pRegs++;}
 
     private static Map<String, Integer> varRegs = new HashMap<>();
 
@@ -85,27 +86,27 @@ public class Generator{
                     return iRegs;
                 case EQ:
                     int eqRegs = getIReg();
-                    commands.add("CMPEQ " + res_1 + " " + res_2 + " " + eqRegs);
+                    commands.add("ICMPEQ " + res_1 + " " + res_2 + " " + eqRegs);
                     return eqRegs;
                 case NE:
                     int neReqs = getIReg();
-                    commands.add("CMPNE " + res_1 + " " + res_2 + " " + neReqs);
+                    commands.add("ICMPNE " + res_1 + " " + res_2 + " " + neReqs);
                     return neReqs;
                 case BG:
                     int bgReqs = getIReg();
-                    commands.add("CMPBG " + res_1 + " " + res_2 + " " + bgReqs);
+                    commands.add("ICMPBG " + res_1 + " " + res_2 + " " + bgReqs);
                     return bgReqs;
                 case LS:
                     int lsReqs = getIReg();
-                    commands.add("CMPLS " + res_1 + " " + res_2 + " " + lsReqs);
+                    commands.add("ICMPLS " + res_1 + " " + res_2 + " " + lsReqs);
                     return lsReqs;
                 case BGEQ:
                     int bgeqReqs = getIReg();
-                    commands.add("CMPBE " + res_1 + " " + res_2 + " " + bgeqReqs);
+                    commands.add("ICMPBE " + res_1 + " " + res_2 + " " + bgeqReqs);
                     return bgeqReqs;
                 case LSEQ:
                     int lseqRegs = getIReg();
-                    commands.add("CMPGE " + res_1 + " " + res_2 + " " + lseqRegs);
+                    commands.add("ICMPGE " + res_1 + " " + res_2 + " " + lseqRegs);
                     return lseqRegs;
                 case AND:
                     int andRegs = getIReg();
@@ -130,7 +131,7 @@ public class Generator{
                 res.add(genExpression(expression));
             }
 
-            StringBuilder callString = new StringBuilder("CALL ");
+            StringBuilder callString = new StringBuilder("ICALL ");
             callString.append(functionCall.link.word).append(" ");
 
             for (int r : res) {
@@ -216,10 +217,13 @@ public class Generator{
                 }
             }
         }
+        if (!(body[body.length - 1] instanceof Operator.Return)) {
+           commands.add("RET");
+        }
     }
 
     public static void generateCode(IR ir, String name) throws FileNotFoundException {
-        File outputFile = new File("Bytecode.txt");
+        File outputFile = new File(name);
         PrintWriter pw = new PrintWriter(outputFile);
 
         println(ir.functions.length, pw);
@@ -234,6 +238,9 @@ public class Generator{
                         case FLOAT:
                             varRegs.put(parameter.name, getFReg());
                             break;
+                        case POINTERS:
+                            varRegs.put(parameter.name, getFReg());
+                            break;
                     }
                 }
             }
@@ -244,7 +251,7 @@ public class Generator{
 
             println(iRegs, pw);
             println(fRegs, pw);
-            println(pRegs, pw); //
+            println(pRegs, pw);
             println(commands.size(), pw);
             for (String command: commands) {
                 println(command, pw);
@@ -254,7 +261,7 @@ public class Generator{
             commands.clear();
             varRegs.clear();
         }
-        println(classCounter, pw); //
+        pw.println(0);
         pw.close();
     }
 }
