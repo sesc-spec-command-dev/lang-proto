@@ -18,8 +18,10 @@ public class Generator{
 
     static int iRegs = 0;
     static int fRegs = 0;
+    static int pRegs = 0;
     static List<String> commands = new ArrayList<>();
 
+    private int classCounter = 0;
     private static int getIReg() {return iRegs++;}
     private static int getFReg() {return fRegs++;}
 
@@ -242,16 +244,17 @@ public class Generator{
 
             println(iRegs, pw);
             println(fRegs, pw);
+            println(pRegs, pw); //
             println(commands.size(), pw);
             for (String command: commands) {
                 println(command, pw);
             }
-
             iRegs = 0;
             fRegs = 0;
             commands.clear();
             varRegs.clear();
         }
+        println(classCounter, pw); //
         pw.close();
     }
 }
