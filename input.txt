@@ -14,6 +14,7 @@ int cycle(int b) {
     return b;
 }
 
+
 int foo(int a) {
     int c;
     c = a*100;
@@ -22,7 +23,13 @@ int foo(int a) {
         write(c);
     } else {
         write("10");
+        write(23);
     }
+
+    write(23);
+}
+
+void fi() {
 }
 
 int main (int c) {

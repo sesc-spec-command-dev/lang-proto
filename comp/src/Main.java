@@ -9,7 +9,7 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 1) {
+        if (args.length != 2) {
             System.out.println("Usage: one arg - file name");
             return;
         }
@@ -19,6 +19,6 @@ public class Main {
         Function[] funcArr = theParser.FunctionOtputList.toArray(new Function[theParser.FunctionOtputList.size()]);
         IR ir = new IR(funcArr);
         ir.printIR("test parsing output");
-        Generator.generateCode(ir, "bytecode.txt");
+        Generator.generateCode(ir, args[1]);
     }
 }

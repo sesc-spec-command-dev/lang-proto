@@ -147,6 +147,9 @@ public class Generator{
     }
 
     private static void generateBody(Operator[] body) {
+        if (body.length == 0) {
+            return;
+        }
         for (Operator operator: body) {
             if (operator instanceof Operator.Return) {
                 Operator.Return ret = (Operator.Return) operator;
@@ -217,9 +220,6 @@ public class Generator{
                 }
             }
         }
-        if (!(body[body.length - 1] instanceof Operator.Return)) {
-           commands.add("RET");
-        }
     }
 
     public static void generateCode(IR ir, String name) throws FileNotFoundException {
@@ -248,6 +248,13 @@ public class Generator{
             println(function.name, pw);
 
             generateBody(function.body);
+
+            if (function.body.length != 0) {
+                if (!(function.body[function.body.length - 1] instanceof Operator.Return)) {
+                    commands.add("RET");
+                }
+            }
+            else {commands.add("RET");}
 
             println(iRegs, pw);
             println(fRegs, pw);
