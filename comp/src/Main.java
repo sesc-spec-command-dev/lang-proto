@@ -2,6 +2,7 @@ import Parser.Parser;
 import ir.Function;
 import ir.Generator;
 import ir.IR;
+import ir.Optimizer;
 import lexer.Reader;
 
 import java.io.IOException;
@@ -18,7 +19,9 @@ public class Main {
         theParser.parserfunc();
         Function[] funcArr = theParser.FunctionOtputList.toArray(new Function[theParser.FunctionOtputList.size()]);
         IR ir = new IR(funcArr);
-        ir.printIR("test parsing output");
+        Optimizer optimizer = new Optimizer(ir);
+        optimizer.optimize();
+        ir.printIR("after optimization");
         Generator.generateCode(ir, args[1]);
     }
 }

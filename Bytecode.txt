@@ -1,4 +1,4 @@
-5
+6
 fibonacci
 14
 0
@@ -39,6 +39,15 @@ WRITE_INT 0
 GOTO 3
 IMOV 0 0
 RET
+calk
+2
+0
+0
+4
+ILOAD 16 1
+IMOV 1 0
+IMOV 0 0
+RET
 foo
 8
 0
@@ -60,20 +69,38 @@ ILOAD 23 7
 WRITE_INT 7
 RET
 fi
+14
 0
 0
-0
-1
+16
+ILOAD 3 4
+IMOV 4 0
+ILOAD 4 5
+IMOV 5 1
+ILOAD 5 6
+IMOV 6 2
+ILOAD 2 7
+IMOV 7 3
+IADD 0 1 8
+ILOAD 2 9
+IDIV 2 9 10
+ILOAD 3 11
+IMUL 10 11 12
+ISUB 8 12 13
+IMOV 13 0
 RET
 main
-4
-0
-0
 6
+0
+0
+9
 ICALL fibonacci 0 1
 WRITE_INT 1
-ICALL cycle 0 3
-ICALL fibonacci 3 2
-IMOV 2 0
+ILOAD -3 2
+IMUL 0 2 3
+IMOV 3 0
+ICALL cycle 0 5
+ICALL fibonacci 5 4
+IMOV 4 0
 RET
 0

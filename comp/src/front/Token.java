@@ -186,6 +186,7 @@ public abstract class Token {
         			return 2;
         		case "*":
         		case "/":
+                case "%":
         			return 3;
         		default:
         			throw new ParserException("Incorrect operation in expression", op.position);

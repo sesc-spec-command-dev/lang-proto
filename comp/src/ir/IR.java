@@ -24,7 +24,7 @@ import ir.Operator.Write;
 
 public class IR {
     public final Function[] functions;
-    static int irPrintCount = 21;
+    static int irPrintCount = 3;
 	static PrintWriter pw;
     public IR(Function[] functions) {
         this.functions = functions;

@@ -14,6 +14,11 @@ int cycle(int b) {
     return b;
 }
 
+int calk() {
+    int h;
+    h = 123 % 13 + 10;
+    return h;
+}
 
 int foo(int a) {
     int c;
@@ -30,10 +35,20 @@ int foo(int a) {
 }
 
 void fi() {
+    int y;
+    int h;
+    int g;
+    int f;
+
+    y = 3;
+    h = 4;
+    g = 5;
+    f = 5 - 3 + 1 - 3 / 2;
+    return y + h - g / 2*(6 - 3);
 }
 
 int main (int c) {
     write(fibonacci(c));
-
+    c = c * ((2 + 3) - 8);
     return fibonacci(cycle(c));
 }

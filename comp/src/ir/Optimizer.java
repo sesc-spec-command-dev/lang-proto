@@ -17,7 +17,7 @@ public class Optimizer {
         inputIR = ir;
     }
 
-    private void optimize() {           //method includes all optimization phases
+    public void optimize() {           //method includes all optimization phases
         for(int i = 0; i < inputIR.functions.length; i++) {
             constExpressionEvaluation(inputIR.functions[i].body);
         }
@@ -54,7 +54,7 @@ public class Optimizer {
                     if (op instanceof SimpleExpression) {
                         SimpleExpression expr = (SimpleExpression) op ;
                         expr.expression = dfs(expr.expression);
-                        op = opArr[i];                                  //refactor operator
+                        op = expr;                                  //refactor operator
                     }
                     opArr[i] = op;                                   //update operator
                 }
@@ -77,28 +77,38 @@ public class Optimizer {
                 if (left.value.getKind() == Token.Kind.INT_LITERAL && right.value.getKind() == Token.Kind.INT_LITERAL) {
                     exprTree = getConstValue(operation, left, right);
 
-                } else if (left.value.getKind() == Token.Kind.FLOAT_LITERAL && right.value.getKind() == Token.Kind.FLOAT_LITERAL) {
+                } /*else if (left.value.getKind() == Token.Kind.FLOAT_LITERAL && right.value.getKind() == Token.Kind.FLOAT_LITERAL) {
                     exprTree = getConstValue(operation, left, right);
-                }
+                }*/
             }
         }
         return exprTree;
     }
 
     private Operand getConstValue(Operation oper, Operand left, Operand right) {
-        Token.Operator op = (Token.Operator) oper.operation;        //casting without exception(possible exception throws in AST building)
-        if(left.value.getKind() == Token.Kind.INT_LITERAL) {
-            IntLiteral lInt = (IntLiteral) left.value;
-            IntLiteral rInt = (IntLiteral) right.value;
-        }
-        else {
-            FloatLiteral lFloat = (FloatLiteral) left.value;
-            FloatLiteral rFloat = (FloatLiteral) right.value;
-        }
+        int retVal = 0;
+        Token.Operator op = oper.operation;
+
+        IntLiteral lInt = (IntLiteral) left.value;
+        IntLiteral rInt = (IntLiteral) right.value;
+
         switch (op.operator.value) {
             case "+":
-
+                retVal = lInt.value + rInt.value;
+                break;
+            case "-":
+                retVal = lInt.value - rInt.value;
+                break;
+            case "/":
+                retVal = lInt.value / rInt.value;
+                break;
+            case "*":
+                retVal = lInt.value * rInt.value;
+                break;
+            case "%":
+                retVal = lInt.value % rInt.value;
         }
-        return null;
+        IntLiteral opVal = new IntLiteral(op.position, retVal);
+        return new Operand(opVal);
     }
 }
